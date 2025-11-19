@@ -6,16 +6,11 @@ mobil-optimiertes Spiel mit sauberer, dokumentierter JavaScript-Logik und Einhal
 Der Spieler steuert den Charakter , sammelt Objekte und besiegt Gegner, um den Endboss zu erreichen.
 
 # Features und Funktionalität:
-# Responsive UX:  
-Optimiert für Desktop-Geräte und mobiles Querformat.
-# Intuitive Steuerung: 
-Unterstützung für Tastatur- und Touch-Eingaben.
-# Charakter-Status: 
-Dynamische Status Bar für Leben und gesammelte Objekte.
-# Sound-Management: 
-Hintergrundmusik und Soundeffekte mit Mute-Option und Speicherung des Zustands im Local Storage.
-# Clean Code: 
-Strikte Einhaltung von Stilrichtlinien (JSDoc, max. 14 Zeilen pro Funktion, max. 400 LOC pro Datei).
+Responsive UX: Optimiert für Desktop-Geräte und mobiles Querformat.
+Intuitive Steuerung: Unterstützung für Tastatur- und Touch-Eingaben.
+Charakter-Status:  Dynamische Status Bar für Leben und gesammelte Objekte.
+Sound-Management: Hintergrundmusik und Soundeffekte mit Mute-Option und Speicherung des Zustands im Local Storage.
+Clean Code: Strikte Einhaltung von Stilrichtlinien (JSDoc, max. 14 Zeilen pro Funktion, max. 400 LOC pro Datei).
 
 # Technologies
 HTML5
