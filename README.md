@@ -13,9 +13,9 @@ Sound-Management: Hintergrundmusik und Soundeffekte mit Mute-Option und Speicher
 Clean Code: Strikte Einhaltung von Stilrichtlinien (JSDoc, max. 14 Zeilen pro Funktion, max. 400 LOC pro Datei).
 
 # Technologies
-HTML5
-CSS3
-JAVASCRIPT (ES6+)
+- HTML5
+- CSS3
+- JAVASCRIPT (ES6+)
 
 # Installation und Starten
 Das Spiel benötigt keinen Build-Prozess und kann direkt im Browser gestartet werden:
