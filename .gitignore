@@ -1,0 +1,20 @@
+# IDE- und Editor-Konfigurationen
+# -----------------------------
+.vscode/        # Visual Studio Code Konfigurationsordner
+.idea/          # IntelliJ/Webstorm Konfigurationsordner
+*.sublime-workspace
+
+# Betriebssystem-spezifische Dateien
+# -----------------------------
+.DS_Store       # macOS
+Thumbs.db       # Windows
+
+# Cache- und temporäre Dateien (Könnten von Browser-Tools erstellt werden)
+# -----------------------------
+/tmp/
+/dist/         
+
+# Log-Dateien
+# -----------------------------
+*.log
+npm-debug.log* 
