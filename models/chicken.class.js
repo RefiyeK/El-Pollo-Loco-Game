@@ -2,7 +2,7 @@ class Chicken extends MovableObject {
 
     width = 50;
     height = 70;
-    y = 370; 
+    y = 400; 
     IMAGES_WALKING = [
         'img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
         'img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
@@ -20,7 +20,10 @@ class Chicken extends MovableObject {
    
 
   animate() {
-    this.moveLeft();
+        setInterval( () => { //tavuk görünür görünmez dünyada animate fonksiyonunu üstleniyor.
+            this.moveLeft(); //saniyede 60 kere sola hareket etsin.
+            this.otherDirection = false; //saga tiklarsam resmi döndürme
+        },1000 / 60); //ne kadar sik tekrarlamasi gerektigi. 0.15px eksiltme 1 dk da 60 kez gerceklesiyor.
 
         setInterval (() => {
             this.playAnimation(this.IMAGES_WALKING);

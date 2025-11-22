@@ -4,10 +4,26 @@ class MovableObject {
     img;
     height = 120;
     width = 100;
-    imageCache = [];
+    imageCache = {};
     currentImage = 0;
     speed = 0.15;
     otherDirection = false;
+    speedY = 0; //geschwindigkeit auf der Y Achse / Wie schnell das Objekt nach unten fällt
+    acceleration = 2.5; //wie schnell das Objekt beschleunigt wird.
+
+
+    applyGravity() { 
+        setInterval(() => { //meine Funktion wird 25 mal pro Sekunde ausgeführt =1000/25=
+           if(this.isAboveGround() || this.speedY > 0) {
+            this.y -= this.speedY;
+            this.speedY -= this.acceleration;
+           }
+        }, 1000 / 25);
+    }
+
+    isAboveGround() {
+        return this.y < 90// Karakterin düstükten sonra nerede durmasi gerektigi yer
+    }
 
     loadImage(path) {
         this.img = new Image();
@@ -34,15 +50,17 @@ class MovableObject {
         this.currentImage++;
     }
 
-
-
    moveRight() {
-        console.log('Moving right');
+        this.x += this.speed;
+        this.otherDirection = false; //saga tiklarsam resmi döndürme
     }
 
     moveLeft() {
-        setInterval( () => {
             this.x -= this.speed; //x koordinattan 1 pixel azaltiyor
-        },1000 / 60); //ne kadar sik tekrarlamasi gerektigi. 0.15px eksiltme 1 dk da 60 kez gerceklesiyor.
+            this.otherDirection = true;//sola tiklarsam resmi döndür
+    }
+
+    jump() {
+        this.speedY = 30; //ne kadar yüksege ziplayacagi belirli
     }
 }
