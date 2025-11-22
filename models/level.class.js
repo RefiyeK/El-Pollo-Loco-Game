@@ -3,7 +3,7 @@ class Level {
     enemies;
     clouds;
     backgroundObjects;
-    level_end_x = 7400;
+    level_end_x = 8400;
 
 
 

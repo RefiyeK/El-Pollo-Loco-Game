@@ -1,16 +1,17 @@
-class MovableObject {
-    x = 100;
-    y = 320;
-    img;
-    height = 120;
-    width = 100;
-    imageCache = {};
-    currentImage = 0;
+class MovableObject extends DrawableObject {
+    
     speed = 0.15;
     otherDirection = false;
     speedY = 0; //geschwindigkeit auf der Y Achse / Wie schnell das Objekt nach unten fällt
     acceleration = 2.5; //wie schnell das Objekt beschleunigt wird.
-
+    energy = 100; //toplam sahip oldugu can
+    lastHit = 0;
+    // offset = {
+    //     top: 0,
+    //     left : 0,
+    //     right : 0,
+    //     bottom : 0
+    // }
 
     applyGravity() { 
         setInterval(() => { //meine Funktion wird 25 mal pro Sekunde ausgeführt =1000/25=
@@ -22,28 +23,42 @@ class MovableObject {
     }
 
     isAboveGround() {
-        return this.y < 90// Karakterin düstükten sonra nerede durmasi gerektigi yer
+        return this.y < 150// Karakterin düstükten sonra nerede durmasi gerektigi yer
     }
 
-    loadImage(path) {
-        this.img = new Image();
-        this.img.src = path;
+    //Collision Detection/Carpisma Tespiti
+    isColliding(mo) {
+        return this.x + this.width > mo.x &&
+            this.y + this.height > mo.y &&
+            this.x < mo.x &&
+            this.y < mo.y + mo.height;
     }
 
+    hit() { //Karakterin ne kadar neerji/can kaybettigini belirliyor
+        this.energy -= 5; //ne kadar can kaybettigi yazili
+        if (this.energy < 0) {
+            this.energy = 0;
+        }else {
+            this.lastHit = new Date().getTime(); //zamanin ramak bakimindan yazilmasi
+        }
+        }
 
-    //ön yükleme / preloading
-    loadImages(arr) { //Method tanimladik. 
-        arr.forEach((path) => {//Dizideki her bir resim yolunu tek tek dolaşmak için bir döngü başlatır. ve bu path degiskenine atanir
-        let img = new Image();//Bellekte yepyeni, boş bir HTML Image (Görüntü) nesnesi oluşturulur.
-        img.src = path;//Image nesnesinin kaynağı src = döngüden gelen resim yolu (path) ile ayarlanır.Tarayıcı arka planda resmi indirmeye başlar.
-       
-        this.imageCache[path] = img;//Resmi, ait olduğu sınıftaki önbelleğe kaydeder.
-        });
+
+    isHurt() {
+        let timepassed = new Date().getTime() - this.lastHit; //en son düsmanla karsilastigimiz an = difference in ms
+        timepassed = timepassed / 1000;// difference in s
+        return timepassed < 1; // son 1 sn icinde hasar aldiysak/carpisma olduysa SONUC TRUE o zaman IMAGES_HURT resmi cikiyor
     }
+
+    isDead() {
+        return this.energy == 0;  
+    }
+
+   
 
     playAnimation(images) {
         //Walk Animation
-        let i = this.currentImage % this.IMAGES_WALKING.length; //let i=0 % 6; %=Mathematische rest
+        let i = this.currentImage % images.length; //let i=0 % 6; %=Mathematische rest
         //i=0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5,0,.....
         let path = images[i];
         this.img = this.imageCache[path];
@@ -52,15 +67,17 @@ class MovableObject {
 
    moveRight() {
         this.x += this.speed;
-        this.otherDirection = false; //saga tiklarsam resmi döndürme
     }
 
     moveLeft() {
             this.x -= this.speed; //x koordinattan 1 pixel azaltiyor
-            this.otherDirection = true;//sola tiklarsam resmi döndür
     }
 
-    jump() {
-        this.speedY = 30; //ne kadar yüksege ziplayacagi belirli
-    }
+    // jump() {
+    //     this.speedY = 30; //ne kadar yüksege ziplayacagi belirli
+    // }
+
+
+
 }
+

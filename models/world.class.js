@@ -5,6 +5,7 @@ class World {
     ctx;
     keyboard;
     camera_x = 0; //Burada arka planin ilerledikce kaymasini söylüyoruz
+    statusBar = new StatusBar();
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -12,21 +13,37 @@ class World {
         this.keyboard = keyboard;
         this.setWorld();
         this.draw();
-
+        this.checkCollisions();
     }
-
 
     setWorld() {
         this.character.world = this;
     }
 
+    checkCollisions() {
+        this.collisionCheckInterval = setInterval(() => {
+            this.level.enemies.forEach( (enemy) => {
+               if(this.character.isColliding(enemy) ) {
+                    this.character.hit(); //hit te karakterin kaybettigi can orani belirli
+                    this.statusBar.setPercentage(this.character.energy);
+               }
+            });
+        }, 200);    
+    }
+
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
+        
         this.ctx.translate(this.camera_x, 0); //kamerayi sola dogru kaydiriyor
-
         this.addObjectsToMap(this.level.backgroundObjects);
+
+        //Burada can göstergesinin devamli üst kösede kalmasini sagladik. Yani fixledik
+        this.ctx.translate(-this.camera_x, 0); //kamerayi sola kaydirmayi geri aliyor / Back
+        this.addToMap(this.statusBar); //statusbar ekledik
+        this.ctx.translate(this.camera_x, 0); //kamerayi sola dogru kaydirmayi tekrar yaptiriyor / Forwards
+
+
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.enemies);
@@ -48,19 +65,27 @@ class World {
 
         addToMap(mo) {
 
-            //ilk If alaninda elementlerin hepsini tersine döndürüyoruz
             if(mo.otherDirection) { //objectimiz yönünü degistirmis mi bakiyoruz. evetse
-                this.ctx.save();//aktüel özellikleri kaydediyoruz.
-                this.ctx.translate(mo.width,0); //Burasi karakteri döndürünce ayni yerde kalip döndürüyor. Ileriye gidip dönmesini engelliyor
-                this.ctx.scale(-1, 1); //y achse da döndürüyoruz. Yoksa karakter en bastan yürümeye basliyor 
-                mo.x = mo.x * -1; // x kordinati döndürüyoruz. YOksa karakter dönüyor sola gitsin istiyoruz ama saga geri geri gidiyor
+                this.flipImage(mo);
+                 }
+            mo.draw(this.ctx);
+            mo.drawFrame(this.ctx);
+
+            if(mo.otherDirection) { 
+               this.flipImageBack(mo);
             }
-            
-            this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height); //döndürülmüs ekliyor resmi
-            
-            if(mo.otherDirection) { //Burada da geriye dönmüs bütün elementleri eski haline getiriyoruz
-                mo.x = mo.x * -1; 
+        }
+
+        flipImage(mo) {  // elementlerin hepsini tersine döndürüyoruz
+            this.ctx.save();//aktüel özellikleri kaydediyoruz.
+            this.ctx.translate(mo.width,0); //Burasi karakteri döndürünce ayni yerde kalip döndürüyor. Ileriye gidip dönmesini engelliyor
+            this.ctx.scale(-1, 1); //y achse da döndürüyoruz. Yoksa karakter en bastan yürümeye basliyor 
+            mo.x = mo.x * -1; // x kordinati döndürüyoruz. YOksa karakter dönüyor sola gitsin istiyoruz ama saga geri geri gidiyor
+          
+        }
+
+        flipImageBack(mo) { //Burada da geriye dönmüs bütün elementleri eski haline getiriyoruz
+             mo.x = mo.x * -1; 
                 this.ctx.restore();
-            }
         }
     }
