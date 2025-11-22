@@ -23,8 +23,13 @@ class MovableObject extends DrawableObject {
     }
 
     isAboveGround() {
+        if(this instanceof ThrowableObject) {
+            return true;    
+        } else {
         return this.y < 150// Karakterin düstükten sonra nerede durmasi gerektigi yer
+         }
     }
+
 
     //Collision Detection/Carpisma Tespiti
     isColliding(mo) {
