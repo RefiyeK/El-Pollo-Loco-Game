@@ -28,12 +28,19 @@ class Chicken extends MovableObject {
    
 
   animate() {
-        setInterval( () => { //tavuk görünür görünmez dünyada animate fonksiyonunu üstleniyor.
-            this.moveLeft(); //saniyede 60 kere sola hareket etsin.
+        setInterval( () => {
+            // Oyun başladıysa ve pause değilse hareket et
+           if (gameState.started && !gameState.paused) {
+                this.moveLeft(); //saniyede 60 kere sola hareket etsin.
+             this.otherDirection = false;
+            }
         },1000 / 60); //ne kadar sik tekrarlamasi gerektigi. 0.15px eksiltme 1 dk da 60 kez gerceklesiyor.
-
+            
         setInterval (() => {
+            // Oyun başladıysa ve pause değilse animasyon oynat
+            if (gameState.started && !gameState.paused) {
             this.playAnimation(this.IMAGES_WALKING);
+            }
         }, 200);
     }
 }

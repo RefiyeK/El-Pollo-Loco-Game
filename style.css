@@ -45,6 +45,66 @@ h2 {
     letter-spacing: 2px;
 }
 
+#controlPanel {
+    margin-bottom: 20px;
+}
+
+#controlPanel button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    background-color: #ff6b00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#controlPanel button:hover {
+    background-color: #445a00;
+}
+
+#gameOverPanel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 1000;
+}
+#gameOverPanel h2 {
+    color: #ff6b00;
+    font-size: 48px;
+    margin-bottom: 30px;
+}
+
+#gameOverPanel button {
+    padding: 15px 30px;
+    font-size: 20px;
+    background-color: #ff6b00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#gameOverPanel button:hover {
+    background-color: #d45a00;
+}
+
+
+
+
+
+
+
+
+
+
+
 /*Smartphones -----*/
 @media only screen and (max-width : 720px) {
     canvas {
