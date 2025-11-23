@@ -13,14 +13,13 @@ let gameState = {
 function init() {
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard);
-    
-    console.log('My Character is', world.character); //Karakterim hareket eden bir karakter
+   
     setupButtonListeners(); //Butonlari etkinlestir
 
-    // Butonlar yüklenene kadar bekle
-    setTimeout(function() {
-        setupButtonListeners();
-    }, 100);
+    // // Butonlar yüklenene kadar bekle
+    // setTimeout(function() {
+    //     setupButtonListeners();
+    // }, 100);
     
 }
 
@@ -77,6 +76,44 @@ window.addEventListener("keyup", (e) => {
 // ===== BUTON İŞLEVLERİ =====
 function setupButtonListeners() {
 
+    document.getElementById('playBtn').addEventListener('click', function() {
+        document.getElementById('homeScreen').style.display = 'none'; // Ana sayfa panelini gizle
+        gameState.started = true; //oyunu baslatir ve hersey hareket etmeye baslar
+    });
+
+    //TON AN Butonu (Ana Sayfa)
+    document.getElementById('soundBtn').addEventListener('click', function() {
+        gameState.musicOn = !gameState.musicOn; //müzik durumunu tersine cevirir aciksa kapat/kapaliysa ac
+
+        if(gameState.musicOn) { //Müzik aciksa 
+            document.getElementById('soundBtn').textContent = 'TON AN'; //buton yazisi böyle olsun
+        } else { //aksi takdirde
+            document.getElementById('soundBtn').textContent = 'TON AUS'; //böyle yaz
+        }
+    });
+
+    //VOLLBILD Butonu (Ana Sayfa)
+    document.getElementById('fullscreenBtn').addEventListener('click', function() {
+        let elem = document.documentElement; //sayfanin en dis kismini al /documentElement
+        if(elem.requestFullscreen) { //Tam ekran moduna gir
+            elem.requestFullscreen(); //sayfayi tam ekranda göster
+        }
+    });
+
+    document.getElementById('homeBtn').addEventListener('click', function() {
+        // Oyun durumunu sıfırla
+        gameState.started = false;
+        gameState.paused = false;
+        gameState.gameOver = false;
+        gameState.musicOn = true;
+
+        //GAME OVER panelini kapat
+        document.getElementById('gameOverPanel').style.display = 'none';
+
+        //sayfayi yenile
+        location.reload();
+    });
+
     // START Butonu. Burasi oyunu yeiden baslatan butonun yeri
     document.getElementById('startBtn').addEventListener('click', function() {
         if (!gameState.started) {
@@ -90,7 +127,7 @@ function setupButtonListeners() {
             gameState.paused = !gameState.paused;
             
             if (gameState.paused) {
-                document.getElementById('pauseBtn').textContent = 'DEVAM ET';
+                document.getElementById('pauseBtn').textContent = 'WEITER';
             } else {
                 document.getElementById('pauseBtn').textContent = 'PAUSE';
             }
@@ -112,4 +149,6 @@ function setupButtonListeners() {
     document.getElementById('restartBtn').addEventListener('click', function() {
         location.reload(); // Sayfayı yenile (oyunu baştan başlat)
     });
+
+    
 }

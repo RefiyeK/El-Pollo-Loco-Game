@@ -24,8 +24,12 @@ class Endboss extends MovableObject {
     }
 
     animate() {
+        let i = 0 //burasi YENi
         setInterval( () => {
+            if(i < 10) { //Burasi yeni
             this.playAnimation(this.IMAGES_WALKING);
+            } //Burasi yeni
+            i++; //BURASI YENI
         }, 200);
     }
 }

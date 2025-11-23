@@ -20,7 +20,7 @@ class DrawableObject {
     
     drawFrame(ctx) {
         //Sadece ana karakter Pepe ve tavuk icin gecerli olan özel bir kural. 
-        if(this instanceof Character || this instanceof Chicken) { // Etrafina yerlestirmis oldugumuz cerceve sadece ana karakterde ve tavuklarda var.
+        if(this instanceof Character || this instanceof Chicken || this instanceof ChickenBaby) { // Etrafina yerlestirmis oldugumuz cerceve sadece ana karakterde ve tavuklarda var.
         //alttaki alan cercevenin olusturuldugu bölüm
             ctx.beginPath();
             ctx.lineWidth = '5';

@@ -25,6 +25,10 @@ class World {
         setInterval(() => {
          this.checkCollisions();
          this.checkThrowObjects();
+
+         if(gameState.gameOver) {
+            this.showGameOver();
+         }
         }, 200);    
     }
 
@@ -36,13 +40,51 @@ class World {
     }
 
     checkCollisions() {
+
+        // if(gameState.gameOver){// Eğer oyun zaten bitiyse,yani karakterin cani kalmadiysa çarpışma kontrolü yapma
+        //     return;
+        // }
+
         this.level.enemies.forEach( (enemy) => {
             if(this.character.isColliding(enemy) ) {
-            this.character.hit(); //hit te karakterin kaybettigi can orani belirli
-            this.statusBar.setPercentage(this.character.energy);
-           }
+                this.character.hit(); //hit te karakterin kaybettigi can orani belirli
+                this.statusBar.setPercentage(this.character.energy);
+                
+            if(this.character.isDead()) { //karakter öldügünde
+                gameState.gameOver = true; //Oyun bitti veriyoruz
+                }        
+            }
         });
+
+        //Tavuk civciv ziplama
+        this.level.enemies.forEach((enemy) => { //tüm düsmanlari tek tek kontrol et
+            if(enemy.isDead) { //düsman öldüyse kontrol etme
+                return;
+            }
+
+        //Hepsi dogru olmali =Karakter havada mi? = Karakter iniste mi? = Düsmana carpti mi?
+        if(this.character.isAboveGround() && 
+            this.character.speedY < 0 && 
+            this.character.isColliding(enemy)) {
+            enemy.isDead = true; //düsman öldür
+            
+            let index = this.level.enemies.indexOf(enemy); //düsmani arrayda ara bul
+            if(index > -1) {
+                this.level.enemies.splice(index,1); //arrayden cikart
+            }
+
+            //karakteri biraz yukari atla. Ziplamis gibi görünsün
+            this.character.speedY = 15;
+        }
+        });
+
+
     }
+
+
+
+
+
 
     draw() { //
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -101,4 +143,17 @@ class World {
              mo.x = mo.x * -1; 
                 this.ctx.restore();
         }
+
+        showGameOver() {
+            document.getElementById('gameOverPanel').style.display = 'block';
+
+            //bosluk yerin %20 ünlem yerine de %21 yazdik
+            document.getElementById('gameOverImage').src = 'img/9_intro_outro_screens/game_over/oh%20no%20you%20lost%21.png';
+            document.getElementById('gameOverText').textContent = 'DU HAST VERLOREN!';
+    
+            // Oyunu durdur
+            gameState.paused = true;
+        }
+
     }
+ 

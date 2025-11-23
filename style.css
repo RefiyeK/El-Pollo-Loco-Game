@@ -74,7 +74,9 @@ h2 {
     border-radius: 10px;
     text-align: center;
     z-index: 1000;
+    display: none;
 }
+
 #gameOverPanel h2 {
     color: #ff6b00;
     font-size: 48px;
@@ -95,6 +97,52 @@ h2 {
     background-color: #d45a00;
 }
 
+#gameOverImage {
+    width: 300px;
+    margin-bottom: 20px;
+}
+
+#homeScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+#homeScreenImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+}
+
+#homeScreenButtons {
+    position: relative;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#homeScreenButtons button {
+    padding: 15px 40px;
+    font-size: 18px;
+    background-color: rgba(255, 107, 0, 0.9);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#homeScreenButtons button:hover {
+    background-color: rgba(212, 90, 0, 0.9);
+}
 
 
 

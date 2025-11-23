@@ -9,6 +9,7 @@
     <script src="./models/movable-object.class.js"></script>
     <script src="./models/character.class.js"></script>
     <script src="./models/chicken.class.js"></script>
+    <script src="./models/chickenbaby.class.js"></script>
     <script src="./models/cloud.class.js"></script>
     <script src="./models/status-bar.class.js"></script>
     <script src="./models/world.class.js"></script> 
@@ -24,15 +25,27 @@
     
     <h1>El Pollo Loco</h1>
 
+    <div id="homeScreen">
+        <img id="homeScreenImage" src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="Home Screen">
+        <div id="homeScreenButtons">
+            <button id="playBtn">SPIELEN</button>
+            <button id="soundBtn">TON AN</button>
+            <button id="fullscreenBtn">VOLLBILD</button>
+        </div>
+    </div>
+
     <div id="controlPanel">
         <button id="startBtn">START</button>
         <button id="pauseBtn">PAUSE</button>
         <button id="musicBtn">MUSIK AN</button>
     </div>
     <canvas id="canvas" width="720" height="480"></canvas>
+
     <div id="gameOverPanel" style="display: none;">
-        <h2>Viel Spaß beim Spielen</h2>
+        <img id="gameOverImage" src="" alt="Game Over">
+            <h2 id="gameOverText"></h2>
         <button id="restartBtn">NOCHMAL SPIELEN</button>
+        <button id="homeBtn">HAUPTSEITE</button>
     </div>
 
 </body>

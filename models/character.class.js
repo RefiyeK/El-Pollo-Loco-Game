@@ -73,8 +73,7 @@ class Character extends MovableObject{
                 //BURAYA YÜRÜRKEN CIKARMASI GEREK MÜZIK this.walking_sound.play(); GELMELI!!!!!
             }
             
-            if
-            (this.world.keyboard.UP && !this.isAboveGround() || this.world.keyboard.SPACE && !this.isAboveGround()){ //Yukari tusuna bastigimizda ve havada degilse
+            if(this.world.keyboard.UP && !this.isAboveGround() || this.world.keyboard.SPACE && !this.isAboveGround()){ //Yukari tusuna bastigimizda ve havada degilse
                 this.jump(); //movable icinde belirledigimiz ne kadar yukari ziplasin`i burada cagirmis olduk.
             }
 
@@ -102,4 +101,8 @@ class Character extends MovableObject{
     jump() {
         this.speedY = 25; //ne kadar yüksege ziplayacagi belirli
     }
+
+    isDead () {
+        return this.energy <= 0;
+    } 
 }
