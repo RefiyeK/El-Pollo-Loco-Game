@@ -1,9 +1,70 @@
 body {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    flex-direction: column;
+    min-height: 80vh;
+    margin: 0;
+    background-image: url('./img/hintergrund_img/wueste.png');
+    background-position: center;
 }
 
 canvas {
     background-color: black;
+    display: block;
+}
+
+@font-face {
+    font-family: 'BangersFont';
+    src: url(./fonts/bangers/bangers-v25-latin-regular.woff2) format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'merriweather';
+    src: url(./fonts/merriweather_woff/Merriweather_24pt_SemiCondensed-Regular.woff) format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1 {
+    font-family: 'BangersFont', Arial, Helvetica, sans-serif;
+    font-size: 64px;
+    color: #ffffff;
+    text-shadow: 3px 3px 0px #6B2D2D;
+    letter-spacing: 6px;
+}
+
+h2 {
+    font-family:'merriweather', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 32px;
+    color: #ffffff;
+    text-shadow: 3px 3px 0px #6B2D2D;
+    letter-spacing: 2px;
+}
+
+/*Smartphones -----*/
+@media only screen and (max-width : 720px) {
+    canvas {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-height: 480px) {
+    
+    body {
+        min-height: 0;
+        padding: 0;
+        margin: 0;
+    }
+    canvas {
+        height: 100vh;
+    }
+    h1 {
+        display: none;
+    }
+    h2 {display: none;
+    }
 }
