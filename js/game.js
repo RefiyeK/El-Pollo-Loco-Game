@@ -6,6 +6,7 @@ let gameState = {
     started : false,// Oyun başladı mı?
     paused : false,// Oyun duraklatıldı mı?
     gameOver : false,// Oyun bitti mi?
+    won : false,//oyuncu kazandi mi?
     musicOn : true,// Müzik açık mı?
 };
 
@@ -77,7 +78,7 @@ window.addEventListener("keyup", (e) => {
 function setupButtonListeners() {
 
     document.getElementById('playBtn').addEventListener('click', function() {
-        document.getElementById('homeScreen').style.display = 'none'; // Ana sayfa panelini gizle
+    document.getElementById('homeScreen').style.display = 'none'; // Ana sayfa panelini gizle
         gameState.started = true; //oyunu baslatir ve hersey hareket etmeye baslar
     });
 
@@ -105,13 +106,23 @@ function setupButtonListeners() {
         gameState.started = false;
         gameState.paused = false;
         gameState.gameOver = false;
+        gameState.won = false;
         gameState.musicOn = true;
 
-        //GAME OVER panelini kapat
-        document.getElementById('gameOverPanel').style.display = 'none';
+            //PANELLERI DÜZENLE
+        document.getElementById('gameOverPanel').style.display = 'none'; //GAME OVER panelini kapat
+        // document.getElementById('homeScreen').style.display = 'flex'; //Ana sayfayi göster
 
-        //sayfayi yenile
-        location.reload();
+            //GAMEOVER IVERIGINI TEMIZLE
+        document.getElementById('gameOverText').textContent = ''; //mesaji sil
+        document.getElementById('gameOverImage').src = ''; //resmi sil
+
+        document.getElementById('homeScreen').style.display = 'flex';//anasayfa göster
+
+            //KONTROL BUTONLARINI GIZLE
+        document.getElementById('startBtn').style.display = 'none'; //Start butonunu izle
+        document.getElementById('pauseBtn').style.display = 'none'; //Ara ver butonunu gizle
+        document.getElementById('musicBtn').style.display = 'none'; //Müzik butonunu gizle
     });
 
     // START Butonu. Burasi oyunu yeiden baslatan butonun yeri
@@ -147,6 +158,22 @@ function setupButtonListeners() {
     
     // NOCHMAL SPIELEN Butonu. Sayfayi yenileyerek oyunun bastan baslatir
     document.getElementById('restartBtn').addEventListener('click', function() {
+        
+    
+        gameState.started = false; //oyun baslamadi
+        gameState.paused = false; // durdurulmadi
+        gameState.gameOver = false; //oyun bitmedi
+        gameState.won = false; //kazanmadi
+        gameState.musicOn = true; //müzik acik
+
+                //PANELLERI DÜZENLE
+        document.getElementById('gameOverPanel').style.display = 'none'; //Game Over panelini kapat
+        document.getElementById('homeScreen').style.display = 'none'; //Ana sayfa paneli gizlenir, oyun canvasi görünür
+        
+                //KONTROL BUTONLARI GÖRÜNSÜN
+        document.getElementById('startBtn').style.display = 'block'; //Star butonu görünsün
+        document.getElementById('pauseBtn').style.display = 'block'; //ara verme butonu görünsün
+        document.getElementById('musicBtn').style.display = 'block'; //müzik butonu görünsün
         location.reload(); // Sayfayı yenile (oyunu baştan başlat)
     });
 

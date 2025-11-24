@@ -52,7 +52,7 @@ class Chicken extends MovableObject {
                 } else { //aksi takdirde
                     this.playAnimation(this.IMAGES_WALKING); //yürüyüs görseline devam
                 }
-            }
+            }    
         }, 200);
     }
 }

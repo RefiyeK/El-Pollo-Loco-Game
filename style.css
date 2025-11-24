@@ -77,10 +77,15 @@ h2 {
     display: none;
 }
 
+#gameOverPanel.show{
+    display: block;
+}
+
 #gameOverPanel h2 {
     color: #ff6b00;
     font-size: 48px;
     margin-bottom: 30px;
+   
 }
 
 #gameOverPanel button {
@@ -112,6 +117,7 @@ h2 {
     justify-content: center;
     align-items: center;
     z-index: 999;
+    display: none;
 }
 
 #homeScreenImage {

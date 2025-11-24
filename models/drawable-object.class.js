@@ -13,8 +13,10 @@ class DrawableObject {
         this.img.src = path;
     }
     
-    draw(ctx) {
+    draw(ctx) { //Eger görsel yüklenmemisse, cizme
+        if(this.img) {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height); //döndürülmüs ekliyor resmi
+        }
     }
 
     

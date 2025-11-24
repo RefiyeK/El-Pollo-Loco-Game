@@ -11,7 +11,7 @@ offset = {
     top : 10, //üst carpisma
     bottom : 10, //alt carpisma
     left : 5, //sol carpisma
-    rifht : 5, //sag carpisma
+    right : 5, //sag carpisma
 }
 
 //civciv yürüyüs görselleri
@@ -49,11 +49,11 @@ animate() {
     setInterval(() => {
         if(gameState.started && !gameState.paused) { //oyun basladiysa ve ara verilmediginde
             if(this.isDead) { //civciv ölüyse
-                this.playAnimation(tjis.IMAGES_DEAD);//ölü görseli göster
+                this.playAnimation(this.IMAGES_DEAD);//ölü görseli göster
             } else { // aksi taktirde
             this.playAnimation(this.IMAGES_WALKING); //yürüyüs animasyonuna devam et
             }
-        }
+        }    
     }, 200); //her 200 ms da görseli degistir
 }
 

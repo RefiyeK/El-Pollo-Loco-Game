@@ -19,12 +19,16 @@ class World {
 
     setWorld() {
         this.character.world = this;
+        this.level.enemies[6].world = this;
     }
 
     run() {
         setInterval(() => {
-         this.checkCollisions();
-         this.checkThrowObjects();
+        if(!gameState.paused) { //oyuna ara verilmemisse carpismayi kontrol et
+             this.checkCollisions();
+             this.checkThrowObjects();
+             this
+        }
 
          if(gameState.gameOver) {
             this.showGameOver();
@@ -41,28 +45,16 @@ class World {
 
     checkCollisions() {
 
-        // if(gameState.gameOver){// Eğer oyun zaten bitiyse,yani karakterin cani kalmadiysa çarpışma kontrolü yapma
-        //     return;
-        // }
-
+            //TAVUK-CIVCIV ZIPLAMA (Jump Attack)
         this.level.enemies.forEach( (enemy) => {
-            if(this.character.isColliding(enemy) ) {
-                this.character.hit(); //hit te karakterin kaybettigi can orani belirli
-                this.statusBar.setPercentage(this.character.energy);
-                
-            if(this.character.isDead()) { //karakter öldügünde
-                gameState.gameOver = true; //Oyun bitti veriyoruz
-                }        
-            }
-        });
 
-        //Tavuk civciv ziplama
-        this.level.enemies.forEach((enemy) => { //tüm düsmanlari tek tek kontrol et
-            if(enemy.isDead) { //düsman öldüyse kontrol etme
-                return;
+            if(enemy instanceof Endboss) { //Büyük tavuk a ziplama uygulanmasin
+                return; // Endboss'u atla, devam etme
             }
-
-        //Hepsi dogru olmali =Karakter havada mi? = Karakter iniste mi? = Düsmana carpti mi?
+            if(enemy.isDead) { //Eger düsman öldüyse kontrol etme
+             return;
+            }        
+          //Hepsi dogru olmali =Karakter havada mi? = Karakter iniste mi? = Düsmana carpti mi?
         if(this.character.isAboveGround() && 
             this.character.speedY < 0 && 
             this.character.isColliding(enemy)) {
@@ -72,17 +64,25 @@ class World {
             if(index > -1) {
                 this.level.enemies.splice(index,1); //arrayden cikart
             }
-
             //karakteri biraz yukari atla. Ziplamis gibi görünsün
             this.character.speedY = 15;
         }
+    });
+            
+        
+        this.level.enemies.forEach( (enemy) => {
+
+            //Karakter tavugun/civcivin üzerine zipladi mi?
+            if(this.character.isColliding(enemy) ) { 
+                this.character.hit(); //hit te karakterin kaybettigi can orani belirli
+                this.statusBar.setPercentage(this.character.energy);
+                
+            if(this.character.isDead()) { //karakter öldügünde
+                gameState.gameOver = true; //Oyun bitti veriyoruz
+                }        
+            }
         });
-
-
     }
-
-
-
 
 
 
@@ -145,15 +145,40 @@ class World {
         }
 
         showGameOver() {
-            document.getElementById('gameOverPanel').style.display = 'block';
+            //GAME OVER panelini göster
+            document.getElementById('gameOverPanel').classList.add('show');
 
-            //bosluk yerin %20 ünlem yerine de %21 yazdik
-            document.getElementById('gameOverImage').src = 'img/9_intro_outro_screens/game_over/oh%20no%20you%20lost%21.png';
-            document.getElementById('gameOverText').textContent = 'DU HAST VERLOREN!';
-    
+            //Kaybettin mi yoksa kazandin mi kontrol et
+            if(gameState.gameOver && this.character.isDead()) {
+                            //KAYBETTI
+                //bosluk yerine %20, ünlem yerine de %21, virgül yerine %2 yazdik
+                document.getElementById('gameOverImage').src = 'img/You%20won%2C%20you%20lost/You%20lost%20b.png';
+                document.getElementById('gameOverText').textContent = 'DU HAST VERLOREN!';
+            
+            } else if(gameState.won) {
+                // ===== KAZANDI =====
+                ocument.getElementById('gameOverImage').src = 'img/You%20won%2C%20you%20lost/You%20Win%20A.png';
+                document.getElementById('gameOverText').textContent = 'DU HAST GEWONNEN!';
+            }
+
             // Oyunu durdur
             gameState.paused = true;
         }
 
+            //Büyük tavukla sise carpismasi
+        checkBottleCollision() {
+            this.throwableObjects.forEach((bottle) => { //Tüm siseleri kontrol et
+                if(bottle.isColliding(this.level.enemies[6])) {//Sise büyük tavuga carpti mi
+                    bottle.splash(); //Sise kiril
+                    this.level.enemies[6].takeDamage(20); //aldigi hasar 20 olsun
+
+                    let index = this.throwableObjects.indexOf(bottle);
+                    if(index > -1) {
+                        this.throwableObjects.splice(index, 1);
+                    }
+                }
+            });
+        }
+        
+
     }
- 
