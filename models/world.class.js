@@ -27,7 +27,7 @@ class World {
         if(!gameState.paused) { //oyuna ara verilmemisse carpismayi kontrol et
              this.checkCollisions();
              this.checkThrowObjects();
-             this
+             this.checkBottleCollision();
         }
 
          if(gameState.gameOver) {
@@ -180,5 +180,4 @@ class World {
             });
         }
         
-
     }
