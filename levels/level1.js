@@ -116,5 +116,26 @@ const level1 = new Level(
         new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719*13),
         new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719*13),
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719*13)
+    ],
+    [
+        new Coin(500),
+        new Coin(1000),
+        new Coin(1500),
+        new Coin(2500),
+        new Coin(3500),
+        new Coin(4500),
+        new Coin(5500),
+        new Coin(6500)
+    ],
+
+    [
+        new BottlePickup(600),
+        new BottlePickup(1200),
+        new BottlePickup(2000),
+        new BottlePickup(3000),
+        new BottlePickup(4000),
+        new BottlePickup(5000),
+        new BottlePickup(6000)
     ]
+
 );

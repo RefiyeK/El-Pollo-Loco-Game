@@ -1,6 +1,6 @@
 class World {
     character = new Character();
-    level = level1;  
+    level = level1; 
     canvas;
     ctx;
     keyboard;
@@ -94,6 +94,31 @@ class World {
                 }        
             }
         });
+
+        // this.level.coins.forEach((coin) => {
+        //     if(this.character.isColliding(coin)) {
+        //     this.character.collectCoin();
+        //         let index = this.level.coins.indexOf(coin);
+        //         if(index > -1) {
+        //     this.level.coins.splice(index, 1);
+        //         }
+        //     }
+        // });
+
+        // // BOTTLE TOPLANMASI 
+        // this.level.bottles.forEach((bottle) => {
+        //     if(this.character.isColliding(bottle)) {
+        //         if(this.character.bottles < 20) {
+        //             this.character.collectBottle();
+        //             let index = this.level.bottles.indexOf(bottle);
+        //         if(index > -1) {
+        //             this.level.bottles.splice(index, 1);
+        //             }
+        //         }
+        //     }
+        // });
+
+   
     }
 
 
@@ -114,7 +139,8 @@ class World {
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObjects);
-
+        // this.addObjectsToMap(this.level.coins); 
+        // this.addObjectsToMap(this.level.bottles);  
         this.ctx.translate(-this.camera_x, 0);//Burada arka plani daga kaydiriyoruz
        
             
@@ -191,9 +217,11 @@ class World {
             let index = this.throwableObjects.indexOf(bottle);
             if(index > -1) {
                 this.throwableObjects.splice(index, 1);
+                }
             }
-        }
-    });
-        }
-        
+        });
     }
+
+        
+     
+}

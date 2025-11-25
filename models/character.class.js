@@ -5,6 +5,8 @@ class Character extends MovableObject{
     width = 150;
     y = 40;
     speed = 10;
+    coins = 0;
+    bottles = 0;
     
     
 
@@ -104,5 +106,18 @@ class Character extends MovableObject{
 
     isDead () {
         return this.energy <= 0;
-    } 
+    }
+
+    collectBottle() {
+    this.bottles++;
+    console.log('Şişe toplandı! Toplam:', this.bottles);
+    }
+
+    collectCoin() {
+        this.coins++;
+        console.log('Altın toplandı! Toplam:', this.coins);
+    }
+    isHurt() {
+    return new Date().getTime() - this.lastHit < 100;
+    }
 }
