@@ -18,8 +18,14 @@ class World {
     }
 
     setWorld() {
+        
         this.character.world = this;
-        this.level.enemies[6].world = this;
+        // this.level.enemies[6].world = this;
+           this.level.enemies.forEach((enemy) => {//oyundaki tüm düsmanlar.her birini tek tek kontrol et.
+            if(enemy instanceof Endboss) {//Bu bir endboss mu kontrol et.evetse iceri gir hayirsa atla
+                enemy.world = this;//Endbossun world özelligine word sinifini ata
+            }
+        });
     }
 
     run() {
@@ -33,6 +39,12 @@ class World {
          if(gameState.gameOver) {
             this.showGameOver();
          }
+
+            //Endboss öldü mü kontrol et. Öldüyse  (some ile ölüp ölmedigini kontrol ediyoruz)
+         if(this.level.enemies.some(enemy => enemy instanceof Endboss && enemy.isDead)) {
+            gameState.won = true; //oyun kazanildi
+            this.showGameOver();//bu fonksiyonu cagir
+            }
         }, 200);    
     }
 
@@ -146,7 +158,7 @@ class World {
 
         showGameOver() {
             //GAME OVER panelini göster
-            document.getElementById('gameOverPanel').classList.add('show');
+            document.getElementById('gameOverPanel').style.display = 'block';//classList.add('show')
 
             //Kaybettin mi yoksa kazandin mi kontrol et
             if(gameState.gameOver && this.character.isDead()) {
@@ -156,8 +168,8 @@ class World {
                 document.getElementById('gameOverText').textContent = 'DU HAST VERLOREN!';
             
             } else if(gameState.won) {
-                // ===== KAZANDI =====
-                ocument.getElementById('gameOverImage').src = 'img/You%20won%2C%20you%20lost/You%20Win%20A.png';
+                //KAZANDI
+                document.getElementById('gameOverImage').src = 'img/You%20won%2C%20you%20lost/You%20Win%20A.png';
                 document.getElementById('gameOverText').textContent = 'DU HAST GEWONNEN!';
             }
 
@@ -165,19 +177,23 @@ class World {
             gameState.paused = true;
         }
 
+
             //Büyük tavukla sise carpismasi
         checkBottleCollision() {
             this.throwableObjects.forEach((bottle) => { //Tüm siseleri kontrol et
-                if(bottle.isColliding(this.level.enemies[6])) {//Sise büyük tavuga carpti mi
-                    bottle.splash(); //Sise kiril
-                    this.level.enemies[6].takeDamage(20); //aldigi hasar 20 olsun
-
-                    let index = this.throwableObjects.indexOf(bottle);
-                    if(index > -1) {
-                        this.throwableObjects.splice(index, 1);
-                    }
-                }
-            });
+               
+            let endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
+                if(endboss && bottle.isColliding(endboss)) { //Endboss sinifindan olan nesneyi bul, indexe bagli kalma   
+                bottle.splash(); // Şişe kırıl
+                endboss.takeDamage(20); //20 hasar ver 
+            
+             // Şişeyi array'dan çıkart
+            let index = this.throwableObjects.indexOf(bottle);
+            if(index > -1) {
+                this.throwableObjects.splice(index, 1);
+            }
+        }
+    });
         }
         
     }

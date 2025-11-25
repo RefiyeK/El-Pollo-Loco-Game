@@ -107,6 +107,49 @@ h2 {
     margin-bottom: 20px;
 }
 
+#winPanel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 1000;
+    display: none;
+}
+
+#winPanel img {
+    width: 300px;
+    margin-bottom: 20px;
+}
+
+#winPanel h2 {
+    color: #FFD700;
+    font-size: 48px;
+    margin-bottom: 30px;
+}
+
+#winPanel button {
+    padding: 15px 30px;
+    font-size: 20px;
+    background-color: #FFD700;
+    color: black;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+    font-weight: bold;
+}
+
+#winPanel button:hover {
+    background-color: #FFC700;
+}
+
+
+
+
+
 #homeScreen {
     position: fixed;
     top: 0;

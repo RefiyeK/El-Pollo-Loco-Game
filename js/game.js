@@ -111,18 +111,20 @@ function setupButtonListeners() {
 
             //PANELLERI DÜZENLE
         document.getElementById('gameOverPanel').style.display = 'none'; //GAME OVER panelini kapat
-        // document.getElementById('homeScreen').style.display = 'flex'; //Ana sayfayi göster
+        document.getElementById('homeScreen').style.display = 'flex'; //Ana sayfayi göster
 
-            //GAMEOVER IVERIGINI TEMIZLE
+            //GAMEOVER ICERIGINI TEMIZLE
         document.getElementById('gameOverText').textContent = ''; //mesaji sil
         document.getElementById('gameOverImage').src = ''; //resmi sil
 
-        document.getElementById('homeScreen').style.display = 'flex';//anasayfa göster
+        // document.getElementById('homeScreen').style.display = 'flex';//anasayfa göster
 
             //KONTROL BUTONLARINI GIZLE
-        document.getElementById('startBtn').style.display = 'none'; //Start butonunu izle
-        document.getElementById('pauseBtn').style.display = 'none'; //Ara ver butonunu gizle
-        document.getElementById('musicBtn').style.display = 'none'; //Müzik butonunu gizle
+        document.getElementById('startBtn').style.display = 'block'; //Start butonunu gizle
+        document.getElementById('pauseBtn').style.display = 'block'; //Ara ver butonunu gizle
+        document.getElementById('musicBtn').style.display = 'block'; //Müzik butonunu gizle
+
+        location.reload(); //sayfayi yenile
     });
 
     // START Butonu. Burasi oyunu yeiden baslatan butonun yeri
@@ -158,7 +160,6 @@ function setupButtonListeners() {
     
     // NOCHMAL SPIELEN Butonu. Sayfayi yenileyerek oyunun bastan baslatir
     document.getElementById('restartBtn').addEventListener('click', function() {
-        
     
         gameState.started = false; //oyun baslamadi
         gameState.paused = false; // durdurulmadi

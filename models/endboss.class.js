@@ -57,38 +57,48 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
-        this.x = 7400;
+        this.x = 600; //tavugun olmasi gerektigi uzakli sonradan 7400 yap
         this.animate();
     }
 
-    animate() {
-        setInterval( () => { 
-            //Her 200 ms`de görseli degistir
-            if(this.isDead) { //büyük tavuk öldüyse ölüm animasyonu oynat
-                this.playAnimation(this.IMAGES_DEAD);
-            }else if (this.isHurt) { //eger büyük tavuk yaralandiysa, yaralanma animasyonunu oynat
-                this.playAnimation(this.IMAGES_HURT);
-            }else if (this.checkIfCharacterInRange()) { //Karakter yakinlasmissa alert animasyonuna gec
-                this.playAnimation(this.IMAGES_ALERT);
-            } else {    //ölü degilse normal animasyonu oynat
-                this.playAnimation(this.IMAGES_WALKING);
+   animate() {
+    // ===== HER 200MS'DE GÖRSELİ DEĞİŞTİR =====
+    setInterval(() => {
+        if(this.isDead) {// Ölüm animasyonunu oynat (bitene kadar)
+            this.playAnimation(this.IMAGES_DEAD);
+            
+            // Animasyon bittikten sonra son görselde kal
+            if(this.currentImage >= this.IMAGES_DEAD.length) {
+                this.currentImage = this.IMAGES_DEAD.length - 1;
             }
-        }, 200);
-
-        setInterval(() => {
-            if(gameState.started && !gameState.paused) { //oyun basladiysa VE ara verilmediyse
-                if(!this.isDead) { //Büyük tavuk ölmediyse
-                    if(!this.checkIfCharacterInRange()) { //Karakter yakinda degilse
-                        this.moveLeft();//sola dogru yürü
-                        }
-                    }
+        }
+        else if(this.isHurt) {
+            this.playAnimation(this.IMAGES_HURT);
+        }
+        else if(this.checkIfCharacterInRange()) {
+            this.playAnimation(this.IMAGES_ALERT);
+        }
+        else {
+            this.playAnimation(this.IMAGES_WALKING);
+        }
+    }, 200);
+    
+    setInterval(() => {
+         if(gameState.started && !gameState.paused) {
+            if(!this.isDead) {
+                if(!this.checkIfCharacterInRange()) {
+                    this.moveLeft();
+                }
             }
-        }, 1000 / 60); //dakikada 60 kez hareket et
+         }    
+    }, 1000 / 60);
+    
+    //HER 500MS'DE YARALANMA KONTROL ET
+    setInterval(() => {
+        this.checkIfHurt();
+    }, 500);
+}
 
-        setInterval(() => {
-            this.CheckIhHurt(); //Eger yaralanma efekti bittiyse, false yap
-        }, 500);
-    }
 
 
     //Büyük tavuk hasar almasi
@@ -106,7 +116,7 @@ class Endboss extends MovableObject {
         }
     }
 
-    CheckIhHurt() {
+    checkIfHurt() {
         // suanki zaman - en son hit zamani = 100ms dan büyükse 
         if(new Date().getTime() - this.lastHit > 100) {
             this.isHurt = false; //yaralanma efektini bitir

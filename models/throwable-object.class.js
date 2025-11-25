@@ -46,7 +46,7 @@ class ThrowableObject extends MovableObject {
             if(this.isSplashed) { //Sise kirildiysa splash animasyonu
                 this.playAnimation(this.IMAGES_SPLASH);
             } else { //sise kirilmadiysa dönerken görseli göster
-                this.playAnimation(this,this.IMAGES_ROTATION);
+                this.playAnimation(this.IMAGES_ROTATION);
             }
         }, 100);
     }
