@@ -6,12 +6,17 @@ class World {
     keyboard;
     camera_x = 0; //Burada arka planin ilerledikce kaymasini söylüyoruz
     statusBar = new StatusBar();
+    coinStatusBar = new CoinStatusBar(230, 0); //tam yerini gösteriyor
+    bossStatusBar = new BossStatusBar();
     throwableObjects = [];
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.statusBar = new StatusBar(); //Karakter can göstergesi
+        this.coinStatusBar = new CoinStatusBar(230, 0); //Coin göstergesi
+        this.bossStatusBar = new BossStatusBar(); //Boss can göstergesi
         this.setWorld();
         this.draw();
         this.run();
@@ -20,7 +25,6 @@ class World {
     setWorld() {
         
         this.character.world = this;
-        // this.level.enemies[6].world = this;
            this.level.enemies.forEach((enemy) => {//oyundaki tüm düsmanlar.her birini tek tek kontrol et.
             if(enemy instanceof Endboss) {//Bu bir endboss mu kontrol et.evetse iceri gir hayirsa atla
                 enemy.world = this;//Endbossun world özelligine word sinifini ata
@@ -28,7 +32,8 @@ class World {
         });
     }
 
-    run() {
+    run() {//Bu metot, her 200 milisaniyede bir çalışan (yani yavaş bir) mantık döngüsüdür. 
+    // Çarpışmaları, şişe fırlatmayı ve kazanma/kaybetme durumlarını kontrol eder. Bu metot, ekrana hiçbir şey çizmez.
         setInterval(() => {
         if(!gameState.paused) { //oyuna ara verilmemisse carpismayi kontrol et
              this.checkCollisions();
@@ -79,6 +84,17 @@ class World {
             //karakteri biraz yukari atla. Ziplamis gibi görünsün
             this.character.speedY = 15;
         }
+
+        this.level.coins.forEach((coin) => {
+            if(this.character.isColliding(coin)) {
+                this.character.collectCoin(); //Altin sayisini artir
+                this.coinStatusBar.setPercentage(this.character.coins); //Göstergeyi güncelle
+                let index = this.level.coins.indexOf(coin);
+                if(index > -1) {
+                    this.level.coins.splice(index, 1); //Altini arraydan sil
+                }
+            }
+        });
     });
             
         
@@ -94,57 +110,29 @@ class World {
                 }        
             }
         });
-
-        // this.level.coins.forEach((coin) => {
-        //     if(this.character.isColliding(coin)) {
-        //     this.character.collectCoin();
-        //         let index = this.level.coins.indexOf(coin);
-        //         if(index > -1) {
-        //     this.level.coins.splice(index, 1);
-        //         }
-        //     }
-        // });
-
-        // // BOTTLE TOPLANMASI 
-        // this.level.bottles.forEach((bottle) => {
-        //     if(this.character.isColliding(bottle)) {
-        //         if(this.character.bottles < 20) {
-        //             this.character.collectBottle();
-        //             let index = this.level.bottles.indexOf(bottle);
-        //         if(index > -1) {
-        //             this.level.bottles.splice(index, 1);
-        //             }
-        //         }
-        //     }
-        // });
-
-   
     }
 
 
 
     draw() { //
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); //canvasi temizle
         
-        this.ctx.translate(this.camera_x, 0); //kamerayi sola dogru kaydiriyor
+        this.ctx.translate(this.camera_x, 0); //Kamerayi karakter ile birlikte hareket ettir
         this.addObjectsToMap(this.level.backgroundObjects);
-
-        //Burada can göstergesinin devamli üst kösede kalmasini sagladik. Yani fixledik
-        this.ctx.translate(-this.camera_x, 0); //kamerayi sola kaydirmayi geri aliyor / Back
-        this.addToMap(this.statusBar); //statusbar ekledik
-        this.ctx.translate(this.camera_x, 0); //kamerayi sola dogru kaydirmayi tekrar yaptiriyor / Forwards
-
-
-        this.addToMap(this.character);
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObjects);
-        // this.addObjectsToMap(this.level.coins); 
-        // this.addObjectsToMap(this.level.bottles);  
-        this.ctx.translate(-this.camera_x, 0);//Burada arka plani daga kaydiriyoruz
+        this.addToMap(this.character);
+        this.addObjectsToMap(this.level.coins); 
+        this.addObjectsToMap(this.level.bottles);  
+        this.ctx.translate(-this.camera_x, 0);//Kamera kaydirma islemini geri al(kaydirma) status barlar sabit kalsin
+        
+        this.addToMap(this.statusBar); //Karakter can göstergesi
+        this.addToMap(this.coinStatusBar);//coin göstergesi
+        this.addToMap(this.bossStatusBar);//Bos can göstergesi
        
             
-        let self = this; //Draw() wird immer wieder aufgerufen
+        let self = this; //Draw() wird immer wieder aufgerufen (fonksiyonu tekrar cagirir)
             requestAnimationFrame(function() { //buraya bir funktion vermemiz gerekiyor. Yukaridaki olur olmaz isleme geciyor.
                 self.draw(); //burada this calismadigi icin böyle yazip hemen yukarida belirtiyoruz.
             });
@@ -206,15 +194,15 @@ class World {
 
             //Büyük tavukla sise carpismasi
         checkBottleCollision() {
-            this.throwableObjects.forEach((bottle) => { //Tüm siseleri kontrol et
+            this.throwableObjects.forEach((bottle) => { //Tüm firlatilan siseleri kontrol et
                
-            let endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
-                if(endboss && bottle.isColliding(endboss)) { //Endboss sinifindan olan nesneyi bul, indexe bagli kalma   
-                bottle.splash(); // Şişe kırıl
-                endboss.takeDamage(20); //20 hasar ver 
+            let endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);//düsmanlar arasindan endboss u bul
+                if(endboss && bottle.isColliding(endboss)) { //Eger endboss varsa ve sise endboss`a carptiysa   
+                bottle.splash(); // Şişeyi kir
+                endboss.takeDamage(20); //Endbossà 20 hasar ver
+                this.bossStatusBar.setPercentage(endboss.health); //Boss can cubugunu güncelle
             
-             // Şişeyi array'dan çıkart
-            let index = this.throwableObjects.indexOf(bottle);
+            let index = this.throwableObjects.indexOf(bottle); //Siseyi array`dan cikart(artik yok olsun)
             if(index > -1) {
                 this.throwableObjects.splice(index, 1);
                 }

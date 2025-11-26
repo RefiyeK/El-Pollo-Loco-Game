@@ -7,6 +7,7 @@ class Character extends MovableObject{
     speed = 10;
     coins = 0;
     bottles = 0;
+    maxCoins = 50; //toplanacak maximum altin sayisi
     
     
 
@@ -104,20 +105,13 @@ class Character extends MovableObject{
         this.speedY = 25; //ne kadar yüksege ziplayacagi belirli
     }
 
-    isDead () {
-        return this.energy <= 0;
+    collectCoin() { //Altin mantigi maksimum sinira ulasmadiysa toplar
+        if(this.coins < this.maxCoins) { //Maksimum sinira ulasmadiysa
+            this.coins += 1; //Altin sayisini 1 arttir
+        } 
     }
 
     collectBottle() {
     this.bottles++;
-    console.log('Şişe toplandı! Toplam:', this.bottles);
-    }
-
-    collectCoin() {
-        this.coins++;
-        console.log('Altın toplandı! Toplam:', this.coins);
-    }
-    isHurt() {
-    return new Date().getTime() - this.lastHit < 100;
     }
 }

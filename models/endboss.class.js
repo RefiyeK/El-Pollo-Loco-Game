@@ -57,7 +57,7 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
-        this.x = 600; //tavugun olmasi gerektigi uzakli sonradan 7400 yap
+        this.x = 7400; //tavugun olmasi gerektigi uzakli sonradan 7400 yap
         this.animate();
     }
 

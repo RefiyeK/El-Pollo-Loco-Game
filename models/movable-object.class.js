@@ -18,21 +18,22 @@ class MovableObject extends DrawableObject {
     }
 
     isAboveGround() {
-        if(this instanceof ThrowableObject) {
+        if(this instanceof ThrowableObject) { // Eğer fırlatılabilir bir nesneyse (örneğin şişe), her zaman yerin üstündedir
             return true;    
-        } else {
-        return this.y < 150// Karakterin düstükten sonra nerede durmasi gerektigi yer
+        } 
+        if(this instanceof Coin) {
+        return this.y < 150// Belirli bir yükseklikten (zemin) yukarıda olup olmadığını kontrol eder.
          }
+         return this.y < 150 // Karakterin düştükten sonra nerede durmasi gerektigi yer
     }
 
-
-    //Collision Detection/Carpisma Tespiti
     isColliding(mo) {
-        return this.x + this.width > mo.x &&
-            this.y + this.height > mo.y &&
-            this.x < mo.x &&
-            this.y < mo.y + mo.height;
+        return this.x + this.width > mo.x && // 'Bu' nesnenin sağ kenarı, 'mo' nesnesinin sol kenarını geçti mi?
+            this.x < mo.x + mo.width && // 'Bu' nesnenin sol kenarı, 'mo' nesnesinin sağ kenarından önce mi?
+            this.y + this.height > mo.y && // 'Bu' nesnenin alt kenarı, 'mo' nesnesinin üst kenarını geçti mi?
+            this.y < mo.y + mo.height; // 'Bu' nesnenin üst kenarı, 'mo' nesnesinin alt kenarından önce mi?
     }
+
 
     hit() { //Karakterin ne kadar neerji/can kaybettigini belirliyor
         this.energy -= 5; //ne kadar can kaybettigi yazili
@@ -41,8 +42,7 @@ class MovableObject extends DrawableObject {
         }else {
             this.lastHit = new Date().getTime(); //zamanin ramak bakimindan yazilmasi
         }
-        }
-
+    }
 
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit; //en son düsmanla karsilastigimiz an = difference in ms

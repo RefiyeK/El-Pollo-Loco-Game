@@ -118,24 +118,76 @@ const level1 = new Level(
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719*13)
     ],
     [
-        new Coin(500),
-        new Coin(1000),
-        new Coin(1500),
-        new Coin(2500),
-        new Coin(3500),
-        new Coin(4500),
-        new Coin(5500),
-        new Coin(6500)
+        new Coin(460, 350),
+        new Coin(500, 300),
+        new Coin(540, 250),
+        new Coin(580, 200),
+        new Coin(620, 150),
+        new Coin(660, 140),
+        new Coin(700, 150),
+        new Coin(740, 200),
+        new Coin(780, 250),
+        new Coin(820, 300),
+        new Coin(860, 350),
+
+        new Coin(1200, 400),
+        new Coin(1250, 400),
+        new Coin(1300, 400),
+        new Coin(1350, 400),
+        new Coin(1400, 400),
+        new Coin(1450, 400),
+
+        new Coin(1600, 150),
+        new Coin(1650, 150),
+        new Coin(1700, 150),
+
+        new Coin(2500, 350),
+        new Coin(2540, 300),
+        new Coin(2580, 250),
+        new Coin(2620, 200),
+        new Coin(2660, 150),
+        new Coin(2700, 140),
+        new Coin(2740, 150),
+        new Coin(2780, 200),
+        new Coin(2820, 250),
+        new Coin(2860, 300),
+        new Coin(2900, 350),
+
+        new Coin(3650, 400),
+        new Coin(3700, 400),
+        new Coin(3750, 400),
+        new Coin(3800, 400),
+        new Coin(3850, 400),
+        new Coin(3900, 400),
+
+        new Coin(4000, 150),
+        new Coin(4050, 150),
+        new Coin(4100, 150),
+
+        new Coin(4600, 400),
+        new Coin(4650, 400),
+        new Coin(4700, 400),
+
+        new Coin(5550, 150),
+        new Coin(5600, 150),
+        new Coin(5650, 150),
+
+        new Coin(6500, 400),
+        new Coin(6550, 400),
+        new Coin(6600, 400),
+        new Coin(6650, 400),
+
+
     ],
 
     [
+        new BottlePickup(500),
+        new BottlePickup(550),
         new BottlePickup(600),
-        new BottlePickup(1200),
-        new BottlePickup(2000),
-        new BottlePickup(3000),
-        new BottlePickup(4000),
-        new BottlePickup(5000),
-        new BottlePickup(6000)
+        new BottlePickup(650),
+        new BottlePickup(700),
+        new BottlePickup(750),
+        new BottlePickup(800)
     ]
 
 );
