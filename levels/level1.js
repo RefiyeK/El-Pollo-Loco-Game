@@ -1,12 +1,26 @@
-const level1 = new Level(
+function createLevel1() {
+    return new Level(
     [
         new Chicken(),
         new Chicken(),
         new Chicken(),
+        new Chicken(),
+        new Chicken(),
+        new Chicken(),
+        new Chicken(),
+        new Chicken(),
+        new Chicken(),
+        new Chicken(),
         new ChickenBaby(),
         new ChickenBaby(),
         new ChickenBaby(),
-        new Endboss()
+        new ChickenBaby(),
+        new ChickenBaby(),
+        new ChickenBaby(),
+        new ChickenBaby(),
+        new ChickenBaby(),
+        new ChickenBaby(),
+        new Endboss(),
     ],
     [
         new Cloud(),
@@ -182,12 +196,25 @@ const level1 = new Level(
 
     [
         new BottlePickup(500),
-        new BottlePickup(550),
-        new BottlePickup(600),
-        new BottlePickup(650),
-        new BottlePickup(700),
-        new BottlePickup(750),
-        new BottlePickup(800)
+        new BottlePickup(800),
+        new BottlePickup(1200),
+        new BottlePickup(1500),
+        new BottlePickup(2000),
+        new BottlePickup(2300),
+        new BottlePickup(2800),
+        new BottlePickup(3200),
+        new BottlePickup(3600),
+        new BottlePickup(4000),
+        new BottlePickup(4300),
+        new BottlePickup(4600),
+        new BottlePickup(4900),
+        new BottlePickup(5300),
+        new BottlePickup(5600),
+        new BottlePickup(5900),
+        new BottlePickup(6400),
+        new BottlePickup(6700),
+        new BottlePickup(7000),
+        new BottlePickup(7300),
     ]
-
-);
+    );
+}

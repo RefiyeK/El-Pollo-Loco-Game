@@ -16,7 +16,7 @@ class StatusBar extends DrawableObject {
         this.loadImages(this.IMAGES_HEALTH_CHARACTER);
         this.x = 20;//can göstergesini sola yaklastiriyor
         this.y = 0; //can göstergesini yukari yaklastiriyor
-        this.width = 200;
+        this.width = 150;
         this.height = 50;
         this.setPercentage(100);
     }

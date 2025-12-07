@@ -13,10 +13,8 @@ class Cloud extends MovableObject { //MovableObject dosyanindaki özellikleri ta
 
     animate() { //Bulutlarin hareketini  belirtiyoruz
         setInterval(() => {
-        // Oyun başladıysa ve pause değilse hareket et
-        if (gameState.started && !gameState.paused) {
+        if(!isGameActive()) return;
             this.moveLeft(); //Bulutlar sola hareket etmeli
-            }
         }, 1000 / 60); //Bulutlar dakikada 60 saniye hareket diyor
     }
 

@@ -13,9 +13,9 @@ class BossStatusBar extends DrawableObject {
     constructor() { //yeni bir bos status bar olusturuldugunda calisir
         super(); //DrawableObject sinifinin consructor ini cagirir
         this.loadImages(this.IMAGES_HEALTH_ENDBOSS); //Tüm görselleri bellege yükle
-        this.x = 500; // Sağ üstte görünecek
-        this.y = 0; //Ekranin en üstünde
-        this.width = 200; //Status bar`in boyutlari genislik
+        this.x = 540; // Sağ üstte görünecek
+        this.y = 6; //Ekranin en üstünde
+        this.width = 150; //Status bar`in boyutlari genislik
         this.height = 50; //Status bar`in boyutlari yükseklik
         this.setPercentage(100); //Baslangicta 100% can ile basliyor
     }

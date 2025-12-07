@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css">
+    <link rel="icon" type="image/png" href="img/favicon/I-1.png">
     <title>El Pollo Loco</title>
+    <script src="./js/audio-hub.js"></script>
+    <script src="./js/music-manager.js"></script>
     <script src="./models/drawable-object.class.js"></script>
     <script src="./models/movable-object.class.js"></script>
     <script src="./models/keyboard.class.js"></script>
@@ -20,6 +23,7 @@
     <script src="./models/bottle-pickup.class.js"></script>
     <script src="./models/coin-status-bar.class.js"></script>
     <script src="./models/boss-status-bar.class.js"></script>
+    <script src="./models/bottle-status-bar.class.js"></script>
     <script src="./models/throwable-object.class.js"></script>
     <script src="./levels/level1.js"></script>
     <script src="./models/world.class.js"></script> 
@@ -31,35 +35,97 @@
     <h1>El Pollo Loco</h1>
 
     <div id="homeScreen">
-        <img id="homeScreenImage" src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="Home Screen">
-        <div id="homeScreenButtons">
-            <button id="playBtn">SPIELEN</button>
-            <button id="soundBtn">TON AN</button>
-            <button id="fullscreenBtn">VOLLBILD</button>
+    <img id="homeScreenImage" src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="Home Screen">
+
+        <div id="homeScreenButtons">          
+            <div id="musicSelector">
+                <select id="musicDropdown" onchange="onMusicChange()">
+                    <option value="-1">-- Wähle Musik --</option>
+                    <option value="0">🎹 Piano Music</option>
+                    <option value="1">🎮 8-Bit Loop</option>
+                    <option value="2">🤠 Casual Western Rhythm</option>
+                    <option value="3">🌵 Lonely Cowboy</option>
+                </select>
+            <button id="previewBtn" onclick="previewSelectedMusic()" disabled>▶️ HÖREN</button>
+            </div>
+
+            <!-- LEVEL SEÇİMİ -->
+            <div id="levelSelector">
+                <h3>Level Auswählen</h3>
+                <div id="levelButtons">
+                    <button class="level-btn active" onclick="selectLevel(1)">1</button>
+                    <button class="level-btn disabled" disabled>🔒 2</button>
+                    <button class="level-btn disabled" disabled>🔒 3</button>
+                    <button class="level-btn disabled" disabled>🔒 4</button>
+                </div>
+            </div>
+
+            <!-- OYUN KONTROL BUTONLARI -->
+            <div id="gameControls">
+                <button id="playBtn" onclick="startGameFromHome()"><span class="btn-icon">▶️</span> SPIELEN</button>
+            <button id="fullscreenBtn" onclick="toggleFullscreen()"><span class="btn-icon">⛶</span> VOLLBILD</button>
+            </div>
+
+            <!-- SES KONTROLÜ -->
+            <div id="volumeControl">
+                <span class="volume-icon">🔊</span>
+                <input type="range" oninput="AudioHub.setVolume(this.value)" id="volumeHome" min="0" max="1" step="0.01" value="0.2">
+            </div>
         </div>
     </div>
 
-    <div id="controlPanel">
-        <button id="startBtn">START</button>
-        <button id="pauseBtn">PAUSE</button>
-        <button id="musicBtn">MUSIK AN</button>
+    <div id="controlPanel" style="display:none">
+        <button id="pauseBtn" onclick="pauseGame()">⏸️ PAUSE</button>
+        <button id="musicBtn" onclick="toggleMusic()">🎵 MUSIK AN</button>
+        <div id="volumeControlGame">
+            <span class="volume-icon">🔊</span>
+            <input type="range" oninput="AudioHub.setVolume(this.value)" id="volumeGame" min="0" max="1" step="0.01" value="0.2">
+        </div>
     </div>
-    <canvas id="canvas" width="720" height="480"></canvas>
 
-    <div id="gameOverPanel">
+
+    <canvas id="canvas" width="720" height="480" style="display: none;"></canvas>
+
+    <div id="gameOverPanel" style="display: none;">
         <img id="gameOverImage" src="" alt="Game Over">
             <h2 id="gameOverText"></h2>
-        <button id="restartBtn">NOCHMAL SPIELEN</button>
-        <button id="homeBtn">HAUPTSEITE</button>
+        <button id="restartBtn" onclick="restartGame()" onkeydown="return false;">NOCHMAL SPIELEN</button>
+        <button id="homeBtn" onclick="goToHome()" onkeydown="return false;">HAUPTSEITE</button>
     </div>
 
-    <div id="winPanel">
+    <div id="winPanel" style="display: none;">
         <img id="winImage" src="" alt="Win Screen">
         <h2 id="winText"></h2>
-        <button id="restartBtn">NOCHMAL SPIELEN</button>
-        <button id="homeBtn">HAUPTSEITE</button>
+        <button id="winRestartBtn" onclick="restartGame()" onkeydown="return false;">NOCHMAL SPIELEN</button>
+        <button id="winHomeBtn" onclick="goToHome()" onkeydown="return false;">HAUPTSEITE</button>
     </div>
 
+
+
+    <!--QUERFORMAT_WARNUNG-->
+    <div id="rotateWarning" style="display:none;">
+        <div id="rotateContent">
+            <img src="" alt="./img/9_intro_outro_screens/start/startscreen_1.png" aria-multiline="Gerät drehen">
+            <h2>Bitte drehe dein Gerät!</h2>
+        </div>
+    </div>
+
+    <!--MOBILE STEUERUNG-->
+    <div id="mobilControls" style="display:none;">
+    
+        <!--LINKE SEITE: Bewegungs-Buttons-->
+        <div id="leftControls">
+            <button id="btnLeft" class="control_btn">◄</button>
+            <button id="btnRight" class="control_btn">►</button>
+        </div>
+
+        <!--RECHTE SEITE: Aktions-Buttons-->
+        <div id="rightControls">
+            <button id="btnJump" class="control_btn">⏫</button>
+            <button id="btnThrow" class="control_btn">💥</button>
+        </div>
+
+    </div>
 
 </body>
 </html>

@@ -46,7 +46,8 @@ class Endboss extends MovableObject {
     IMAGES_DEAD = [ //Büyük tavuk öldügü zaman
         'img/4_enemie_boss_chicken/5_dead/G24.png',
         'img/4_enemie_boss_chicken/5_dead/G25.png',
-        'img/4_enemie_boss_chicken/5_dead/G26.png'
+        'img/4_enemie_boss_chicken/5_dead/G26.png',
+        'img/4_enemie_boss_chicken/5_dead/G27.png'
     ];
 
     constructor() {
@@ -58,12 +59,23 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
         this.x = 7400; //tavugun olmasi gerektigi uzakli sonradan 7400 yap
-        this.animate();
+        // this.animate();
+
+        this.offset = {
+            top: 100,
+            bottom : 50,
+            left : 0,
+            right : 0,
+        }
+
+        this.dangerMusicPlaying = false; //Tehlike müzigi caliyor mu?
     }
 
    animate() {
-    // ===== HER 200MS'DE GÖRSELİ DEĞİŞTİR =====
+    //HER 200MS'DE GÖRSELİ DEĞİŞTİR
     setInterval(() => {
+        if(!isGameActive()) return;
+
         if(this.isDead) {// Ölüm animasyonunu oynat (bitene kadar)
             this.playAnimation(this.IMAGES_DEAD);
             
@@ -71,30 +83,49 @@ class Endboss extends MovableObject {
             if(this.currentImage >= this.IMAGES_DEAD.length) {
                 this.currentImage = this.IMAGES_DEAD.length - 1;
             }
+
+            //Boss öldügünde tehlike müzigini durdur
+            if(this.dangerMusicPlaying) {
+                AudioHub.stopDangerMusic();
+                this.dangerMusicPlaying = false;
+            }
         }
-        else if(this.isHurt) {
-            this.playAnimation(this.IMAGES_HURT);
+        else if(this.isHurt) { //Yaraliysa
+            this.playAnimation(this.IMAGES_HURT); //Yaralanma animasyonunu
         }
-        else if(this.checkIfCharacterInRange()) {
-            this.playAnimation(this.IMAGES_ALERT);
+        else if(this.checkIfCharacterVeryClose()) { //Cok yakinsa 200 px
+            this.playAnimation(this.IMAGES_ATTACK);//Saldiriya gec
         }
-        else {
-            this.playAnimation(this.IMAGES_WALKING);
+        else if(this.checkIfCharacterInRange()) { //Karakter düsmana yaklasinca (400 px icine)
+            
+            //Tehlike müzigi henüz calmiyorsa
+            if(!this.dangerMusicPlaying) {
+                AudioHub.playDangerMusic(); //Tehlike müzigini baslat
+                this.dangerMusicPlaying = true;
+            }else 
+            this.playAnimation(this.IMAGES_ALERT); //Alert / Uyari animasyonu
+        }
+        else { 
+            this.playAnimation(this.IMAGES_WALKING); //Yürü
+
+            //Karakter uzaklastiysa 
+            if(this.dangerMusicPlaying) { 
+                AudioHub.stopDangerMusic(); //tehlike müzigini durdur
+                this.dangerMusicPlaying = false;
+            }
         }
     }, 200);
     
     setInterval(() => {
-         if(gameState.started && !gameState.paused) {
+         if(!isGameActive()) return;
             if(!this.isDead) {
-                if(!this.checkIfCharacterInRange()) {
                     this.moveLeft();
-                }
-            }
          }    
     }, 1000 / 60);
     
     //HER 500MS'DE YARALANMA KONTROL ET
     setInterval(() => {
+        if(!isGameActive()) return;
         this.checkIfHurt();
     }, 500);
 }
@@ -110,6 +141,10 @@ class Endboss extends MovableObject {
 
         this.isHurt = true; //Büyük tavuk yaralandiysa
         this.lastHit = new Date().getTime(); //suanki zamani kaydet
+
+        AudioHub.endboss_sound_currentTime = 0; //Basa sar
+        AudioHub.endboss_sound.volume = 0.1; //Ses seviyesi
+        AudioHub.endboss_sound.play(); //Cal 
 
         if(this.health === 0) { //eger saglik 0 olduysa, öldür
             this.isDead = true; //büyük tavuk öldü
@@ -131,4 +166,20 @@ class Endboss extends MovableObject {
             return false; //yürümeye devam
         }
     }
+
+        //Karakter cok yakin mi kontrol et
+    checkIfCharacterVeryClose() {
+        //Karakter ile büyük tavuk arasindaki mesafeyi hesapla
+        let distance = Math.abs(this.x - this.world.character.x);
+
+        //Mesafe 200`den azsa (cok yakin)
+        if(distance < 200) {
+            return true; //Evet, cok yakin, saldir.
+        } else {
+            return false; //Hayir uzak
+        }
+    }
+
+
+
 }

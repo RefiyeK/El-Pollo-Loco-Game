@@ -9,7 +9,9 @@ class MovableObject extends DrawableObject {
     
 
     applyGravity() { 
-        setInterval(() => { //meine Funktion wird 25 mal pro Sekunde ausgeführt =1000/25=
+        setInterval(() => {
+            if(!isGameActive()) return;
+
            if(this.isAboveGround() || this.speedY > 0) {
             this.y -= this.speedY;
             this.speedY -= this.acceleration;
@@ -19,7 +21,7 @@ class MovableObject extends DrawableObject {
 
     isAboveGround() {
         if(this instanceof ThrowableObject) { // Eğer fırlatılabilir bir nesneyse (örneğin şişe), her zaman yerin üstündedir
-            return true;    
+            return this.y < 360; //360 = zemin seviyesi    
         } 
         if(this instanceof Coin) {
         return this.y < 150// Belirli bir yükseklikten (zemin) yukarıda olup olmadığını kontrol eder.
@@ -28,10 +30,38 @@ class MovableObject extends DrawableObject {
     }
 
     isColliding(mo) {
-        return this.x + this.width > mo.x && // 'Bu' nesnenin sağ kenarı, 'mo' nesnesinin sol kenarını geçti mi?
-            this.x < mo.x + mo.width && // 'Bu' nesnenin sol kenarı, 'mo' nesnesinin sağ kenarından önce mi?
-            this.y + this.height > mo.y && // 'Bu' nesnenin alt kenarı, 'mo' nesnesinin üst kenarını geçti mi?
-            this.y < mo.y + mo.height; // 'Bu' nesnenin üst kenarı, 'mo' nesnesinin alt kenarından önce mi?
+
+        //Eger offset yoksa varsayilan degerler kullan (0)
+        //this.offset?.left = Sisenin soldan offset`i var mi? Varsa al
+        // ||0 = Yoksa sifir kullan
+        let thisOffsetLeft = this.offset?.left || 0;
+        let thisOffsetRight = this.offset?.right || 0;
+        let thisOffsetTop = this.offset?.top || 0;
+        let thisOffsetBottom = this.offset?.bottom || 0;
+
+        let moOffsetLeft = mo.offset?.left || 0;
+        let moOffsetRight = mo.offset?.right || 0;
+        let moOffsetTop = mo.offset?.top || 0;
+        let moOffsetBottom = mo.offset?.bottom || 0;
+
+        
+        //Offset`li carpisma kontrolü
+        return (
+        //this.x = sisenin sol kenari (0 noktasi)
+        //this.x + this.width = Sisenin sag kenari
+        //mo.x = Boss`un sol kenari
+        //mo.x + mo.width = Boss`un sag kenari
+
+            //this.x + thisOffsetLeft = Sisenin gercek sol kenari (sisex(7350) + offset left(5) = GERCEK SOL KENAR=7355)
+            //this.width - thisOffsetLeft - thisOffsetRight = sise genislik(40)-offset left(5)-right(5)= SISENIN GERCEK GENISLIK=30
+            //this.x + thisOffsetLeft + gercek genislik= Sisenin gercek sag kenari (sol kenar 7355 + genislik 30 = 7385)
+            //mo.x + moOffsetLeft = Boss`n gercek sol kenari (BossX 7400 + Boss offsetleft 0 = Boss`un gercek sol kenar 7400+0=7400)
+            //7385 > 7400 = Sisenin sag kenari Boss`un sol kenarindan büyük mü? = HAYIR -> Henüz carpmadi  
+            this.x + thisOffsetLeft + (this.width - thisOffsetLeft - thisOffsetRight) > mo.x + moOffsetLeft && // Sag kenar kontrolü
+            this.x + thisOffsetLeft < mo.x + moOffsetLeft + (mo.width - moOffsetLeft - moOffsetRight) && // Sol kenar kontrolü
+            this.y + thisOffsetTop + (this.height - thisOffsetTop - thisOffsetBottom) > mo.y + moOffsetTop && // Alt kenar kontrolü
+            this.y + thisOffsetTop < mo.y + moOffsetTop + (mo.height - moOffsetTop - moOffsetBottom) // Üst kenar kontrolü
+        );
     }
 
 
@@ -72,12 +102,5 @@ class MovableObject extends DrawableObject {
     moveLeft() {
             this.x -= this.speed; //x koordinattan 1 pixel azaltiyor
     }
-
-    // jump() {
-    //     this.speedY = 30; //ne kadar yüksege ziplayacagi belirli
-    // }
-
-
-
 }
 

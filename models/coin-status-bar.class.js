@@ -14,9 +14,9 @@ class CoinStatusBar extends DrawableObject {
     constructor(x, y) {
         super();
         this.loadImages(this.IMAGES); //Resimleri yüklüyoruz
-        this.x = x;
-        this.y = y;
-        this.width = 200; //genislik
+        this.x = 180;
+        this.y = 0;
+        this.width = 150; //genislik
         this.height = 50; //yükseklik
         this.setPercentage(0); //baslangicta 0 altin ile basliyoruz
     }
@@ -38,19 +38,3 @@ class CoinStatusBar extends DrawableObject {
     }
 
 }
-
-
-// setPercentage(percentage) {
-//         this.coins = percentage; //yüzdesel bilgi
-//         let path = this.IMAGES[this.resolveImageIndex(percentage)]; //yüzdeye denk gelen resmi bul
-//         this.img = this.imageCache[path]; //resmi yükle
-//     }
-
-//     resolveImageIndex(percentage) {//Yüzdesel degere göre resmi bulup gösterir
-//         if(percentage >= 100) return 5;
-//         else if (percentage >= 80) return 4;
-//         else if (percentage >= 60) return 3;
-//         else if (percentage >= 40) return 2;
-//         else if (percentage >= 20) return 1;
-//         else return 0;
-//     }
