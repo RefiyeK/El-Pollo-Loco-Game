@@ -2,21 +2,25 @@ class BottlePickup extends MovableObject {
 
     width = 50;
     height = 40;
-    y = 400; //yerde durur
+    y = 400;
     isCollected = false;
 
-    IMAGES = [ //Bu bir class özelligi
+    IMAGES = [
         'img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
         'img/6_salsa_bottle/2_salsa_bottle_on_ground.png'
     ]
 
+
+    /**
+     * Erstellt eine sammelbare Flasche am Boden
+     * Wählt zufällig eines der Flaschen-Bilder
+     * @param {number} x - X-Position der Flasche
+     */
     constructor(x) {
-        super(); //Önce süper cagir
-        //0 veya 1 döner. Yani yukaridaki iki resimden alir *2 0 ile 2 arasinda döner.
-        //Burada floor asagiya dogru yuvarla demek.Yani virgülden önceki kismi al 
+        super(); 
         let randomIndex = Math.floor(Math.random() * this.IMAGES.length);         
         
         this.loadImage(this.IMAGES[randomIndex]);
-        this.x = x; //koordinati level1 dosyasindan geliyor
+        this.x = x;
     }
 }

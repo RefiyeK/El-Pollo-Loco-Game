@@ -1,3 +1,7 @@
+/**
+ * Verwaltet den Tastatur-Status für Spielsteuerung
+ * Speichert welche Tasten gerade gedrückt sind
+ */
 class Keyboard {
     LEFT = false;
     RIGHT = false;
@@ -5,6 +9,4 @@ class Keyboard {
     DOWN = false;
     SPACE = false;
     D = false;
-
-
 }

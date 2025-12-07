@@ -1,12 +1,11 @@
 class ThrowableObject extends MovableObject {
 
-    isSplashed = false; //Sise kirildi mi?
-    hasHitGround = false; //sise yere carpti mi?
-    intervalIds = []; //tüm intervalleri sakla
-    canBeRemoved = false; //sise silinebilir mi
-    throwDirection = 1; //Atis yönü (1=saga, -1=sola) 
+    isSplashed = false;
+    hasHitGround = false;
+    intervalIds = [];
+    canBeRemoved = false;
+    throwDirection = 1;
 
-        //GÖRSELLER DÖNERKEN
     IMAGES_ROTATION = [
         'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
         'img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png',
@@ -14,7 +13,6 @@ class ThrowableObject extends MovableObject {
         'img/6_salsa_bottle/bottle_rotation/4_bottle_rotation.png'
     ];
 
-        //KIRILDIKTAN SONRA GÖRSELLER
     IMAGES_SPLASH = [
         'img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png',
         'img/6_salsa_bottle/bottle_rotation/bottle_splash/2_bottle_splash.png',
@@ -24,39 +22,52 @@ class ThrowableObject extends MovableObject {
         'img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
     ];
 
+
+    /**
+     * Erstellt ein werfbares Objekt (Flasche)
+     * @param {number} x - X-Position der Flasche
+     * @param {number} y - Y-Position der Flasche
+     * @param {number} direction - Wurfrichtung (1=rechts, -1=links)
+     */
     constructor(x, y, direction=1){
-        super().loadImage(this.IMAGES_ROTATION[0]);//Ilk sise görseli
-        this.loadImages(this.IMAGES_ROTATION); //Dönerken sise görselleri
-        this.loadImages(this.IMAGES_SPLASH); //splash görseller
+        super().loadImage(this.IMAGES_ROTATION[0]);
+        this.loadImages(this.IMAGES_ROTATION);
+        this.loadImages(this.IMAGES_SPLASH);
 
         this.x = x;
         this.y = y;
-        this.height = 60; //sisenin yüksekligi
-        this.width = 40; //sisenin genisligi
-        this.throwDirection = direction; //Yönü kaydet
+        this.height = 60;
+        this.width = 40;
+        this.throwDirection = direction;
         this.trow();
-        this.offset = { //Siselerin carpisma kutusunu
-            top: 10, //Üstten 5px iceri
-            bottom: 10,//Alttan " " " "
-            left: 10, //soldan " " " "
-            right: 10, //sagdan " " " "
+        this.offset = {
+            top: 10,
+            bottom: 10,
+            left: 10,
+            right: 10,
         }
     }
 
 
-    trow() {
-        this.speedY = 30; //yukari firlat
-        this.applyGravity(); //yercekimi uygula
-
-        // Hareket interval`i - Yöne göre hareket et 
+    /**
+     * Startet die Bewegung der Flasche
+     * Flasche fliegt horizontal in Wurfrichtung
+     */
+    startMovement() {
         let moveInterval = setInterval(() => {
-            if(!this.isSplashed) { // Kırıldıysa durmalı
+            if(!this.isSplashed) {
                 this.x += 10 * this.throwDirection;
             }
         }, 25);
-        this.intervalIds.push(moveInterval); // Interval'i kaydet
+        this.intervalIds.push(moveInterval);
+    }
 
-        // Animasyon interval'i - SAKLA
+
+    /**
+     * Startet die Rotations-Animation
+     * Wechselt zwischen Rotations- und Splash-Bildern
+     */
+    startAnimation() {
         let animationInterval = setInterval(() => {
             if(this.isSplashed) {
                 this.playAnimation(this.IMAGES_SPLASH);
@@ -64,41 +75,57 @@ class ThrowableObject extends MovableObject {
                 this.playAnimation(this.IMAGES_ROTATION);
             }
         }, 100);
-        this.intervalIds.push(animationInterval); // Interval'i kaydet
+        this.intervalIds.push(animationInterval);
+    }
 
 
-
-        // SISENIN YERE CARPMA ÖZELLIGI
+    /**
+     * Prüft ob Flasche den Boden berührt
+     * Löst Splash-Animation aus bei Bodenkontakt
+     */
+    checkGroundCollision() {
         let groundCheckInterval = setInterval(() => {
-            let bottleBottom = this.y + this.height; //Sisenin alt kenari zemine cok yaklasti mi
+            let bottleBottom = this.y + this.height;
 
             if(bottleBottom >= 430 && !this.hasHitGround && !this.isSplashed) {
                 this.hasHitGround = true;
                 this.splash();
             }
         }, 1000 / 60);
-        this.intervalIds.push(groundCheckInterval); // Interval'i kaydet
+        this.intervalIds.push(groundCheckInterval);
     }
 
 
+    /**
+     * Wirft die Flasche
+     * Startet Bewegung, Animation und Kollisionsprüfung
+ */
+    trow() {
+        this.speedY = 30;
+        this.applyGravity();
+        this.startMovement();
+        this.startAnimation();
+        this.checkGroundCollision();
+    }
+
+
+    /**
+     * Lässt die Flasche zersplittern
+     * Spielt Glas-Bruch-Sound und markiert Flasche zum Entfernen
+     */
     splash() {
         this.isSplashed = true;
         this.speedY = 0;
-        
-            //SISE KIRILMA SESI CAL
+
         AudioHub.bottle_break_sound.currentTime = 0;
         AudioHub.bottle_break_sound.volume = 0.3;
         AudioHub.bottle_break_sound.play().catch(e => {
-            console.warn("Flaschen-Brunch-Sound konnte nicht angespielt werden:", e);
+            console.warn("Flaschen-Bruch-Sound konnte nicht abgespielt werden:", e);
         });
 
-
-        // Splash animasyonunun bitmesini bekle
-    setTimeout(() => {
-        this.intervalIds.forEach(id => clearInterval(id));
-        
-        // Şişe artık silinebilir işaretini koy
-        this.canBeRemoved = true;
+        setTimeout(() => {
+            this.intervalIds.forEach(id => clearInterval(id));
+            this.canBeRemoved = true;
         }, 600);
     }
 }

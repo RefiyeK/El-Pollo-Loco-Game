@@ -1,21 +1,29 @@
-class Cloud extends MovableObject { //MovableObject dosyanindaki özellikleri tasiyor.
-    y = 20; //Bulutlarin yeri
-    width = 500; //Bulut genisligi
-    height = 250; //Bulut yüksekligi
+class Cloud extends MovableObject {
+    y = 20;
+    width = 500;
+    height = 250;
     
 
+    /**
+     * Erstellt eine bewegliche Wolke
+     * Wolke startet an zufälliger X-Position
+     */
     constructor() {
-        super().loadImage('img/5_background/layers/4_clouds/1.png'); //Bulut resminin yüklendigi yer
-        this.x = Math.random() * 7000; //x pozisyon 0-500 arasinda. Bu sayede bulutlarin hepsi ayni konumda olmamis oluyor.
-        this.speed = 0.2; //bulutlar yavas hareket ediyor
-        this.animate(); //animasyonu calismasi icin fonsiyon cagiriyoruz. Bu bizim fonksiyon adimiz.
+        super().loadImage('img/5_background/layers/4_clouds/1.png');
+        this.x = Math.random() * 7000;
+        this.speed = 0.2;
+        this.animate();
     }
 
-    animate() { //Bulutlarin hareketini  belirtiyoruz
+
+    /**
+     * Startet die Wolken-Bewegung
+     * Wolke bewegt sich kontinuierlich nach links
+     */
+    animate() {
         setInterval(() => {
         if(!isGameActive()) return;
-            this.moveLeft(); //Bulutlar sola hareket etmeli
-        }, 1000 / 60); //Bulutlar dakikada 60 saniye hareket diyor
+            this.moveLeft();
+        }, 1000 / 60);
     }
-
 }

@@ -4,7 +4,7 @@ class Chicken extends MovableObject {
     height = 80;
     y = 360;
     x = 520;
-    isDead = false; //tavuk öldü mü?
+    isDead = false;
 
     IMAGES_WALKING = [
         'img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
@@ -16,13 +16,18 @@ class Chicken extends MovableObject {
         'img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
     ];
 
+
+    /**
+     * Erstellt ein normales Huhn
+     * Startet an zufälliger Position mit zufälliger Geschwindigkeit
+     */
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
         this.loadImage(this.IMAGES_DEAD);
 
         this.x = 500 + Math.random() * 8000;
-        this.speed = 0.15 + Math.random() * 0.5; //Tavuklarin hepsi -random- degisik hizda yürüyecek. Math.random()=Zufällige Zahl zwischen 0-1
+        this.speed = 0.15 + Math.random() * 0.5;
         
         this.offset = {
             top: 5,
@@ -34,23 +39,43 @@ class Chicken extends MovableObject {
     }
    
 
-  animate() {
-        setInterval( () => {
+    /**
+     * Startet das Bewegungs-Intervall
+     * Huhn läuft nach links
+     */
+    startMovementLoop() {
+        setInterval(() => {
             if(!isGameActive()) return;
+            if(!this.isDead) {
+                this.moveLeft();
+                this.otherDirection = false;
+            }
+        }, 1000 / 60);
+    }
 
-                if(!this.isDead) { //Eger ölüyse hareket etme   
-                    this.moveLeft(); //saniyede 60 kere sola hareket etsin.
-                    this.otherDirection = false;
-                }
-        },1000 / 60); //ne kadar sik tekrarlamasi gerektigi. 0.15px eksiltme 1 dk da 60 kez gerceklesiyor.
-            
-        setInterval (() => {
+
+    /**
+     * Startet das Animations-Intervall
+     * Wechselt zwischen Lauf- und Tod-Animation
+     */
+    startAnimationLoop() {
+        setInterval(() => {
             if(!isGameActive()) return;
-                if(this.isDead) {//eger civciv ölmüsse
-                    this.playAnimation(this.IMAGES_DEAD); //ölüm görseli göster
-                } else { //aksi takdirde
-                    this.playAnimation(this.IMAGES_WALKING); //yürüyüs görseline devam
-                }   
+            if(this.isDead) {
+                this.playAnimation(this.IMAGES_DEAD);
+            } else {
+                this.playAnimation(this.IMAGES_WALKING);
+            }
         }, 200);
+    }
+
+    
+    /**
+     * Startet alle Animationen und Bewegungen
+     * Initialisiert Bewegungs- und Animations-Loops
+     */
+    animate() {
+        this.startMovementLoop();
+        this.startAnimationLoop();
     }
 }

@@ -4,11 +4,7 @@ class AudioHub {
     static music_8bit = new Audio('audio/background/8-bit-loop-189494.mp3');
     static music_western = new Audio('audio/background/casualwesternrythym-67060.mp3');
     static music_cowboy = new Audio('audio/background/lonely-cowboy-74482.mp3');
-    
-        //KARAKTER YÜRÜME SESI
     static walking_sound = new Audio('audio/effects/sand-walk.mp3');
-
-        //TAVUK, CIVCIV VE ENDBOSS SESLERI
     static chicken_sound = new Audio('audio/effects/chicken-noise.mp3');
     static chicken_baby_sound = new Audio ('audio/effects/chicken-little-sound.mp3');
     static endboss_sound = new Audio('audio/effects/chicken-endboss-sound.mp3');
@@ -19,135 +15,162 @@ class AudioHub {
     static jump_sound = new Audio('audio/effects/jump.mp3');
     static hurt_sound = new Audio('audio/effects/ouch-sound.mp3');
     static danger_music = new Audio('audio/background/drone-sound.mp3');
+    static currentVolume = 0.2;
 
-        //SES SEVIYESI ICIN YENI EKLEME
-    static currentVolume = 0.2; //Baslangic ses seviyesi 
-
-        //TÜM MÜZİKLERİ ÖN YÜKLEME
-    static {
-            // Statik blok - class yüklendiğinde çalışır
-        [AudioHub.music_piano, AudioHub.music_8bit, AudioHub.music_western, AudioHub.music_cowboy].forEach(audio => {
-            audio.preload = 'auto'; // Otomatik ön yükleme
-            audio.load(); // Hemen yükle
-            audio.volume = AudioHub.currentVolume; //Baslangic ses seviyesini ayarla
-        });
-
-        //SESLERI ÖNDEN YÜKLEME
-        AudioHub.walking_sound.preload = 'auto';
-        AudioHub.walking_sound.load();
-
-
-        AudioHub.chicken_sound.preload = 'auto';
-        AudioHub.chicken_sound.load();
-
-        AudioHub.chicken_baby_sound.preload = 'auto';
-        AudioHub.chicken_baby_sound.load();
-
-        AudioHub.endboss_sound.preload = 'auto';
-        AudioHub.endboss_sound.load();
-
-        AudioHub.bottle_break_sound.preload = 'auto';
-        AudioHub.bottle_break_sound.load();
-
-        AudioHub.win_sound.preload = 'auto';
-        AudioHub.win_sound.load();
-
-        AudioHub.lost_sound.preload = 'auto';
-        AudioHub.lost_sound.load();
-
-        AudioHub.coin_sound.preload = 'auto';
-        AudioHub.coin_sound.load();
-
-        AudioHub.jump_sound.preload = 'auto';
-        AudioHub.jump_sound.load();
-
-        AudioHub.hurt_sound.preload = 'auto';
-        AudioHub.hurt_sound.load();
-
-        AudioHub.danger_music.preload = 'auto';
-        AudioHub.danger_music.load();
+    /**
+     * Lädt ein Audio-Objekt vor
+     * @param {Audio} audio - Das Audio-Objekt zum Vorladen
+     */
+    static preloadAudio(audio) {
+        audio.preload = 'auto';
+        audio.load();
     }
 
+    /**
+     * Lädt ein Audio-Objekt mit Lautstärke vor
+     * @param {Audio} audio - Das Audio-Objekt zum Vorladen
+     * @param {number} volume - Anfangslautstärke
+     */
+    static preloadAudioWithVolume(audio, volume) {
+        audio.preload = 'auto';
+        audio.load();
+        audio.volume = volume;
+    }
 
-    static allBackgroundMusic = [ //Müzikleri bir array`de topladik
+    /**
+     * Lädt alle Hintergrundmusiken vor
+     */
+    static preloadBackgroundMusic() {
+        [AudioHub.music_piano, AudioHub.music_8bit, AudioHub.music_western, AudioHub.music_cowboy].forEach(audio => {
+            AudioHub.preloadAudioWithVolume(audio, AudioHub.currentVolume);
+        });
+    }
+
+    /**
+     * Lädt alle Sound-Effekte vor
+     */
+    static preloadSoundEffects() {
+        AudioHub.preloadAudio(AudioHub.walking_sound);
+        AudioHub.preloadAudio(AudioHub.chicken_sound);
+        AudioHub.preloadAudio(AudioHub.chicken_baby_sound);
+        AudioHub.preloadAudio(AudioHub.endboss_sound);
+        AudioHub.preloadAudio(AudioHub.bottle_break_sound);
+        AudioHub.preloadAudio(AudioHub.win_sound);
+        AudioHub.preloadAudio(AudioHub.lost_sound);
+        AudioHub.preloadAudio(AudioHub.coin_sound);
+        AudioHub.preloadAudio(AudioHub.jump_sound);
+        AudioHub.preloadAudio(AudioHub.hurt_sound);
+        AudioHub.preloadAudio(AudioHub.danger_music);
+    }
+
+    static {
+        AudioHub.preloadBackgroundMusic();
+        AudioHub.preloadSoundEffects();
+    }
+
+    static allBackgroundMusic = [
         AudioHub.music_piano,
         AudioHub.music_8bit,
         AudioHub.music_western,
         AudioHub.music_cowboy     
     ];
-
     static currentMusic = null;
     
 
     /**
-    * Stellt die Lautstärke des Spiels ein
-    * Wird vom HTML-Slider aufgerufen
-    * @param {number} value - Lautstärkewert (0.0 = stumm, 1.0 = maximal)
-    */
-
-    static setVolume(value) {
-        AudioHub.currentVolume = parseFloat(value); //Gelen degeri sayiya cevir ve kaydet
-        if (AudioHub.currentMusic) { //Suan calan müzigin sesini ayarla
-            AudioHub.currentMusic.volume = AudioHub.currentVolume;
-        }
-
-        //Tüm müziklerin sesini ayarla (Bir sonraki calinca dogru ses seviyesinde olsun)
+     * Setzt die Lautstärke der Hintergrundmusik
+     * @param {number} volume - Lautstärkewert
+     */
+    static setBackgroundMusicVolume(volume) {
         AudioHub.allBackgroundMusic.forEach(music => {
-            music.volume = AudioHub.currentVolume;
+            music.volume = volume;
         });
+    }
 
-        //SES EFEKTLERININ DE SESINI AYARLA
-        AudioHub.walking_sound.volume = AudioHub.currentVolume;
-        AudioHub.chicken_sound.volume = AudioHub.currentVolume;
-        AudioHub.chicken_baby_sound.volume = AudioHub.currentVolume;
-        AudioHub.endboss_sound.volume = AudioHub.currentVolume;
-        AudioHub.bottle_break_sound.volume = AudioHub.currentVolume;
-        AudioHub.lost_sound.volume = AudioHub.currentVolume;
-        AudioHub.coin_sound.volume = AudioHub.currentVolume;
-        AudioHub.jump_sound.volume = AudioHub.currentVolume;
-        AudioHub.hurt_sound.volume = AudioHub.currentVolume;
-        AudioHub.danger_music.volume = AudioHub.currentVolume;
+    /**
+     * Setzt die Lautstärke aller Sound-Effekte
+     * @param {number} volume - Lautstärkewert
+     */
+    static setSoundEffectsVolume(volume) {
+        AudioHub.walking_sound.volume = volume;
+        AudioHub.chicken_sound.volume = volume;
+        AudioHub.chicken_baby_sound.volume = volume;
+        AudioHub.endboss_sound.volume = volume;
+        AudioHub.bottle_break_sound.volume = volume;
+        AudioHub.lost_sound.volume = volume;
+        AudioHub.coin_sound.volume = volume;
+        AudioHub.jump_sound.volume = volume;
+        AudioHub.hurt_sound.volume = volume;
+        AudioHub.danger_music.volume = volume;
     }
 
 
-        //Belirli bir müzigi cal (index= 0, 1, 2 veya 3)
-    static playMusic(index) { //Eger zaten ayni müzik caliyorsa, hicbir sey yapma (devam etsin)
-        if(AudioHub.currentMusic === AudioHub.allBackgroundMusic[index] && !AudioHub.currentMusic.paused) {
-            return; //Fonksiyondan cik müzigi calmaya devam eder
+    /**
+     * Stellt die Lautstärke des Spiels ein
+     * Wird vom HTML-Slider aufgerufen
+     * @param {number} value - Lautstärkewert (0.0 = stumm, 1.0 = maximal)
+     */
+    static setVolume(value) {
+        AudioHub.currentVolume = parseFloat(value);
+        
+        if (AudioHub.currentMusic) {
+            AudioHub.currentMusic.volume = AudioHub.currentVolume;
         }
 
-        if(AudioHub.currentMusic) { //Farkli bir müzik caliyorsa, onu durdur
+        AudioHub.setBackgroundMusicVolume(AudioHub.currentVolume);
+        AudioHub.setSoundEffectsVolume(AudioHub.currentVolume);
+    }
+
+
+    /**
+     * Spielt eine Hintergrundmusik ab
+     * @param {number} index - Index der Musik im Array (0-3)
+     */
+    static playMusic(index) {
+        if(AudioHub.currentMusic === AudioHub.allBackgroundMusic[index] && !AudioHub.currentMusic.paused) {
+            return;
+        }
+
+        if(AudioHub.currentMusic) {
             AudioHub.currentMusic.pause();
             AudioHub.currentMusic.currentTime = 0;
         }
 
-        //Yeni müzigi baslat
         AudioHub.currentMusic = AudioHub.allBackgroundMusic[index];
         AudioHub.currentMusic.loop = true;
         AudioHub.currentMusic.volume = 0.1;
         
         AudioHub.currentMusic.play().catch(e => {
-            console.warn("Müzik otomatik oynatilmaya çalisirken bir hata oluştu:", e);
+            console.warn("Musik konnte nicht automatisch abgespielt werden:", e);
         });
     }
 
-    //Calan müzigi durdur//
+
+    /**
+     * Pausiert die aktuelle Musik
+     */
     static pauseMusic() {
         if(AudioHub.currentMusic) {
             AudioHub.currentMusic.pause();
         }
     }
 
-    //Durdurulan müzigi devam ettir
+
+    /**
+     * Setzt die Musik fort
+     */
     static resumeMusic(){
         if(AudioHub.currentMusic) {
-            AudioHub.currentMusic.play().catch (e => {
-                console.warn("Müzik devam ettirilmeye çalisirken bir hata oluştu:", e);
+            AudioHub.currentMusic.play().catch(e => {
+                console.warn("Musik konnte nicht fortgesetzt werden:", e);
             });
         }
     }
 
-    //müzigi durdur
+ 
+    /**
+     * Stoppt die Musik komplett
+     */
     static stopMusic() {
         if(AudioHub.currentMusic) {
             AudioHub.currentMusic.pause();
@@ -156,7 +179,10 @@ class AudioHub {
         }
     }
 
-    //Tehlike müzigini cal
+
+    /**
+     * Spielt die Gefahr-Musik ab (Boss-Kampf)
+     */
     static playDangerMusic() {
         if(AudioHub.currentMusic) {
             AudioHub.currentMusic.pause();
@@ -171,7 +197,10 @@ class AudioHub {
         });
     }
 
-    //Tehlike müzigini durdur
+
+    /**
+     * Stoppt die Gefahr-Musik
+     */
     static stopDangerMusic() {
         if(AudioHub.currentMusic === AudioHub.danger_music) {
             AudioHub.danger_music.pause();

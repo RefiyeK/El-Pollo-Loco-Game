@@ -1,94 +1,125 @@
+/**
+ * Ausgewählter Musik-Index (-1 = keine Auswahl)
+ * @type {number}
+ */
+let selectedMusicIndex = -1;
 
- let selectedMusicIndex = -1; //Kullanicinin sectigi  müzik indexi ya da -1 yani secim yok
- let previewAudio = null; //Önizleme icin kullanilan gecici müzik nesnesi
+
+/**
+ * Audio-Objekt für Musik-Vorschau
+ * @type {Audio|null}
+ */
+let previewAudio = null;
+
  
 
- //RASTGELE MÜZIK BASLAT
+/**
+ * Startet eine zufällige Hintergrundmusik
+ * Wählt einen zufälligen Index (0-3) und spielt die Musik ab
+ */
 function startRandomMusic() {
-   let randomMusicIndex = Math.floor(Math.random() * 4);//Rastgele bir müzik seç ve çalmaya başla
-    AudioHub.playMusic(randomMusicIndex);  // Rastgele seçilen müziği çal
-    document.getElementById('musicDropdown').value = randomMusicIndex.toString(); // Dropdown'daki seçimi güncelle (kullanıcı hangisi çaldığını görsün)
-    document.getElementById('previewBtn').disabled = false; // HÖREN butonunu aktif et (müzik seçili olduğu için)
-    selectedMusicIndex = randomMusicIndex; // Secili müzigi güncelle
+   let randomMusicIndex = Math.floor(Math.random() * 4);
+    AudioHub.playMusic(randomMusicIndex);
+    document.getElementById('musicDropdown').value = randomMusicIndex.toString();
+    document.getElementById('previewBtn').disabled = false;
+    selectedMusicIndex = randomMusicIndex;
 }
 
 
-//Dropdown`dan müzik secildiginde cagirilir. Kullanici farikli bir müzik sectiginde tetiklenir.
+/**
+ * Wird aufgerufen wenn Musik im Dropdown geändert wird
+ * Aktiviert/Deaktiviert den Preview-Button
+ */
 function onMusicChange() {
-    let dropdown = document.getElementById('musicDropdown'); //Dropdown elementini al.
-    selectedMusicIndex = parseInt(dropdown.value); //secilen degeri sayiya cevir
+    let dropdown = document.getElementById('musicDropdown');
+    selectedMusicIndex = parseInt(dropdown.value);
     
-    if(selectedMusicIndex >= 0) { //Eger gecerli bir müzik secildiyse
-        document.getElementById('previewBtn').disabled = false; //HÖREN butonunu aktif et  
+    if(selectedMusicIndex >= 0) {
+        document.getElementById('previewBtn').disabled = false;
     } else {
-        document.getElementById('previewBtn').disabled = true;//Gecersiz secimse hören butonunu pasif et
+        document.getElementById('previewBtn').disabled = true;
     }
-    stopPreview();//Eger önizleme caliyorsa durdur
+    stopPreview();
 }
 
 
-//SECILEN MÜZIGI ÖNIZLE (Hören butonu)
+/**
+ * Spielt die ausgewählte Musik als Vorschau ab
+ * Stoppt vorherige Vorschau automatisch
+ */
 function previewSelectedMusic() {
-    stopPreview(); //önce önceki önizlemeyi durdur
+    stopPreview();
 
-    //Eger gecerli bir müzik secildiyse
     if(selectedMusicIndex >= 0 && selectedMusicIndex < AudioHub.allBackgroundMusic.length) {
-        previewAudio = AudioHub.allBackgroundMusic[selectedMusicIndex]; //Secilen müzigi al
-        previewAudio.volume = 0.2; //Ses seviyesi %20(arka plan müziginden daha yüksek, daha iyi duyulsun)
-        previewAudio.loop = true; //sürekli tekrar et
-        previewAudio.currentTime = 0; //Bastan baslat
-        previewAudio.play(); //Önizlemeyi cal
+        previewAudio = AudioHub.allBackgroundMusic[selectedMusicIndex];
+        previewAudio.volume = 0.2;
+        previewAudio.loop = true;
+        previewAudio.currentTime = 0;
+        previewAudio.play();
     }
 }
 
 
- //DINLEMEYI (ÖNIZLEMEYI) DURDUR
+/**
+ * Stoppt die Musik-Vorschau
+ * Setzt das Audio-Objekt zurück
+ */
 function stopPreview() {
-    if(previewAudio) { // Eğer önizleme çalıyorsa
-        previewAudio.pause(); // Müziği durdur
-        previewAudio.currentTime = 0;  // Başa sar
-        previewAudio = null; // Referansı temizle
+    if(previewAudio) {
+        previewAudio.pause();
+        previewAudio.currentTime = 0;
+        previewAudio = null;
     }
 }
 
 
-// OYUN MÜZIGINI BASLAT (SPIELEN butonuna basıldığında)
+/**
+ * Startet die Hintergrundmusik für das Spiel
+ * Verwendet ausgewählte Musik oder startet zufällige Musik
+ */
 function startBackgroundMusic() {
-    stopPreview(); // Önce önizlemeyi durdur (çakışmasın)
+    stopPreview();
         
-    if(selectedMusicIndex >= 0) { // Eğer geçerli bir müzik seçildiyse
-         AudioHub.playMusic(selectedMusicIndex); // AudioHub üzerinden müziği çal
+    if(selectedMusicIndex >= 0) {
+         AudioHub.playMusic(selectedMusicIndex);
         } else {
             startRandomMusic();
         }
 }
 
 
-//MÜZIGI DURDUR (OYUN BITTIGINDE YA DA ANA MENÜYE DÖNÜLDÜGÜNDE)
+/**
+ * Stoppt die Hintergrundmusik komplett
+ */
 function stopBackgroundMusic() {
-    AudioHub.stopMusic(); // AudioHub'daki müzigi durdur
+    AudioHub.stopMusic();
 }
 
 
-
- //MÜZIGI DURAKLAT (PAUSE butonu).
+/**
+ * Pausiert die Hintergrundmusik
+ */
 function pauseBackgroundMusic() {
-    AudioHub.pauseMusic();// Müzigi durdur
+    AudioHub.pauseMusic();
 }
 
 
-// MÜZIGI DEVAM ETTIR (RESUME/START butonu).
+/**
+ * Setzt die Hintergrundmusik fort
+ */
 function resumeBackgroundMusic() {
-    AudioHub.resumeMusic(); // Müzigi devam ettir
+    AudioHub.resumeMusic();
 }
 
 
-// SES SEVIYESI AYARI
-// @param {number} volume - Ses seviyesi (0.0 ile 1.0 arası)
+/**
+ * Stellt die Musiklautstärke ein
+ * @param {number} volume - Lautstärke (0.0 bis 1.0)
+ */
 function setMusicVolume(volume) {
     volume = Math.max(0.0, Math.min(1.0, volume));
 
-    if(AudioHub && AudioHub.currentMusic) {  // Eğer müzik çalıyorsa
-        AudioHub.currentMusic.volume = volume; // Ses seviyesini ayarla
+    if(AudioHub && AudioHub.currentMusic) {
+        AudioHub.currentMusic.volume = volume;
         }
 }

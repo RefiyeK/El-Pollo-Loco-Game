@@ -1,40 +1,57 @@
 class CoinStatusBar extends DrawableObject {
     
     IMAGES = [
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/0.png', //0 coin
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/20.png', //10 coin
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/40.png', //20 coin
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/60.png', //30 coin
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/80.png', //40 coin
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/100.png' //50 coin
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/0.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/20.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/40.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/60.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/80.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/100.png'
     ];
-    collectedCoins = 0; //Toplanan altin sayisini tutar
+    collectedCoins = 0;
 
     
+    /**
+     * Erstellt eine Münz-Statusanzeige
+     * Zeigt gesammelte Münzen als Balken an
+     * @param {number} x - X-Position (wird ignoriert, nutzt feste Position)
+     * @param {number} y - Y-Position (wird ignoriert, nutzt feste Position)
+     */
     constructor(x, y) {
         super();
-        this.loadImages(this.IMAGES); //Resimleri yüklüyoruz
+        this.loadImages(this.IMAGES);
         this.x = 180;
         this.y = 0;
-        this.width = 150; //genislik
-        this.height = 50; //yükseklik
-        this.setPercentage(0); //baslangicta 0 altin ile basliyoruz
+        this.width = 150;
+        this.height = 50;
+        this.setPercentage(0); 
     }
 
+
+     /**
+     * Setzt den Prozentsatz der gesammelten Münzen
+     * @param {number} collectedCoins - Anzahl der gesammelten Münzen
+     */
     setPercentage(collectedCoins) {
-        let percentage = (collectedCoins / 50) * 100; //percentage tanimladik
+        let percentage = (collectedCoins / 50) * 100; 
         this.collectedCoins = percentage;
-        let path = this.IMAGES[this.resolveImageIndex(percentage)]; //yüzdeye denk gelen resmi bul
-        this.img = this.imageCache[path]; //resmi yükle
+        let path = this.IMAGES[this.resolveImageIndex(percentage)];
+        this.img = this.imageCache[path];
     }
 
-    resolveImageIndex(percentage) {//Yüzdesel degere göre resmi bulup gösterir
-        if(percentage >= 100) return 5; //50 coin 100%
-        else if (percentage >= 80) return 4;//40 coin 80%
-        else if (percentage >= 60) return 3;//30 coin 60%
-        else if (percentage >= 40) return 2;//20 coin 40%
-        else if (percentage >= 20) return 1;//10 coin 20%
-        else return 0;//hic coin yok 0%
+    
+    /**
+     * Ermittelt den passenden Bild-Index für den Prozentsatz
+     * @param {number} percentage - Prozentsatz der Münzen (0-100)
+     * @returns {number} Index des anzuzeigenden Bildes (0-5)
+     */
+    resolveImageIndex(percentage) {
+        if(percentage >= 100) return 5;
+        else if (percentage >= 80) return 4;
+        else if (percentage >= 60) return 3;
+        else if (percentage >= 40) return 2;
+        else if (percentage >= 20) return 1;
+        else return 0;
     }
 
 }

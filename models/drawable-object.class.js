@@ -1,6 +1,6 @@
 class DrawableObject {
-    img; //Görsel burada saklanir
-    imageCache = {}; //Birden fazla görsel icin
+    img;
+    imageCache = {};
     currentImage = 0;
     x = 100;
     y = 320;
@@ -8,63 +8,90 @@ class DrawableObject {
     width = 100;
 
     
+     /**
+     * Lädt ein einzelnes Bild
+     * @param {string} path - Pfad zum Bild
+     */
     loadImage(path) {
-        this.img = new Image(); //Bos bir resim objesi olusturur
-        this.img.src = path; //Tarayiciya, bu yoldaki resmi yükle diyoruz.
+        this.img = new Image();
+        this.img.src = path;
     }
     
-    draw(ctx) { //Görsel yüklenmis ve kullanilabilir mi kontrol et
+
+    /**
+     * Zeichnet das Objekt auf dem Canvas
+     * @param {CanvasRenderingContext2D} ctx - Canvas-Kontext
+     */
+    draw(ctx) {
         if(this.img && this.img.complete && this.loadImage.naturalHeight !== 0) {
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height); //döndürülmüs ekliyor resmi
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
         }
     }
 
-    //KARAKTER VE CISIMLERIN ETRAFINA CIZIM
+
+    /**
+     * Ermittelt die Rahmenfarbe basierend auf Objekttyp
+     * @returns {string} Farbe für den Debug-Rahmen
+     */
+    getFrameColor() {
+        if(this instanceof Character) return 'blue';
+        if(this instanceof Chicken || this instanceof ChickenBaby) return 'red';
+        if(this instanceof ThrowableObject) return 'green';
+        if(this instanceof Endboss) return 'orange';
+        return 'white';
+    }
+
+
+    /**
+     * Berechnet die Rahmen-Koordinaten mit Offset
+     * @returns {Object} Rahmen-Koordinaten {x, y, width, height}
+     */
+    getFrameCoordinates() {
+        if(this.offset) {
+            return {
+                x: this.x + this.offset.left,
+                y: this.y + this.offset.top,
+                width: this.width - this.offset.left - this.offset.right,
+                height: this.height - this.offset.top - this.offset.bottom
+            };
+        }
+        return {
+            x: this.x,
+            y: this.y,
+            width: this.width,
+            height: this.height
+        };
+    }
+
+
+    /**
+     * Zeichnet einen Debug-Rahmen um das Objekt
+     * Zeigt Kollisions-Grenzen für Entwicklung
+     * @param {CanvasRenderingContext2D} ctx - Canvas-Kontext
+     */
     drawFrame(ctx) {
-        const DEBUG_MODE = false; //False kutulari kaldirmak icin. Tekrar görünsün istiyorsan True yap
+        const DEBUG_MODE = false;
         if(!DEBUG_MODE) return;
-    //TÜM OBJELERİN çarpışma kutusunu göster (test için)
-    ctx.beginPath();
-    ctx.lineWidth = '3';
-    
-    // Farklı objeler için farklı renkler
-    if(this instanceof Character) {
-        ctx.strokeStyle = 'blue';  // Karakter mavi
-    } else if(this instanceof Chicken || this instanceof ChickenBaby) {
-        ctx.strokeStyle = 'red';   // Tavuklar kırmızı
-    } else if(this instanceof ThrowableObject) {
-        ctx.strokeStyle = 'green'; // Şişeler yeşil
-    } else if(this instanceof Endboss) {
-        ctx.strokeStyle = 'orange'; // Boss turuncu
-    } else {
-        ctx.strokeStyle = 'white'; // Diğerleri beyaz
+
+        ctx.beginPath();
+        ctx.lineWidth = '3';
+        ctx.strokeStyle = this.getFrameColor();
+        
+        let frame = this.getFrameCoordinates();
+        ctx.rect(frame.x, frame.y, frame.width, frame.height);
+        ctx.stroke();
     }
     
-
-        //OFFSET CARPISMA KUTUSUNU CIZ
-    if(this.offset) {
-    ctx.rect(
-        this.x + this.offset.left, //Sol taraftan offset kadar iceri
-        this.y + this.offset.top , //Üstten offset kadar asagi
-        this.width - this.offset.left - this.offset.right, //Genislikten offsetleri cikart
-        this.height - this.offset.top - this.offset.bottom //Yükseklikten offsetleri cikar
-        );
-    } else { //Offset yoksa normal ciz
-        ctx.rect(this.x, this.y, this.width, this.height);
-    }
-    ctx.stroke();
-    }
     
-
-
-
-     //ön yükleme / preloading
-    loadImages(arr) { //Method tanimladik. 
-        arr.forEach((path) => {//Dizideki her bir resim yolunu tek tek dolaşmak için bir döngü başlatır. ve bu path degiskenine atanir
-        let img = new Image();//Bellekte yepyeni, boş bir HTML Image (Görüntü) nesnesi oluşturulur.
-        img.src = path;//Image nesnesinin kaynağı src = döngüden gelen resim yolu (path) ile ayarlanır.Tarayıcı arka planda resmi indirmeye başlar.
-       
-        this.imageCache[path] = img;//Resmi, ait olduğu sınıftaki önbelleğe kaydeder.
+    /**
+     * Lädt mehrere Bilder und speichert sie im Cache
+     * @param {Array<string>} arr - Array von Bild-Pfaden
+     */
+    loadImages(arr) {
+        arr.forEach((path) => {
+            let img = new Image();
+            img.src = path;
+            this.imageCache[path] = img;
         });
     }
 

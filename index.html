@@ -46,7 +46,7 @@
                     <option value="2">🤠 Casual Western Rhythm</option>
                     <option value="3">🌵 Lonely Cowboy</option>
                 </select>
-            <button id="previewBtn" onclick="previewSelectedMusic()" disabled>▶️ HÖREN</button>
+            <button id="previewBtn" onclick="previewSelectedMusic()" disabled>▶️<p>HÖREN</p></button>
             </div>
 
             <!-- LEVEL SEÇİMİ -->
@@ -54,16 +54,17 @@
                 <h3>Level Auswählen</h3>
                 <div id="levelButtons">
                     <button class="level-btn active" onclick="selectLevel(1)">1</button>
-                    <button class="level-btn disabled" disabled>🔒 2</button>
-                    <button class="level-btn disabled" disabled>🔒 3</button>
-                    <button class="level-btn disabled" disabled>🔒 4</button>
+                    <button class="level-btn disabled" disabled>🔒<p>2</p></button>
+                    <button class="level-btn disabled" disabled>🔒<p>3</p></button>
+                    <button class="level-btn disabled" disabled>🔒<p>4</p></button>
                 </div>
             </div>
 
             <!-- OYUN KONTROL BUTONLARI -->
             <div id="gameControls">
                 <button id="playBtn" onclick="startGameFromHome()"><span class="btn-icon">▶️</span> SPIELEN</button>
-            <button id="fullscreenBtn" onclick="toggleFullscreen()"><span class="btn-icon">⛶</span> VOLLBILD</button>
+                <button id="infoBtn" onclick="openInfoDialog()"><span class="btn-icon">ℹ️</span> ANLEITUNG</button>
+                <button id="fullscreenBtn" onclick="toggleFullscreen()"><span class="btn-icon">⛶</span> VOLLBILD</button>
             </div>
 
             <!-- SES KONTROLÜ -->
@@ -85,6 +86,53 @@
 
 
     <canvas id="canvas" width="720" height="480" style="display: none;"></canvas>
+    
+    
+    <!-- ANLEITUNG DIALOG -->
+    <div id="infoDialog" style="display: none;">
+        <div id="infoContent">
+            <button id="closeInfoBtn" onclick="closeInfoDialog()">✕</button>
+            <h2>🎮 Spielanleitung</h2>
+            
+            <div class="info-section">
+                <h3>Ziel des Spiels:</h3>
+                <p>Besiege alle Hühner und den Endboss!</p>
+            </div>
+
+            <div class="info-section">
+                <h3>Steuerung (Desktop):</h3>
+                <div class="key-info">
+                    <span class="key">◄</span>
+                    <span class="key">►</span>
+                    <span class="description">Nach links/rechts bewegen</span>
+                </div>
+                <div class="key-info">
+                    <span class="key">SPACE</span>
+                    <span class="description">Springen</span>
+                </div>
+                <div class="key-info">
+                    <span class="key">D</span>
+                    <span class="description">Flasche werfen</span>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3>Steuerung (Mobile):</h3>
+                <p>Nutze die Touch-Buttons am unteren Bildschirmrand im Querformat.</p>
+            </div>
+
+            <div class="info-section">
+                <h3>Tipps:</h3>
+                <ul>
+                    <li>Sammle Münzen und Flaschen</li>
+                    <li>Springe auf Hühner, um sie zu besiegen</li>
+                    <li>Wirf Flaschen auf den Endboss</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
 
     <div id="gameOverPanel" style="display: none;">
         <img id="gameOverImage" src="" alt="Game Over">
@@ -105,7 +153,7 @@
     <!--QUERFORMAT_WARNUNG-->
     <div id="rotateWarning" style="display:none;">
         <div id="rotateContent">
-            <img src="" alt="./img/9_intro_outro_screens/start/startscreen_1.png" aria-multiline="Gerät drehen">
+            <img src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Gerät drehen">
             <h2>Bitte drehe dein Gerät!</h2>
         </div>
     </div>

@@ -1,36 +1,40 @@
-// const { startTransition } = require("react");
 
 let canvas;
 let world;
 let keyboard = new Keyboard();
-let isMusicOn = true; //Müzik acik mi kapali mi
-let intervalIds = []; //intervalleri takip etmek icin global array
-
+let isMusicOn = true;
+let intervalIds = [];
+let setIntervalIds = [];
 let gameState = {
-    started : false, // Oyun başladı mı?
-    paused : false, // Oyun duraklatıldı mı?
-    gameOver : false, // Oyun bitti mi?
-    won : false, // Oyuncu kazandı mı?
-    musicOn : true, // Müzik açık mı?
+    started : false,
+    paused : false,
+    gameOver : false,
+    won : false,
+    musicOn : true,
 };
 
+
+/**
+ * Prüft ob das Spiel aktiv ist
+ * @returns {boolean} True wenn Spiel gestartet, nicht pausiert und nicht beendet
+ */
 function isGameActive() {
     return gameState.started && !gameState.paused && !gameState.gameOver;
 }
 
 
+/**
+ * Initialisiert das Spiel
+ * Holt das Canvas-Element beim Laden der Seite
+ */
 function init() {
     canvas = document.getElementById('canvas');
-    // world = new World(canvas, keyboard);
-    // setupButtonListeners(); // Buton listener'ları kur (gerekirse)
-    // startRandomMusic(); //Rastgele müzik baslat
 }
 
 window.addEventListener("keydown", (e) => {
     
-    //Oyun pause ise veya bitmişse klavye çalışmasın
     if(gameState.paused || gameState.gameOver) {
-        return; // Hiçbir tuşa basma
+        return; 
     }
 
     if(e.keyCode == 39) {
@@ -73,9 +77,8 @@ window.addEventListener("keydown", (e) => {
 
 window.addEventListener("keyup", (e) => {
 
-    //Oyun pause ise veya bitmişse klavye çalışmasın
     if(gameState.paused || gameState.gameOver) {
-        return; // Hiçbir tuşa basma
+        return;
     }
 
     if(e.keyCode == 39) {
@@ -98,57 +101,116 @@ window.addEventListener("keyup", (e) => {
     }
 });
 
-function startGameFromHome() { //Müzik secildi mi kontrol et
-   
-    // Ana ekranı gizle
-    document.getElementById('homeScreen').style.display = 'none'; //Ana ekrani gizle
-    // Oyun ekranlarını göster
+
+/**
+ * Setzt den Spielstatus zurück
+ * Alle Spielzustände werden auf Startwerte gesetzt
+ * @returns {void}
+ */
+function resetGameState() {
+    gameState.started = true;
+    gameState.paused = false;
+    gameState.gameOver = false;
+    gameState.won = false;
+    gameState.musicOn = true;
+}
+
+
+/**
+ * Setzt alle Tastatureingaben zurück
+ * @returns {void}
+ */
+function resetKeyboard() {
+    keyboard.RIGHT = false;
+    keyboard.LEFT = false;
+    keyboard.UP = false;
+    keyboard.DOWN = false;
+    keyboard.SPACE = false;
+    keyboard.D = false;
+}
+
+
+/**
+ * Versteckt Game-Over und Win-Panels
+ * @returns {void}
+ */
+function hideEndPanels() {
+    document.getElementById('gameOverPanel').style.display = 'none';
+    document.getElementById('winPanel').style.display = 'none';
+}
+
+
+/**
+ * Zeigt das Spielfeld an
+ * @returns {void}
+ */
+function showGameCanvas() {
     document.getElementById('canvas').style.display = 'block';
     document.getElementById('controlPanel').style.display = 'flex';
-    // Panelleri gizle (eğer açıksa)
+    document.getElementById('pauseBtn').textContent = 'PAUSE';
+}
+
+/**
+ * Startet das Spiel vom Hauptmenü aus
+ * 
+ * Diese Funktion:
+ * - Versteckt das Hauptmenü
+ * - Zeigt das Spielfeld (Canvas) an
+ * - Initialisiert die Spielwelt
+ * - Startet die Hintergrundmusik
+ * - Zeigt mobile Steuerungen an (falls mobiles Gerät)
+ * 
+ * @returns {void}
+ */
+function startGameFromHome() {
+   
+    document.getElementById('homeScreen').style.display = 'none'; 
+    document.getElementById('canvas').style.display = 'block';
+    document.getElementById('controlPanel').style.display = 'flex';
     document.getElementById('gameOverPanel').style.display = 'none';
     document.getElementById('winPanel').style.display = 'none';
     
-    // Oyun durumunu güncelle
     gameState.started = true;
     gameState.gameOver = false;
     gameState.won = false;
     gameState.paused = false;
-
-    // Oyunu başlat (World olustur)
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard);
 
-    // Müziği başlat (SEÇİLİ OLMASA BİLE!)
     startBackgroundMusic();
-
-    // Mobile Steuerung anzeigen
     showMobilControls();
 }
 
-//Oyunu duraklat (PAUSE butonu)
+
+/**
+ * Pausiert oder setzt das Spiel fort
+ * Schaltet zwischen Pause und Weiter um
+ * @returns {void}
+ */
 function pauseGame() {
-    //Oyun başlamışsa, oyun bitmemişse ve kazanılmamışsa içeri gir
     if(gameState.started && !gameState.gameOver && !gameState.won) {
-        //paused durumunu tersine çevir (true ise false, false ise true yap)
         gameState.paused = !gameState.paused;
         
-        if(gameState.paused) { //Eğer oyun şu an duraklatıldıysa
-            if(gameState.musicOn) { //Müzik aciksa duraklat
-                pauseBackgroundMusic(); //Müzik açıksa müziği duraklat
-            } //Buton yazısını "WEITER" yap
-            document.getElementById('pauseBtn').textContent = 'WEITER';
-        } else { //Eğer oyun devam ediyorsa
-            if(gameState.musicOn) { //Müzik aciksa devam ettir
+        if(gameState.paused) {
+            if(gameState.musicOn) {
+                pauseBackgroundMusic();
+            }
+            document.getElementById('pauseBtn').textContent = '▶️ WEITER';
+        } else {
+            if(gameState.musicOn) {
             resumeBackgroundMusic();
-            } //Buton yazısını "PAUSE" yap
-            document.getElementById('pauseBtn').textContent = 'PAUSE';
+            }
+            document.getElementById('pauseBtn').textContent = '⏸️ PAUSE';
         }
     }
 }
 
 
-//Oyunu devam ettir (START butonu)
+/**
+ * Setzt das Spiel fort
+ * Startet das Spiel oder beendet die Pause
+ * @returns {void}
+ */
 function resumeGame() {
     if(!gameState.started) {
         gameState.started = true;
@@ -156,131 +218,123 @@ function resumeGame() {
     
     if(gameState.paused) {
         gameState.paused = false;
-         if(gameState.musicOn) { //Müzik aciksa devam ettir
+         if(gameState.musicOn) {
             resumeBackgroundMusic();
          }
-        document.getElementById('pauseBtn').textContent = 'PAUSE';
+        document.getElementById('pauseBtn').textContent = '⏸️ PAUSE';
     }
 }
 
 
-//Müziği aç/kapat (MUSIK AN/AUS butonu)
+/**
+ * Schaltet die Musik ein/aus
+ * Ändert Button-Text und spielt/pausiert Musik
+ */
 function toggleMusic() {
     isMusicOn = !isMusicOn;
     gameState.musicOn = isMusicOn;
     
     if(isMusicOn) {
         resumeBackgroundMusic();
-        document.getElementById('musicBtn').textContent = 'MUSIK AN';
+        document.getElementById('musicBtn').textContent = '🎵 MUSIK AN';
     } else {
         pauseBackgroundMusic();
-        document.getElementById('musicBtn').textContent = 'MUSIK AUS';
+        document.getElementById('musicBtn').textContent = '🔇 MUSIK AUS';
     }
-}
-
-
-//Oyunu yeniden başlat (NOCHMAL SPIELEN butonu)
-function restartGame() {    
-    
-    //Eski oyunu (world) temizle.(world değişkenini null yaparak eski oyunu bellekten kaldırır)
-    if(world) {
-        clearAllIntervals();
-        world= null;
-    }
-
-    // EKRANI GÜNCELLE
-    document.getElementById('gameOverPanel').style.display = 'none';
-    document.getElementById('winPanel').style.display = 'none';
-    
-    const canvas = document.getElementById('canvas');
-    canvas.style.display = 'block';
-    document.getElementById('controlPanel').style.display = 'flex';
-    document.getElementById('pauseBtn').textContent = 'PAUSE'; //Pause butonunun yazısını "PAUSE" olarak ayarlar. Pause varsa Weiter olarak düzeltir
-    
-    keyboard.RIGHT = false;
-    keyboard.LEFT = false;
-    keyboard.UP = false;
-    keyboard.DOWN = false;
-    keyboard.SPACE = false;
-    keyboard.D = false;
-    
-     //Tüm oyun durum değişkenlerini başlangıç değerlerine döndürür.
-    gameState.started = true;
-    gameState.paused = false;
-    gameState.gameOver = false;
-    gameState.won = false;
-    gameState.musicOn = true;
-
-    //  runGameLoop(); //Karakterlerin hareketini saglayan ana döngüyü yeniden baslatir
-
-    world = new World(canvas, keyboard);
-    
-    stopBackgroundMusic(); 
-    startBackgroundMusic();      
 }
 
 
 /**
- * Kehrt zum Hauptmenü zurück
- * 
- * Diese Funktion:
- * - Stoppt das Spiel und räumt alle Ressourcen auf
- * - Löscht alle laufenden Intervalle
- * - Stoppt die Hintergrundmusik
- * - Setzt den Spielstatus zurück
- * - Versteckt die mobilen Steuerungen
- * - Lädt die Seite neu
- * 
- * @function goToHome
+ * Startet das Spiel neu
+ * Alle Ressourcen werden zurückgesetzt
  * @returns {void}
  */
-function goToHome() { //ANA SAYFAYA DÖN (HAUPTSEITE butonu)
-    if(world) { //intervalleri temizle(zaman aralığı boyunca sürekli olarak, defalarca çalışan fonksiyon)
+function restartGame() {
+    if(world) {
         clearAllIntervals();
         world = null;
     }
     
-    stopBackgroundMusic(); //müzigi durdur
+    hideEndPanels();
+    showGameCanvas();
+    resetKeyboard();
+    resetGameState();
+    world = new World(canvas, keyboard);
+    stopBackgroundMusic();
+    startBackgroundMusic();
+}
 
-    gameState = { //Oyun durumunu sifirla (Tüm oyun durum değişkenlerini başlangıç değerlerine döndürür)
+
+/**
+ * Versteckt alle Spiel-Panels
+ * @returns {void}
+ */
+function hideAllGamePanels() {
+    document.getElementById('gameOverPanel').style.display = 'none';
+    document.getElementById('winPanel').style.display = 'none';
+    document.getElementById('canvas').style.display = 'none';
+    document.getElementById('controlPanel').style.display = 'none';
+}
+
+
+/**
+ * Zeigt das Hauptmenü an
+ * @returns {void}
+ */
+function showHomeScreen() {
+    document.getElementById('homeScreen').style.display = 'flex';
+    document.getElementById('pauseBtn').textContent = 'PAUSE';
+}
+
+
+/**
+ * Setzt den Spielstatus für Hauptmenü zurück
+ * @returns {void}
+ */
+function resetGameStateForHome() {
+    gameState = {
         started: false,
         paused: false,
         gameOver: false,
         won: false,
         musicOn: true,
-        };
-    keyboard = new Keyboard(); //Klavye durumlari temizlenir. Yeni bir klavye nesnesi olusturur
+    };
+}
 
-    document.getElementById('gameOverPanel').style.display = 'none';
-    document.getElementById('winPanel').style.display = 'none';
-    document.getElementById('canvas').style.display = 'none';
-    document.getElementById('controlPanel').style.display = 'none';
-    document.getElementById('homeScreen').style.display = 'flex';
-    document.getElementById('pauseBtn').textContent = 'PAUSE'; //Pause butonunun yazısını "PAUSE" olarak ayarlar. Pause varsa Weiter olarak düzeltir
-    // startRandomMusic(); //Ana menü icin rastgele bir müzik baslatir
 
-    // Mobile Steuerung ausblenden
+/**
+ * Kehrt zum Hauptmenü zurück
+ * Stoppt das Spiel und räumt alle Ressourcen auf
+ * @returns {void}
+ */
+function goToHome() {
+    if(world) {
+        clearAllIntervals();
+        world = null;
+    }
+    
+    stopBackgroundMusic();
+    resetGameStateForHome();
+    keyboard = new Keyboard();
+    hideAllGamePanels();
+    showHomeScreen();
     hideMobilControls();
     
-    //sayfayi yenile
     setTimeout(() => {
-        location.reload(); //sayfayi yeniden yükle
+        location.reload();
     }, 100);
 }
 
-let setIntervalIds = []; //intervalleri temizle(zaman aralığı boyunca sürekli olarak, defalarca çalışan fonksiyon)
 
+/**
+ * Löscht alle laufenden Intervalle und Timeouts
+ * Räumt Ressourcen auf beim Spielende oder Neustart
+ */
 function clearAllIntervals() {
-
-    //World`deki intervalleri temizle
     intervalIds.forEach(id => clearInterval(id));
     intervalIds = [];
-
-    //tüm intervalleri temizle
     setIntervalIds.forEach(id => clearInterval(id));
     setIntervalIds = [];
-
-    // Ek güvenlik için. Ttüm eski hareket döngülerini temizle
     const maxId = 10000;
     for(let i = 0; i < maxId; i++) {
         clearInterval(i);
@@ -288,16 +342,17 @@ function clearAllIntervals() {
     }
 }
 
- //Sesi aç/kapat (TON AN/AUS butonu)
+
+/**
+ * Schaltet den Ton ein/aus
+ * Aktualisiert Button-Texte und Musik-Status
+ */
 function toggleSound() {
-    
-    //Buton yazilarini güncelle
     document.getElementById('soundBtn').textContent = gameState.musicOn ? 'TON AN' : 'TON AUS';
     document.getElementById('musicBtn').textContent = gameState.musicOn ? 'TON AN' : 'TON AUS';
 
-    //Müzigi ac ya da kapat
     if(gameState.musicOn) {
-        if(gameState.started && !gameState.paused) {  // Ses açık: Müziği başlat veya devam ettir
+        if(gameState.started && !gameState.paused) {
             startBackgroundMusic();
     } else {
         pauseBackgroundMusic();
@@ -305,7 +360,11 @@ function toggleSound() {
     }
 }
 
-//Tam ekran aç/kapat (VOLLBILD butonu)
+
+/**
+ * Schaltet den Vollbild-Modus ein/aus
+ * Wechselt zwischen normalem und Vollbild-Modus
+ */
 function toggleFullscreen() {
     if(!document.fullscreenElement) {
         document.documentElement.requestFullscreen();
@@ -325,13 +384,11 @@ function toggleFullscreen() {
  * @returns {void}
  */
 function setupMobilControls() {
-    //Alle Button-Elemente aus dem DOM holen
     const btnLeft = document.getElementById('btnLeft');
     const btnRight = document.getElementById('btnRight');
     const btnjump = document.getElementById('btnJump');
     const btnThrow = document.getElementById('btnThrow');
 
-    //Wenn Buttons nicht existieren, Funktion beenden
     if(!btnLeft) return;
 
     //LINKS_BUTTON
@@ -340,8 +397,8 @@ function setupMobilControls() {
      * @param {TouchEvent} e - Das Touch-Event-Objekt
      */
     btnLeft.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // Standard-Touch-Verhalten verhindern (Scrollen, Zoomen)
-        keyboard.LEFT = true; // Linke Taste aktivieren
+        e.preventDefault();
+        keyboard.LEFT = true;
     });
     
     /**
@@ -349,18 +406,17 @@ function setupMobilControls() {
      * @param {TouchEvent} e - Das Touch-Event-Objekt
      */
     btnLeft.addEventListener('touchend', (e) => {
-        e.preventDefault(); // Standard-Touch-Verhalten verhindern
-        keyboard.LEFT = false; // Linke Taste deaktivieren
+        e.preventDefault();
+        keyboard.LEFT = false;
     });
     
-    // ===== RECHTS-BUTTON =====
     /**
      * Touch-Start Event: Rechte Bewegung aktivieren
      * @param {TouchEvent} e - Das Touch-Event-Objekt
      */
     btnRight.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // Standard-Touch-Verhalten verhindern
-        keyboard.RIGHT = true; // Rechte Taste aktivieren
+        e.preventDefault();
+        keyboard.RIGHT = true;
     });
     
     /**
@@ -368,18 +424,17 @@ function setupMobilControls() {
      * @param {TouchEvent} e - Das Touch-Event-Objekt
      */
     btnRight.addEventListener('touchend', (e) => {
-        e.preventDefault(); // Standard-Touch-Verhalten verhindern
-        keyboard.RIGHT = false; // Rechte Taste deaktivieren
+        e.preventDefault();
+        keyboard.RIGHT = false;
     });
     
-    // ===== SPRUNG-BUTTON =====
     /**
      * Touch-Start Event: Sprung aktivieren
      * @param {TouchEvent} e - Das Touch-Event-Objekt
      */
     btnJump.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // Standard-Touch-Verhalten verhindern
-        keyboard.SPACE = true; // Leertaste aktivieren (Sprung)
+        e.preventDefault();
+        keyboard.SPACE = true;
     });
     
     /**
@@ -387,18 +442,17 @@ function setupMobilControls() {
      * @param {TouchEvent} e - Das Touch-Event-Objekt
      */
     btnJump.addEventListener('touchend', (e) => {
-        e.preventDefault(); // Standard-Touch-Verhalten verhindern
-        keyboard.SPACE = false; // Leertaste deaktivieren
+        e.preventDefault();
+        keyboard.SPACE = false;
     });
     
-    // ===== WURF-BUTTON =====
     /**
      * Touch-Start Event: Wurf aktivieren
      * @param {TouchEvent} e - Das Touch-Event-Objekt
      */
     btnThrow.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // Standard-Touch-Verhalten verhindern
-        keyboard.D = true; // D-Taste aktivieren (Flasche werfen)
+        e.preventDefault();
+        keyboard.D = true;
     });
     
     /**
@@ -406,8 +460,8 @@ function setupMobilControls() {
      * @param {TouchEvent} e - Das Touch-Event-Objekt
      */
     btnThrow.addEventListener('touchend', (e) => {
-        e.preventDefault(); // Standard-Touch-Verhalten verhindern
-        keyboard.D = false; // D-Taste deaktivieren
+        e.preventDefault();
+        keyboard.D = false; 
     });
 }
 
@@ -421,11 +475,9 @@ function setupMobilControls() {
  */
 function showMobilControls() {
     const mobilControls = document.getElementById('mobilControls');
-    
-    // Nur auf mobilen Geräten anzeigen (Bildschirmbreite <= 1024px)
-    if (mobilControls && window.innerWidth <= 1024) {
-        mobilControls.style.display = 'flex'; // Steuerung sichtbar machen
-    }
+        if (mobilControls && window.innerWidth <= 1024) {
+            mobilControls.style.display = 'flex';
+        }
 }
 
 /**
@@ -437,13 +489,11 @@ function showMobilControls() {
  */
 function hideMobilControls() {
     const mobilControls = document.getElementById('mobilControls');
-    
-    if (mobilControls) {
-        mobilControls.style.display = 'none'; // Steuerung ausblenden
-    }
+        if (mobilControls) {
+            mobilControls.style.display = 'none'; // Steuerung ausblenden
+        }
 }
 
-// ===== EVENT-LISTENER =====
 
 /**
  * Initialisiert die mobilen Steuerungen beim Laden der Seite
@@ -451,8 +501,9 @@ function hideMobilControls() {
  * bereit sind, sobald die Seite vollständig geladen ist
  */
 window.addEventListener('load', () => {
-    setupMobilControls(); // Mobile Steuerung einrichten
+    setupMobilControls();
 });
+
 
 /**
  * Level-Auswahlfunktion
@@ -460,12 +511,41 @@ window.addEventListener('load', () => {
  */
 function selectLevel(levelNumber) {
     if (levelNumber === 1) {
-        // Entferne die "active"-Klasse von allen Buttons
         document.querySelectorAll('.level-btn').forEach(btn => {
             btn.classList.remove('active');
         });
-        // Füge die "active"-Klasse zum angeklickten Button hinzu
         event.target.classList.add('active');
         console.log('Level ' + levelNumber + ' ausgewählt');
     }
 }
+
+
+/**
+ * Öffnet den Anleitung-Dialog
+ * Zeigt die Spielsteuerung und Tipps an
+ */
+function openInfoDialog() {
+    document.getElementById('infoDialog').style.display = 'flex';
+}
+
+
+/**
+ * Schließt den Anleitung-Dialog
+ * Wird aufgerufen beim Klick auf X oder außerhalb des Dialogs
+ */
+function closeInfoDialog() {
+    document.getElementById('infoDialog').style.display = 'none';
+}
+
+
+/**
+ * Schließt den Info-Dialog bei Klick außerhalb
+ * Event-Listener für Click außerhalb des Dialog-Inhalts
+ */
+document.addEventListener('click', (event) => {
+    const infoDialog = document.getElementById('infoDialog');
+    const infoContent = document.getElementById('infoContent');
+        if (infoDialog && event.target === infoDialog) {
+            closeInfoDialog();
+        }
+});

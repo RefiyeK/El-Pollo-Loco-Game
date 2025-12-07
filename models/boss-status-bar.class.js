@@ -1,47 +1,60 @@
 class BossStatusBar extends DrawableObject {
-    percentage = 100; //Bosun baslangic can yüzdesi
+    percentage = 100;
 
-    IMAGES_HEALTH_ENDBOSS = [//Bosun can durumunu gösteren görseller
-        'img/7_statusbars/2_statusbar_endboss/orange/orange0.png', //ölü
-        'img/7_statusbars/2_statusbar_endboss/orange/orange20.png', //20% can var
-        'img/7_statusbars/2_statusbar_endboss/orange/orange40.png', //40% can var
-        'img/7_statusbars/2_statusbar_endboss/orange/orange60.png', //60% can var
-        'img/7_statusbars/2_statusbar_endboss/orange/orange80.png', //80% can var
-        'img/7_statusbars/2_statusbar_endboss/orange/orange100.png' //100% can- tam dolu
+    IMAGES_HEALTH_ENDBOSS = [
+        'img/7_statusbars/2_statusbar_endboss/orange/orange0.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange20.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange40.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange60.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange80.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange100.png'
     ];
 
-    constructor() { //yeni bir bos status bar olusturuldugunda calisir
-        super(); //DrawableObject sinifinin consructor ini cagirir
-        this.loadImages(this.IMAGES_HEALTH_ENDBOSS); //Tüm görselleri bellege yükle
-        this.x = 540; // Sağ üstte görünecek
-        this.y = 6; //Ekranin en üstünde
-        this.width = 150; //Status bar`in boyutlari genislik
-        this.height = 50; //Status bar`in boyutlari yükseklik
-        this.setPercentage(100); //Baslangicta 100% can ile basliyor
+
+    /**
+     * Erstellt eine Gesundheitsanzeige für den Endboss
+     * Zeigt Boss-Energie als Statusbalken an
+     */
+    constructor() {
+        super();
+        this.loadImages(this.IMAGES_HEALTH_ENDBOSS);
+        this.x = 540;
+        this.y = 6;
+        this.width = 150;
+        this.height = 50;
+        this.setPercentage(100);
     }
 
-        //Bos`un canini güncelleme metode
-    setPercentage(health) {//Parametre= health: Bos`un güncel can miktari
-        this.percentage = health; //Gelen can miktarini sakla
-        //Can yüzdesine göre hangi görseli gösterecegimizi bul
+
+    /**
+     * Setzt den Prozentsatz der Boss-Gesundheit
+     * Aktualisiert das angezeigte Bild entsprechend
+     * @param {number} health - Gesundheit in Prozent (0-100)
+     */
+    setPercentage(health) {
+        this.percentage = health;
         let path = this.IMAGES_HEALTH_ENDBOSS[this.resolveImageIndex()];
-        this.img = this.imageCache[path];//Bulunan görseli ekrana ciz (imageCache`den al)
+        this.img = this.imageCache[path];
     }
 
-        //Can yüzdesine göre hangi görsel index`ini kullanacagimizi belirler
+
+    /**
+     * Ermittelt den passenden Bild-Index für die Gesundheit
+     * @returns {number} Index des anzuzeigenden Bildes (0-5)
+     */
     resolveImageIndex() {
-        if(this.percentage == 100) { //Eger can 100% ise
-            return 5; //Array`in 5. elemanini
-        } else if (this.percentage > 80) { //Eger can 80% den fazla ise
-            return 4; //Array`in 4. elemanini
-        } else if (this.percentage > 60) { //Eger can 60% den fazla ise
-            return 3; //Array`in 3. elemanini
-        } else if (this.percentage > 40) { //Eger can 40% den fazla ise
-            return 2; //Array`in 2. elemanini
-        } else if (this.percentage > 20) { //Eger can 20% den fazla ise
-            return 1; //Array`in 1. elemanini
-        } else { //Eger can 20% den az ise 
-            return 0; //Array`in 0. elemanini
+        if(this.percentage == 100) {
+            return 5;
+        } else if (this.percentage > 80) {
+            return 4;
+        } else if (this.percentage > 60) { 
+            return 3;
+        } else if (this.percentage > 40) { 
+            return 2;
+        } else if (this.percentage > 20) {
+            return 1;
+        } else {
+            return 0;
         }
     }
 }

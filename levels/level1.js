@@ -1,3 +1,19 @@
+
+/**
+ * Erstellt das erste Level des Spiels
+ * Beinhaltet alle Gegner, Wolken, Hintergründe, Münzen und Flaschen
+ * 
+ * Level-Aufbau:
+ * - 10 normale Hühner
+ * - 9 Baby-Hühner
+ * - 1 Endboss
+ * - 37 Wolken für Atmosphäre
+ * - Mehrschichtige Hintergründe (Luft, 3 Ebenen)
+ * - 50 Münzen zum Sammeln
+ * - 20 Flaschen zum Sammeln
+ * 
+ * @returns {Level} Das konfigurierte Level-Objekt
+ */
 function createLevel1() {
     return new Level(
     [
@@ -62,7 +78,7 @@ function createLevel1() {
         new Cloud()
     ],
     [
-        new BackgroundObject('img/5_background/layers/air.png',-719), //canvas in bittigi yer orada tekrar resmi baslatiyoruz
+        new BackgroundObject('img/5_background/layers/air.png',-719),
         new BackgroundObject('img/5_background/layers/3_third_layer/2.png', -719),
         new BackgroundObject('img/5_background/layers/2_second_layer/2.png', -719),
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', -719),
@@ -72,7 +88,7 @@ function createLevel1() {
         new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 0),
         new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 0),
         new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 0),
-        new BackgroundObject('img/5_background/layers/air.png',719), //canvas in bittigi yer orada tekrar resmi baslatiyoruz
+        new BackgroundObject('img/5_background/layers/air.png',719),
         new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719),
         new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719),
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719),
@@ -81,7 +97,7 @@ function createLevel1() {
         new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 719*2),
         new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 719*2),
         new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719*2),
-        new BackgroundObject('img/5_background/layers/air.png',719*3), //canvas in bittigi yer orada tekrar resmi baslatiyoruz
+        new BackgroundObject('img/5_background/layers/air.png',719*3),
         new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719*3),
         new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719*3),
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719*3),
@@ -90,7 +106,7 @@ function createLevel1() {
         new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 719*4),
         new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 719*4),
         new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719*4),
-        new BackgroundObject('img/5_background/layers/air.png',719*5), //canvas in bittigi yer orada tekrar resmi baslatiyoruz
+        new BackgroundObject('img/5_background/layers/air.png',719*5),
         new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719*5),
         new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719*5),
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719*5),
@@ -99,7 +115,7 @@ function createLevel1() {
         new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 719*6),
         new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 719*6),
         new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719*6),
-        new BackgroundObject('img/5_background/layers/air.png',719*7), //canvas in bittigi yer orada tekrar resmi baslatiyoruz
+        new BackgroundObject('img/5_background/layers/air.png',719*7),
         new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719*7),
         new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719*7),
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719*7),
@@ -108,7 +124,7 @@ function createLevel1() {
         new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 719*8),
         new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 719*8),
         new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719*8),
-        new BackgroundObject('img/5_background/layers/air.png',719*9), //canvas in bittigi yer orada tekrar resmi baslatiyoruz
+        new BackgroundObject('img/5_background/layers/air.png',719*9),
         new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719*9),
         new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719*9),
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719*9),
@@ -117,7 +133,7 @@ function createLevel1() {
         new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 719*10),
         new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 719*10),
         new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719*10),
-        new BackgroundObject('img/5_background/layers/air.png',719*11), //canvas in bittigi yer orada tekrar resmi baslatiyoruz
+        new BackgroundObject('img/5_background/layers/air.png',719*11),
         new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719*11),
         new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719*11),
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719*11),
@@ -126,7 +142,7 @@ function createLevel1() {
         new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 719*12),
         new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 719*12),
         new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719*12),
-        new BackgroundObject('img/5_background/layers/air.png',719*13), //canvas in bittigi yer orada tekrar resmi baslatiyoruz
+        new BackgroundObject('img/5_background/layers/air.png',719*13),
         new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719*13),
         new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719*13),
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719*13)

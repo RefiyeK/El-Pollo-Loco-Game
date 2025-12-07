@@ -1,17 +1,23 @@
 class Coin extends MovableObject {
     width = 80;
     height = 80;
-    initialY; // Başlangıç Y koordinatını saklamak için
-    maxHeight =350; // Altının çıkabileceği maksimum yükseklik
-    isMovingUp = true; // Başlangıçta yukarı doğru hareket eder
-    verticalSpeed = 5; // Yukarı/aşağı hareket hızı
+    initialY;
+    maxHeight =350;
+    isMovingUp = true;
+    verticalSpeed = 5;
 
     IMAGES = [
         'img/8_coin/coin_1.png',
         'img/8_coin/coin_2.png'
     ];
 
-    constructor(x, y = 150) { // Varsayılan Y'yi 150 (zemin) olarak ayarladım
+
+    /**
+     * Erstellt eine sammelbare Münze
+     * @param {number} x - X-Position der Münze
+     * @param {number} y - Y-Position der Münze (Standard: 150)
+     */
+    constructor(x, y = 150) {
         super().loadImage(this.IMAGES[0]);
         this.loadImages(this.IMAGES);
 
@@ -29,7 +35,11 @@ class Coin extends MovableObject {
     }
 
 
-    animate() {//Animasyon dönme efekti
+    /**
+     * Startet die Münz-Animation
+     * Wechselt zwischen zwei Bildern für Glitzer-Effekt
+     */
+    animate() {
         setInterval(() => {
             this.playAnimation(this.IMAGES);
         }, 200);

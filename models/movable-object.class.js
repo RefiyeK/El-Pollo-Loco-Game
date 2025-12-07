@@ -2,12 +2,16 @@ class MovableObject extends DrawableObject {
     
     speed = 0.15;
     otherDirection = false;
-    speedY = 0; //geschwindigkeit auf der Y Achse / Wie schnell das Objekt nach unten fällt
-    acceleration = 2.5; //wie schnell das Objekt beschleunigt wird.
-    energy = 100; //toplam sahip oldugu can
+    speedY = 0;
+    acceleration = 2.5;
+    energy = 100;
     lastHit = 0;
     
 
+    /**
+     * Wendet Schwerkraft auf das Objekt an
+     * Objekt fällt nach unten wenn in der Luft
+     */
     applyGravity() { 
         setInterval(() => {
             if(!isGameActive()) return;
@@ -19,88 +23,116 @@ class MovableObject extends DrawableObject {
         }, 1000 / 25);
     }
 
+
+    /**
+     * Prüft ob Objekt über dem Boden ist
+     * @returns {boolean} True wenn über dem Boden
+     */
     isAboveGround() {
-        if(this instanceof ThrowableObject) { // Eğer fırlatılabilir bir nesneyse (örneğin şişe), her zaman yerin üstündedir
-            return this.y < 360; //360 = zemin seviyesi    
+        if(this instanceof ThrowableObject) {
+            return this.y < 360;
         } 
         if(this instanceof Coin) {
-        return this.y < 150// Belirli bir yükseklikten (zemin) yukarıda olup olmadığını kontrol eder.
+        return this.y < 150
          }
-         return this.y < 150 // Karakterin düştükten sonra nerede durmasi gerektigi yer
+         return this.y < 150
     }
 
+    
+    /**
+     * Holt die Offset-Werte eines Objekts
+     * @param {Object} obj - Das Objekt
+     * @returns {Object} Offset-Werte (left, right, top, bottom)
+     */
+    getOffsets(obj) {
+        return {
+            left: obj.offset?.left || 0,
+            right: obj.offset?.right || 0,
+            top: obj.offset?.top || 0,
+            bottom: obj.offset?.bottom || 0
+        };
+    }
+
+
+    /**
+     * Prüft ob dieses Objekt mit einem anderen kollidiert
+     * Berücksichtigt Offset-Werte für präzise Kollision
+     * @param {Object} mo - Das andere Objekt (Movable Object)
+     * @returns {boolean} True bei Kollision
+     */
     isColliding(mo) {
-
-        //Eger offset yoksa varsayilan degerler kullan (0)
-        //this.offset?.left = Sisenin soldan offset`i var mi? Varsa al
-        // ||0 = Yoksa sifir kullan
-        let thisOffsetLeft = this.offset?.left || 0;
-        let thisOffsetRight = this.offset?.right || 0;
-        let thisOffsetTop = this.offset?.top || 0;
-        let thisOffsetBottom = this.offset?.bottom || 0;
-
-        let moOffsetLeft = mo.offset?.left || 0;
-        let moOffsetRight = mo.offset?.right || 0;
-        let moOffsetTop = mo.offset?.top || 0;
-        let moOffsetBottom = mo.offset?.bottom || 0;
-
+        let thisOffset = this.getOffsets(this);
+        let moOffset = this.getOffsets(mo);
         
-        //Offset`li carpisma kontrolü
         return (
-        //this.x = sisenin sol kenari (0 noktasi)
-        //this.x + this.width = Sisenin sag kenari
-        //mo.x = Boss`un sol kenari
-        //mo.x + mo.width = Boss`un sag kenari
-
-            //this.x + thisOffsetLeft = Sisenin gercek sol kenari (sisex(7350) + offset left(5) = GERCEK SOL KENAR=7355)
-            //this.width - thisOffsetLeft - thisOffsetRight = sise genislik(40)-offset left(5)-right(5)= SISENIN GERCEK GENISLIK=30
-            //this.x + thisOffsetLeft + gercek genislik= Sisenin gercek sag kenari (sol kenar 7355 + genislik 30 = 7385)
-            //mo.x + moOffsetLeft = Boss`n gercek sol kenari (BossX 7400 + Boss offsetleft 0 = Boss`un gercek sol kenar 7400+0=7400)
-            //7385 > 7400 = Sisenin sag kenari Boss`un sol kenarindan büyük mü? = HAYIR -> Henüz carpmadi  
-            this.x + thisOffsetLeft + (this.width - thisOffsetLeft - thisOffsetRight) > mo.x + moOffsetLeft && // Sag kenar kontrolü
-            this.x + thisOffsetLeft < mo.x + moOffsetLeft + (mo.width - moOffsetLeft - moOffsetRight) && // Sol kenar kontrolü
-            this.y + thisOffsetTop + (this.height - thisOffsetTop - thisOffsetBottom) > mo.y + moOffsetTop && // Alt kenar kontrolü
-            this.y + thisOffsetTop < mo.y + moOffsetTop + (mo.height - moOffsetTop - moOffsetBottom) // Üst kenar kontrolü
+            this.x + thisOffset.left + (this.width - thisOffset.left - thisOffset.right) > mo.x + moOffset.left &&
+            this.x + thisOffset.left < mo.x + moOffset.left + (mo.width - moOffset.left - moOffset.right) &&
+            this.y + thisOffset.top + (this.height - thisOffset.top - thisOffset.bottom) > mo.y + moOffset.top &&
+            this.y + thisOffset.top < mo.y + moOffset.top + (mo.height - moOffset.top - moOffset.bottom)
         );
     }
 
 
-    hit() { //Karakterin ne kadar neerji/can kaybettigini belirliyor
-        this.energy -= 5; //ne kadar can kaybettigi yazili
+    /**
+     * Objekt nimmt Schaden
+     * Reduziert Energie um 5 Punkte
+     */
+    hit() {
+        this.energy -= 5;
         if (this.energy < 0) {
             this.energy = 0;
-        }else {
-            this.lastHit = new Date().getTime(); //zamanin ramak bakimindan yazilmasi
+        } else {
+            this.lastHit = new Date().getTime();
         }
     }
 
+
+    /**
+     * Prüft ob Objekt gerade verletzt wurde
+     * @returns {boolean} True wenn vor weniger als 1 Sekunde getroffen
+     */
     isHurt() {
-        let timepassed = new Date().getTime() - this.lastHit; //en son düsmanla karsilastigimiz an = difference in ms
-        timepassed = timepassed / 1000;// difference in s
-        return timepassed < 1; // son 1 sn icinde hasar aldiysak/carpisma olduysa SONUC TRUE o zaman IMAGES_HURT resmi cikiyor
+        let timepassed = new Date().getTime() - this.lastHit;
+        timepassed = timepassed / 1000;
+        return timepassed < 1;
     }
 
+
+    /**
+     * Prüft ob Objekt tot ist
+     * @returns {boolean} True wenn Energie 0 ist
+     */
     isDead() {
         return this.energy == 0;  
     }
-
    
 
+    /**
+     * Spielt eine Animation ab
+     * Wechselt durch die angegebenen Bilder
+     * @param {Array} images - Array von Bild-Pfaden
+     */
     playAnimation(images) {
-        //Walk Animation
-        let i = this.currentImage % images.length; //let i=0 % 6; %=Mathematische rest
-        //i=0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5,0,.....
+        let i = this.currentImage % images.length;
         let path = images[i];
         this.img = this.imageCache[path];
         this.currentImage++;
     }
 
-   moveRight() {
+
+   /**
+     * Bewegt Objekt nach rechts
+     */
+    moveRight() {
         this.x += this.speed;
     }
 
+    
+    /**
+     * Bewegt Objekt nach links
+     */
     moveLeft() {
-            this.x -= this.speed; //x koordinattan 1 pixel azaltiyor
+        this.x -= this.speed;
     }
 }
 

@@ -7,10 +7,10 @@ class Character extends MovableObject{
     speed = 10;
     coins = 0;
     bottles = 0;
-    maxCoins = 50; //toplanacak maximum altin sayisi
-    maxBottles = 10; //toplanacak maximum sise sayisi
+    maxCoins = 50;
+    maxBottles = 10;
 
-    lastAction = new Date().getTime(); //Enson ne zaman hareket etti
+    lastAction = new Date().getTime();
     idleTime = 2000; //2 saniye
     offset = {
         top: 120,
@@ -69,8 +69,13 @@ class Character extends MovableObject{
         'img/2_character_pepe/1_idle/long_idle/I-20.png'
     ];
 
-
     world;
+ 
+ 
+    /**
+     * Erstellt den spielbaren Charakter
+     * Lädt alle Animations-Bilder und startet Schwerkraft
+     */
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
         this.loadImages(this.IMAGES_WALKING);
@@ -82,107 +87,187 @@ class Character extends MovableObject{
         this.animate();
     }
 
-    animate() {
-        
-        setInterval(() => {
-            if(!isGameActive()) return;
-           let isWalking = false; //Varsayilan: yürümüyor
 
-            if(this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-               this.moveRight();
-               this.otherDirection = false;//sola tiklarsam resmi döndür
-               isWalking = true; //yürüyor
-               this.lastAction = new Date().getTime(); //Hareket etti
-            }    
+    /**
+     * Verarbeitet Bewegungs-Eingaben
+     * Bewegt Charakter basierend auf Tastendruck
+     * @returns {boolean} True wenn Charakter sich bewegt
+     */
+    handleMovement() {
+        let isWalking = false;
 
-            if(this.world.keyboard.LEFT && this.x > 0) {
-                this.moveLeft(); //sola gitme tusuna basar basmaz ve x kordinatlarinin icinde oldugu sürece sola hareket etmeli.
-                this.otherDirection = true; //saga tiklarsam resmi döndürme
-                isWalking = true; //yürüyor
-                this.lastAction = new Date().getTime(); //Hareket etti
-            }
-            
-            //SES KONTROL
-            if(isWalking) {
-                this.playWalkingSound(); //Yürüyorsa cal
-            } else {
-                this.stopWalkingSound(); //Duruyor mu? Durdur
-            }
+        if(this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+            this.moveRight();
+            this.otherDirection = false;
+            isWalking = true;
+            this.lastAction = new Date().getTime();
+        }
 
-            if(this.world.keyboard.UP && !this.isAboveGround() || this.world.keyboard.SPACE && !this.isAboveGround()){ //Yukari tusuna bastigimizda ve havada degilse
-                this.jump(); //movable icinde belirledigimiz ne kadar yukari ziplasin`i burada cagirmis olduk.
-                this.lastAction = new Date().getTime();
-            }
-        }, 1000 / 60); //60 mal pro Sekunde
-        
-        
-        setInterval( () => { 
-            if(!isGameActive()) return;
+        if(this.world.keyboard.LEFT && this.x > 0) {
+            this.moveLeft();
+            this.otherDirection = true;
+            isWalking = true;
+            this.lastAction = new Date().getTime();
+        }
 
-            if (this.isDead()) { //eger ölürsek
-                this.playAnimation(this.IMAGES_DEAD);
-            } else if (this.isHurt()) { //eger yaralandiysak
-                this.playAnimation(this.IMAGES_HURT);
-            }else if (this.isAboveGround()){ //eger ziplarsak alttaki görseli göster
-               this.playAnimation(this.IMAGES_JUMPING);
-            } else if(this.isIdle()) { //Hareketsiz mi?
-                this.playAnimation(this.IMAGES_IDLE); //Uyku animasyonu
-            }else {
-                if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {//sadece saga ya da sola gitme tusuna basarsam gitsin.
-                this.playAnimation(this.IMAGES_WALKING);
-                }
-            }
-        }, 50);
-        
-    }
-    
-    jump() {
-        this.speedY = 25; //ne kadar yüksege ziplayacagi belirli
-
-        //Ziplama sesi ayari
-        AudioHub.jump_sound.currentTime = 0; //Basa sar
-        AudioHub.jump_sound.volume = 0.2; //ses seviyesi 20%
-        AudioHub.jump_sound.play().catch(() => {
-            console.warn("Sprung-Sound konnte nicht abgespielt werden", e);
-        });
+        return isWalking;
     }
 
-    collectCoin() { //Altin mantigi maksimum sinira ulasmadiysa toplar
-        if(this.coins < this.maxCoins) { //Maksimum sinira ulasmadiysa
-            this.coins += 1; //Altin sayisini 1 arttir
-        } 
-    }
 
-    collectBottle() { //Sise toplama mantigi
-    if(this.bottles < this.maxBottles) { //Sise sayisi maximum(10)  sise sayisina ulasmadiysa
-        this.bottles += 1; //Sise sayisini bir attir
+    /**
+     * Verarbeitet Sprung-Eingaben
+     * Lässt Charakter springen wenn auf Boden
+     */
+    handleJump() {
+        if(this.world.keyboard.UP && !this.isAboveGround() || 
+           this.world.keyboard.SPACE && !this.isAboveGround()) {
+            this.jump();
+            this.lastAction = new Date().getTime();
         }
     }
 
-    //KARAKTER YÜRÜME SESI
+
+    /**
+     * Verwaltet den Lauf-Sound
+     * Startet/Stoppt Sound basierend auf Bewegung
+     * @param {boolean} isWalking - Ob Charakter läuft
+     */
+    manageWalkingSound(isWalking) {
+        if(isWalking) {
+            this.playWalkingSound();
+        } else {
+            this.stopWalkingSound();
+        }
+    }
+
+
+    /**
+     * Startet das Bewegungs-Intervall
+     * Verarbeitet Tasteneingaben 60x pro Sekunde
+     */
+    startMovementLoop() {
+        setInterval(() => {
+            if(!isGameActive()) return;
+            
+            let isWalking = this.handleMovement();
+            this.manageWalkingSound(isWalking);
+            this.handleJump();
+        }, 1000 / 60);
+    }
+
+
+    /**
+     * Wählt die passende Animation basierend auf Charakter-Zustand
+     */
+    selectAnimation() {
+        if(this.isDead()) {
+            this.playAnimation(this.IMAGES_DEAD);
+        } else if(this.isHurt()) {
+            this.playAnimation(this.IMAGES_HURT);
+        } else if(this.isAboveGround()) {
+            this.playAnimation(this.IMAGES_JUMPING);
+        } else if(this.isIdle()) {
+            this.playAnimation(this.IMAGES_IDLE);
+        } else if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+            this.playAnimation(this.IMAGES_WALKING);
+        }
+    }
+
+
+    /**
+     * Startet das Animations-Intervall
+     * Aktualisiert Animation alle 50ms
+     */
+    startAnimationLoop() {
+        setInterval(() => {
+            if(!isGameActive()) return;
+            this.selectAnimation();
+        }, 50);
+    }
+
+
+    /**
+     * Startet alle Charakter-Animationen und Bewegungen
+     * Initialisiert Bewegungs- und Animations-Loops
+     */
+    animate() {
+        this.startMovementLoop();
+        this.startAnimationLoop();
+    }
+    
+
+    /**
+     * Lässt den Charakter springen
+     * Setzt vertikale Geschwindigkeit und spielt Sound
+     */
+    jump() {
+        this.speedY = 25;
+
+        AudioHub.jump_sound.currentTime = 0;
+        AudioHub.jump_sound.volume = 0.2;
+        AudioHub.jump_sound.play().catch((e) => {
+            console.warn("Sprung-Sound konnte nicht abgespielt werden:", e);
+        });
+    }
+
+
+    /**
+     * Sammelt eine Münze ein
+     * Erhöht Münz-Zähler bis zum Maximum
+     */
+    collectCoin() {
+        if(this.coins < this.maxCoins) {
+            this.coins += 1; 
+        } 
+    }
+
+
+    /**
+     * Sammelt eine Flasche ein
+     * Erhöht Flaschen-Zähler bis zum Maximum
+     */
+    collectBottle() {
+    if(this.bottles < this.maxBottles) {
+        this.bottles += 1;
+        }
+    }
+
+
+    /**
+     * Spielt den Lauf-Sound ab
+     * Startet Sound-Loop wenn noch nicht aktiv
+     */
     playWalkingSound() {
-        //Eger ses calmiyorsa, baslat
         if(AudioHub.walking_sound.paused) {
-            AudioHub.walking_sound.currentTime = 0; //Basa sar
-            AudioHub.walking_sound.volume = 0.4; //ses seviyesi 50%
-            AudioHub.walking_sound.loop = true; //Sürekli tekrarla
+            AudioHub.walking_sound.currentTime = 0;
+            AudioHub.walking_sound.volume = 0.4;
+            AudioHub.walking_sound.loop = true;
             AudioHub.walking_sound.play().catch(e => {
-                console.warn("Yürüme sesi calinamadi:", e);
+                console.warn("Lauf-Sound konnte nicht abgespielt werden:", e);
             });
         }
     }
 
+
+    /**
+     * Stoppt den Lauf-Sound
+     * Pausiert Sound und setzt zurück
+     */
     stopWalkingSound() {
-        //Yürüme sesini durdur
         if(!AudioHub.walking_sound.paused) {
             AudioHub.walking_sound.pause();
-            AudioHub.walking_sound.currentTime = 0; //Basa sar
+            AudioHub.walking_sound.currentTime = 0;
         }
     }
 
-    isIdle() { //Suanki zaman en son hareket zamani > 2 saniye mi?
+
+    /**
+     * Prüft ob Charakter inaktiv ist
+     * @returns {boolean} True wenn länger als 2 Sekunden keine Aktion
+     */
+    isIdle() {
         let timePassed = new Date().getTime() - this.lastAction;
-        return timePassed > this.idleTime; //2 saniye
+        return timePassed > this.idleTime;
 
     }
 }
