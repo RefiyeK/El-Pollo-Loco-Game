@@ -9,12 +9,12 @@ class Level {
 
 
     /**
-     * Erstellt ein Level mit allen Spielobjekten
-     * @param {Array} enemies - Array von Gegnern (Hühner, Boss)
-     * @param {Array} clouds - Array von Wolken
-     * @param {Array} backgroundObjects - Array von Hintergrund-Objekten
-     * @param {Array} coins - Array von sammelbaren Münzen
-     * @param {Array} bottles - Array von sammelbaren Flaschen
+     * Creates a level with all game objects
+     * @param {Array} enemies - Array of enemies (chickens, boss)
+     * @param {Array} clouds - Array of clouds
+     * @param {Array} backgroundObjects - Array of background objects
+     * @param {Array} coins - Array of collectable coins
+     * @param {Array} bottles - Array of collectable bottles
      */
     constructor(enemies, clouds, backgroundObjects, coins, bottles) {
         this.enemies = enemies;

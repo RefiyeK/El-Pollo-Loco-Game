@@ -18,8 +18,8 @@ class AudioHub {
     static currentVolume = 0.2;
 
     /**
-     * Lädt ein Audio-Objekt vor
-     * @param {Audio} audio - Das Audio-Objekt zum Vorladen
+     * Preloads an audio object
+     * @param {Audio} audio - The audio object to preload
      */
     static preloadAudio(audio) {
         audio.preload = 'auto';
@@ -27,9 +27,9 @@ class AudioHub {
     }
 
     /**
-     * Lädt ein Audio-Objekt mit Lautstärke vor
-     * @param {Audio} audio - Das Audio-Objekt zum Vorladen
-     * @param {number} volume - Anfangslautstärke
+     * Preloads an audio object with volume
+     * @param {Audio} audio - The audio object to preload
+     * @param {number} volume - Initial volume level
      */
     static preloadAudioWithVolume(audio, volume) {
         audio.preload = 'auto';
@@ -38,7 +38,7 @@ class AudioHub {
     }
 
     /**
-     * Lädt alle Hintergrundmusiken vor
+     * Preloads all background music tracks
      */
     static preloadBackgroundMusic() {
         [AudioHub.music_piano, AudioHub.music_8bit, AudioHub.music_western, AudioHub.music_cowboy].forEach(audio => {
@@ -47,7 +47,7 @@ class AudioHub {
     }
 
     /**
-     * Lädt alle Sound-Effekte vor
+     * Preloads all sound effects
      */
     static preloadSoundEffects() {
         AudioHub.preloadAudio(AudioHub.walking_sound);
@@ -78,8 +78,8 @@ class AudioHub {
     
 
     /**
-     * Setzt die Lautstärke der Hintergrundmusik
-     * @param {number} volume - Lautstärkewert
+     * Sets the volume of background music
+     * @param {number} volume - Volume value
      */
     static setBackgroundMusicVolume(volume) {
         AudioHub.allBackgroundMusic.forEach(music => {
@@ -88,8 +88,8 @@ class AudioHub {
     }
 
     /**
-     * Setzt die Lautstärke aller Sound-Effekte
-     * @param {number} volume - Lautstärkewert
+     * Sets the volume of all sound effects
+     * @param {number} volume - Volume value
      */
     static setSoundEffectsVolume(volume) {
         AudioHub.walking_sound.volume = volume;
@@ -106,9 +106,9 @@ class AudioHub {
 
 
     /**
-     * Stellt die Lautstärke des Spiels ein
-     * Wird vom HTML-Slider aufgerufen
-     * @param {number} value - Lautstärkewert (0.0 = stumm, 1.0 = maximal)
+     * Sets the game volume
+     * Called by HTML slider
+     * @param {number} value - Volume value (0.0 = mute, 1.0 = maximum)
      */
     static setVolume(value) {
         AudioHub.currentVolume = parseFloat(value);
@@ -123,8 +123,8 @@ class AudioHub {
 
 
     /**
-     * Spielt eine Hintergrundmusik ab
-     * @param {number} index - Index der Musik im Array (0-3)
+     * Plays a background music track
+     * @param {number} index - Index of the music in the array (0-3)
      */
     static playMusic(index) {
         if(AudioHub.currentMusic === AudioHub.allBackgroundMusic[index] && !AudioHub.currentMusic.paused) {
@@ -141,13 +141,13 @@ class AudioHub {
         AudioHub.currentMusic.volume = 0.1;
         
         AudioHub.currentMusic.play().catch(e => {
-            console.warn("Musik konnte nicht automatisch abgespielt werden:", e);
+            console.warn("Music could not be played automatically:", e);
         });
     }
 
 
     /**
-     * Pausiert die aktuelle Musik
+     * Pauses the current music
      */
     static pauseMusic() {
         if(AudioHub.currentMusic) {
@@ -157,19 +157,19 @@ class AudioHub {
 
 
     /**
-     * Setzt die Musik fort
+     * Resumes the music
      */
     static resumeMusic(){
         if(AudioHub.currentMusic) {
             AudioHub.currentMusic.play().catch(e => {
-                console.warn("Musik konnte nicht fortgesetzt werden:", e);
+                console.warn("Music could not be resumed:", e);
             });
         }
     }
 
  
     /**
-     * Stoppt die Musik komplett
+     * Stops the music completely
      */
     static stopMusic() {
         if(AudioHub.currentMusic) {
@@ -181,7 +181,7 @@ class AudioHub {
 
 
     /**
-     * Spielt die Gefahr-Musik ab (Boss-Kampf)
+     * Plays the danger music (boss battle)
      */
     static playDangerMusic() {
         if(AudioHub.currentMusic) {
@@ -193,13 +193,13 @@ class AudioHub {
         AudioHub.currentMusic.loop = true;
         AudioHub.currentMusic.volume = 0.7;
         AudioHub.currentMusic.play().catch((e) => {
-            console.warn("Gefahr-Musik konnte nicht abgespielt werden:", e);
+            console.warn("Danger music could not be played:", e);
         });
     }
 
 
     /**
-     * Stoppt die Gefahr-Musik
+     * Stops the danger music
      */
     static stopDangerMusic() {
         if(AudioHub.currentMusic === AudioHub.danger_music) {

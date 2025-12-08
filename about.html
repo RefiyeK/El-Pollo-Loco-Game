@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About</title>
+    <style>
+        
+/* ============================================
+   BODY & HINTERGRUND
+   ============================================ */
+
+/**
+ * Haupt-Body für About-Seite
+ * Vollbild-Hintergrund mit Startscreen-Bild
+ * Halbtransparentes schwarzes Overlay für bessere Lesbarkeit
+ * Zentriert den Inhalt vertikal und horizontal
+ */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-image: url('img/9_intro_outro_screens/start/startscreen_1.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    position: relative;
+}
+
+/**
+ * Halbtransparentes schwarzes Overlay über dem Hintergrund
+ * Verbessert Lesbarkeit und Kontrast
+ */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: -1;
+}
+
+
+/* ============================================
+   ABOUT CONTAINER (HAUPT-BOX)
+   ============================================ */
+
+/**
+ * Haupt-Container für About-Informationen
+ * Canvas-ähnliche Größe (720x480) mit goldenen Rand
+ * Dunkler Hintergrund mit Schatten für Tiefe
+ */
+.about-container {
+    background-color: #2d2d2d; 
+    border: 5px solid #f4a300;
+    border-radius: 15px;
+    width: 720px;
+    height: 480px;
+    position: relative;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.8);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+}
+
+
+/* ============================================
+   HEADER BEREICH
+   ============================================ */
+
+/**
+ * Header-Bereich (oben fixiert)
+ * Enthält Titel und Schließen-Button
+ * Halbtransparenter schwarzer Hintergrund
+ */
+.about-header {
+    position: relative;
+    padding: 20px 40px;
+    border-bottom: 2px solid #f4a300;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 15px 15px 0 0;
+}
+
+/**
+ * Haupt-Überschrift im Header
+ * Gold-Farbe mit Schatten für Lesbarkeit
+ */
+h1 {
+    color: #f4a300;
+    text-align: center;
+    margin: 0;
+    font-size: 28px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+
+/* ============================================
+   SCHLIESSEN BUTTON
+   ============================================ */
+
+/**
+ * Schließen-Button (X-Symbol)
+ * Runder roter Button oben rechts
+ * Führt zurück zur Hauptseite (index.html)
+ */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    padding: 0;
+    z-index: 10;
+}
+
+/**
+ * Hover-Effekt für Schließen-Button
+ * Dunkler und vergrößert
+ */
+.close-btn:hover {
+    background-color: #cc0000;
+    transform: scale(1.1);
+}
+
+
+/* ============================================
+   CONTENT BEREICH (SCROLLBAR)
+   ============================================ */
+
+/**
+ * Haupt-Content-Bereich
+ * Scrollbar für längere Inhalte
+ * Halbtransparenter Hintergrund
+ */
+.about-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 40px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+/**
+ * Scrollbar-Breite (Webkit-Browser)
+ */
+.about-content::-webkit-scrollbar {
+    width: 10px;
+}
+
+/**
+ * Scrollbar-Track (Hintergrund der Scrollbar)
+ * Dunkler halbtransparenter Hintergrund
+ */
+.about-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+/**
+ * Scrollbar-Thumb (der bewegliche Teil)
+ * Gold-Farbe passend zum Design
+ */
+.about-content::-webkit-scrollbar-thumb {
+    background: #f4a300;
+    border-radius: 10px;
+}
+
+/**
+ * Hover-Effekt für Scrollbar-Thumb
+ * Dunkler bei Hover
+ */
+.about-content::-webkit-scrollbar-thumb:hover {
+    background: #d89000;
+}
+
+
+/* ============================================
+   ABOUT SECTIONS (INHALTS-BLÖCKE)
+   ============================================ */
+
+/**
+ * Individuelle Inhalts-Abschnitte
+ * Dunkler Hintergrund mit goldenem linken Rand
+ * Abgerundete Ecken für moderne Optik
+ */
+.about-section {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border-left: 4px solid #f4a300;
+}
+
+/**
+ * Überschriften in About-Sections
+ * Gold-Farbe für Konsistenz
+ */
+.about-section h2 {
+    color: #f4a300;
+    margin-bottom: 10px;
+    margin-top: 0;
+    font-size: 18px;
+}
+
+/**
+ * Paragraph-Text in About-Sections
+ * Weiße Schrift mit guter Zeilenhöhe
+ */
+.about-section p {
+    line-height: 1.8;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+/**
+ * Hervorgehobener Text (strong/bold)
+ * Gold-Farbe für wichtige Informationen
+ */
+.about-section strong {
+    color: #f4a300;
+}
+
+
+/* ============================================
+   RESPONSIVE DESIGN - MOBILE
+   ============================================ */
+
+/**
+ * Optimierungen für Tablets und mobile Geräte
+ * Kleinere Container-Größe und angepasste Abstände
+ */
+@media (max-width: 768px) {
+    .about-container {
+        width: 90vw;
+        height: 80vh;
+        margin: 20px;
+    }
+    
+    .about-header {
+        padding: 15px 20px;
+    }
+    
+    h1 {
+        font-size: 22px;
+    }
+    
+    .about-content {
+        padding: 15px 20px;
+    }
+    
+    .about-section {
+        padding: 15px;
+    }
+    
+    .about-section h2 {
+        font-size: 16px;
+    }
+}
+
+/**
+ * Optimierungen für sehr kleine Bildschirme
+ * Noch kompaktere Darstellung
+ */
+@media (max-width: 480px) {
+    .about-container {
+        width: 95vw;
+        height: 85vh;
+        margin: 10px;
+    }
+    
+    .about-header {
+        padding: 10px 15px;
+    }
+    
+    h1 {
+        font-size: 18px;
+    }
+    
+    .about-content {
+        padding: 10px 15px;
+    }
+    
+    .about-section {
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .about-section h2 {
+        font-size: 14px;
+    }
+    
+    .about-section p {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+}
+    
+    </style>
+</head>
+<body>
+    
+<div class="about-container">
+    <!-- HEADER - SABİT KALACAK -->
+    <div class="about-header">
+        <a href="index.html" class="close-btn">✕</a>
+        <h1>📋 Über dieses Projekt</h1>
+    </div>
+
+    <!-- CONTENT - KAYDIRILABİLİR -->
+    <div class="about-content">
+        <div class="about-section">
+            <h2>El Pollo Loco</h2>
+            <p>Ein 2D-Browser-basiertes Plattformspiel, erstellt als Bildungsprojekt.</p>
+        </div>
+
+        <div class="about-section">
+            <h2>Projektinformationen</h2>
+            <p>
+                <strong>Typ:</strong> Bildungsprojekt<br>
+                <strong>Zweck:</strong> Portfolio & Lernen<br>
+                <strong>Jahr:</strong> 2025<br>
+                <strong>Technologien:</strong> HTML5 Canvas, CSS3, JavaScript (OOP)
+            </p>
+        </div>
+
+        <div class="about-section">
+            <h2>Haftungsausschluss</h2>
+            <p>
+                <strong>Haftung für Inhalte:</strong><br>
+                Die Inhalte dieser Seite wurden mit größter Sorgfalt erstellt. 
+                Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte 
+                können wir jedoch keine Gewähr übernehmen.
+            </p>
+            <p>
+                <strong>Haftung für Links:</strong><br>
+                Unser Angebot enthält Links zu externen Websites Dritter. 
+                Auf deren Inhalte haben wir keinen Einfluss.
+            </p>
+            <p>
+                <strong>Urheberrecht:</strong><br>
+                Die Inhalte und Werke auf dieser Website unterliegen dem deutschen Urheberrecht.
+            </p>
+        </div>
+
+        <div class="about-section">
+            <h2>Kontakt</h2>
+            <p>
+                Refiye<br>
+                E-Mail: muster@musteremail.de
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

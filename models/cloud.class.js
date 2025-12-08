@@ -5,8 +5,8 @@ class Cloud extends MovableObject {
     
 
     /**
-     * Erstellt eine bewegliche Wolke
-     * Wolke startet an zufälliger X-Position
+     * Creates a moving cloud
+     * Cloud starts at random X-position
      */
     constructor() {
         super().loadImage('img/5_background/layers/4_clouds/1.png');
@@ -17,8 +17,8 @@ class Cloud extends MovableObject {
 
 
     /**
-     * Startet die Wolken-Bewegung
-     * Wolke bewegt sich kontinuierlich nach links
+     * Starts the cloud movement
+     * Cloud moves continuously to the left
      */
     animate() {
         setInterval(() => {

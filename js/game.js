@@ -1,4 +1,3 @@
-
 let canvas;
 let world;
 let keyboard = new Keyboard();
@@ -15,8 +14,8 @@ let gameState = {
 
 
 /**
- * Prüft ob das Spiel aktiv ist
- * @returns {boolean} True wenn Spiel gestartet, nicht pausiert und nicht beendet
+ * Checks if the game is active
+ * @returns {boolean} True if game is started, not paused and not ended
  */
 function isGameActive() {
     return gameState.started && !gameState.paused && !gameState.gameOver;
@@ -24,8 +23,8 @@ function isGameActive() {
 
 
 /**
- * Initialisiert das Spiel
- * Holt das Canvas-Element beim Laden der Seite
+ * Initializes the game
+ * Gets the canvas element when the page loads
  */
 function init() {
     canvas = document.getElementById('canvas');
@@ -103,8 +102,8 @@ window.addEventListener("keyup", (e) => {
 
 
 /**
- * Setzt den Spielstatus zurück
- * Alle Spielzustände werden auf Startwerte gesetzt
+ * Resets the game state
+ * All game states are set to initial values
  * @returns {void}
  */
 function resetGameState() {
@@ -117,7 +116,7 @@ function resetGameState() {
 
 
 /**
- * Setzt alle Tastatureingaben zurück
+ * Resets all keyboard inputs
  * @returns {void}
  */
 function resetKeyboard() {
@@ -131,7 +130,7 @@ function resetKeyboard() {
 
 
 /**
- * Versteckt Game-Over und Win-Panels
+ * Hides game-over and win panels
  * @returns {void}
  */
 function hideEndPanels() {
@@ -141,7 +140,7 @@ function hideEndPanels() {
 
 
 /**
- * Zeigt das Spielfeld an
+ * Shows the game canvas
  * @returns {void}
  */
 function showGameCanvas() {
@@ -151,14 +150,14 @@ function showGameCanvas() {
 }
 
 /**
- * Startet das Spiel vom Hauptmenü aus
+ * Starts the game from the main menu
  * 
- * Diese Funktion:
- * - Versteckt das Hauptmenü
- * - Zeigt das Spielfeld (Canvas) an
- * - Initialisiert die Spielwelt
- * - Startet die Hintergrundmusik
- * - Zeigt mobile Steuerungen an (falls mobiles Gerät)
+ * This function:
+ * - Hides the main menu
+ * - Shows the game canvas
+ * - Initializes the game world
+ * - Starts background music
+ * - Shows mobile controls (if mobile device)
  * 
  * @returns {void}
  */
@@ -183,8 +182,8 @@ function startGameFromHome() {
 
 
 /**
- * Pausiert oder setzt das Spiel fort
- * Schaltet zwischen Pause und Weiter um
+ * Pauses or resumes the game
+ * Toggles between pause and continue
  * @returns {void}
  */
 function pauseGame() {
@@ -207,8 +206,8 @@ function pauseGame() {
 
 
 /**
- * Setzt das Spiel fort
- * Startet das Spiel oder beendet die Pause
+ * Resumes the game
+ * Starts the game or ends the pause
  * @returns {void}
  */
 function resumeGame() {
@@ -227,8 +226,8 @@ function resumeGame() {
 
 
 /**
- * Schaltet die Musik ein/aus
- * Ändert Button-Text und spielt/pausiert Musik
+ * Toggles music on/off
+ * Changes button text and plays/pauses music
  */
 function toggleMusic() {
     isMusicOn = !isMusicOn;
@@ -245,8 +244,8 @@ function toggleMusic() {
 
 
 /**
- * Startet das Spiel neu
- * Alle Ressourcen werden zurückgesetzt
+ * Restarts the game
+ * All resources are reset
  * @returns {void}
  */
 function restartGame() {
@@ -266,7 +265,7 @@ function restartGame() {
 
 
 /**
- * Versteckt alle Spiel-Panels
+ * Hides all game panels
  * @returns {void}
  */
 function hideAllGamePanels() {
@@ -278,7 +277,7 @@ function hideAllGamePanels() {
 
 
 /**
- * Zeigt das Hauptmenü an
+ * Shows the main menu
  * @returns {void}
  */
 function showHomeScreen() {
@@ -288,7 +287,7 @@ function showHomeScreen() {
 
 
 /**
- * Setzt den Spielstatus für Hauptmenü zurück
+ * Resets the game state for main menu
  * @returns {void}
  */
 function resetGameStateForHome() {
@@ -303,8 +302,8 @@ function resetGameStateForHome() {
 
 
 /**
- * Kehrt zum Hauptmenü zurück
- * Stoppt das Spiel und räumt alle Ressourcen auf
+ * Returns to the main menu
+ * Stops the game and cleans up all resources
  * @returns {void}
  */
 function goToHome() {
@@ -327,8 +326,8 @@ function goToHome() {
 
 
 /**
- * Löscht alle laufenden Intervalle und Timeouts
- * Räumt Ressourcen auf beim Spielende oder Neustart
+ * Clears all running intervals and timeouts
+ * Cleans up resources when game ends or restarts
  */
 function clearAllIntervals() {
     intervalIds.forEach(id => clearInterval(id));
@@ -344,8 +343,8 @@ function clearAllIntervals() {
 
 
 /**
- * Schaltet den Ton ein/aus
- * Aktualisiert Button-Texte und Musik-Status
+ * Toggles sound on/off
+ * Updates button texts and music status
  */
 function toggleSound() {
     document.getElementById('soundBtn').textContent = gameState.musicOn ? 'TON AN' : 'TON AUS';
@@ -362,8 +361,8 @@ function toggleSound() {
 
 
 /**
- * Schaltet den Vollbild-Modus ein/aus
- * Wechselt zwischen normalem und Vollbild-Modus
+ * Toggles fullscreen mode on/off
+ * Switches between normal and fullscreen mode
  */
 function toggleFullscreen() {
     if(!document.fullscreenElement) {
@@ -374,11 +373,11 @@ function toggleFullscreen() {
 }
 
 /**
- * Richtet die mobilen Touch-Steuerungen ein
- * Verbindet die Touch-Events mit der Tastatur-Steuerung
+ * Sets up mobile touch controls
+ * Connects touch events with keyboard controls
  * 
- * Diese Funktion holt alle Button-Elemente und verbindet sie mit
- * den entsprechenden tastatur-Events (LEFT, RIGHT, SPACE, D)
+ * This function gets all button elements and connects them with
+ * the corresponding keyboard events (LEFT, RIGHT, SPACE, D)
  * 
  * @function setupMobilControls
  * @returns {void}
@@ -391,10 +390,9 @@ function setupMobilControls() {
 
     if(!btnLeft) return;
 
-    //LINKS_BUTTON
     /**
-     * Touch-Start Event: Linke Bewegung aktivieren
-     * @param {TouchEvent} e - Das Touch-Event-Objekt
+     * Touch-Start Event: Activate left movement
+     * @param {TouchEvent} e - The touch event object
      */
     btnLeft.addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -402,8 +400,8 @@ function setupMobilControls() {
     });
     
     /**
-     * Touch-Ende Event: Linke Bewegung deaktivieren
-     * @param {TouchEvent} e - Das Touch-Event-Objekt
+     * Touch-End Event: Deactivate left movement
+     * @param {TouchEvent} e - The touch event object
      */
     btnLeft.addEventListener('touchend', (e) => {
         e.preventDefault();
@@ -411,8 +409,8 @@ function setupMobilControls() {
     });
     
     /**
-     * Touch-Start Event: Rechte Bewegung aktivieren
-     * @param {TouchEvent} e - Das Touch-Event-Objekt
+     * Touch-Start Event: Activate right movement
+     * @param {TouchEvent} e - The touch event object
      */
     btnRight.addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -420,8 +418,8 @@ function setupMobilControls() {
     });
     
     /**
-     * Touch-Ende Event: Rechte Bewegung deaktivieren
-     * @param {TouchEvent} e - Das Touch-Event-Objekt
+     * Touch-End Event: Deactivate right movement
+     * @param {TouchEvent} e - The touch event object
      */
     btnRight.addEventListener('touchend', (e) => {
         e.preventDefault();
@@ -429,8 +427,8 @@ function setupMobilControls() {
     });
     
     /**
-     * Touch-Start Event: Sprung aktivieren
-     * @param {TouchEvent} e - Das Touch-Event-Objekt
+     * Touch-Start Event: Activate jump
+     * @param {TouchEvent} e - The touch event object
      */
     btnJump.addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -438,8 +436,8 @@ function setupMobilControls() {
     });
     
     /**
-     * Touch-Ende Event: Sprung deaktivieren
-     * @param {TouchEvent} e - Das Touch-Event-Objekt
+     * Touch-End Event: Deactivate jump
+     * @param {TouchEvent} e - The touch event object
      */
     btnJump.addEventListener('touchend', (e) => {
         e.preventDefault();
@@ -447,8 +445,8 @@ function setupMobilControls() {
     });
     
     /**
-     * Touch-Start Event: Wurf aktivieren
-     * @param {TouchEvent} e - Das Touch-Event-Objekt
+     * Touch-Start Event: Activate throw
+     * @param {TouchEvent} e - The touch event object
      */
     btnThrow.addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -456,8 +454,8 @@ function setupMobilControls() {
     });
     
     /**
-     * Touch-Ende Event: Wurf deaktivieren
-     * @param {TouchEvent} e - Das Touch-Event-Objekt
+     * Touch-End Event: Deactivate throw
+     * @param {TouchEvent} e - The touch event object
      */
     btnThrow.addEventListener('touchend', (e) => {
         e.preventDefault();
@@ -466,9 +464,9 @@ function setupMobilControls() {
 }
 
 /**
- * Zeigt die mobilen Steuerungen an
- * Wird aufgerufen, wenn das Spiel startet.
- * Zeigt die Touch-Buttons nur auf mobilen Geräten an (Bildschirmbreite <= 1024px)
+ * Shows mobile controls
+ * Called when the game starts
+ * Shows touch buttons only on mobile devices (screen width <= 1024px)
  * 
  * @function showMobilControls
  * @returns {void}
@@ -481,8 +479,8 @@ function showMobilControls() {
 }
 
 /**
- * Versteckt die mobilen Steuerungen
- * Wird aufgerufen, wenn das Spiel endet, pausiert wird oder zum Hauptmenü zurückgekehrt wird
+ * Hides mobile controls
+ * Called when game ends, pauses, or returns to main menu
  * 
  * @function hideMobilControls
  * @returns {void}
@@ -490,15 +488,15 @@ function showMobilControls() {
 function hideMobilControls() {
     const mobilControls = document.getElementById('mobilControls');
         if (mobilControls) {
-            mobilControls.style.display = 'none'; // Steuerung ausblenden
+            mobilControls.style.display = 'none';
         }
 }
 
 
 /**
- * Initialisiert die mobilen Steuerungen beim Laden der Seite
- * Dieser Event-Listener stellt sicher, dass die Touch-Steuerungen
- * bereit sind, sobald die Seite vollständig geladen ist
+ * Initializes mobile controls on page load
+ * This event listener ensures touch controls
+ * are ready as soon as the page is fully loaded
  */
 window.addEventListener('load', () => {
     setupMobilControls();
@@ -506,8 +504,8 @@ window.addEventListener('load', () => {
 
 
 /**
- * Level-Auswahlfunktion
- * @param {number} levelNumber - Die ausgewählte Level-Nummer
+ * Level selection function
+ * @param {number} levelNumber - The selected level number
  */
 function selectLevel(levelNumber) {
     if (levelNumber === 1) {
@@ -515,14 +513,14 @@ function selectLevel(levelNumber) {
             btn.classList.remove('active');
         });
         event.target.classList.add('active');
-        console.log('Level ' + levelNumber + ' ausgewählt');
+        console.log('Level ' + levelNumber + ' selected');
     }
 }
 
 
 /**
- * Öffnet den Anleitung-Dialog
- * Zeigt die Spielsteuerung und Tipps an
+ * Opens the instructions dialog
+ * Shows game controls and tips
  */
 function openInfoDialog() {
     document.getElementById('infoDialog').style.display = 'flex';
@@ -530,8 +528,8 @@ function openInfoDialog() {
 
 
 /**
- * Schließt den Anleitung-Dialog
- * Wird aufgerufen beim Klick auf X oder außerhalb des Dialogs
+ * Closes the instructions dialog
+ * Called when clicking X or outside the dialog
  */
 function closeInfoDialog() {
     document.getElementById('infoDialog').style.display = 'none';
@@ -539,8 +537,8 @@ function closeInfoDialog() {
 
 
 /**
- * Schließt den Info-Dialog bei Klick außerhalb
- * Event-Listener für Click außerhalb des Dialog-Inhalts
+ * Closes info dialog when clicking outside
+ * Event listener for clicks outside dialog content
  */
 document.addEventListener('click', (event) => {
     const infoDialog = document.getElementById('infoDialog');
@@ -548,4 +546,31 @@ document.addEventListener('click', (event) => {
         if (infoDialog && event.target === infoDialog) {
             closeInfoDialog();
         }
+});
+
+
+/**
+ * Opens the About dialog
+ * Shows project information in game-themed popup
+ */
+function openAboutDialog() {
+    document.getElementById('aboutDialog').style.display = 'flex';
+}
+
+/**
+ * Closes the About dialog
+ */
+function closeAboutDialog() {
+    document.getElementById('aboutDialog').style.display = 'none';
+}
+
+/**
+ * Closes About dialog when clicking outside
+ */
+document.addEventListener('click', (event) => {
+    const aboutDialog = document.getElementById('aboutDialog');
+    
+    if (aboutDialog && event.target === aboutDialog) {
+        closeAboutDialog();
+    }
 });

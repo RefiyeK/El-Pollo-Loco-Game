@@ -24,10 +24,10 @@ class ThrowableObject extends MovableObject {
 
 
     /**
-     * Erstellt ein werfbares Objekt (Flasche)
-     * @param {number} x - X-Position der Flasche
-     * @param {number} y - Y-Position der Flasche
-     * @param {number} direction - Wurfrichtung (1=rechts, -1=links)
+     * Creates a throwable object (bottle)
+     * @param {number} x - X-position of the bottle
+     * @param {number} y - Y-position of the bottle
+     * @param {number} direction - Throw direction (1=right, -1=left)
      */
     constructor(x, y, direction=1){
         super().loadImage(this.IMAGES_ROTATION[0]);
@@ -50,8 +50,8 @@ class ThrowableObject extends MovableObject {
 
 
     /**
-     * Startet die Bewegung der Flasche
-     * Flasche fliegt horizontal in Wurfrichtung
+     * Starts the bottle movement
+     * Bottle flies horizontally in throw direction
      */
     startMovement() {
         let moveInterval = setInterval(() => {
@@ -64,8 +64,8 @@ class ThrowableObject extends MovableObject {
 
 
     /**
-     * Startet die Rotations-Animation
-     * Wechselt zwischen Rotations- und Splash-Bildern
+     * Starts the rotation animation
+     * Switches between rotation and splash images
      */
     startAnimation() {
         let animationInterval = setInterval(() => {
@@ -80,8 +80,8 @@ class ThrowableObject extends MovableObject {
 
 
     /**
-     * Prüft ob Flasche den Boden berührt
-     * Löst Splash-Animation aus bei Bodenkontakt
+     * Checks if bottle touches the ground
+     * Triggers splash animation on ground contact
      */
     checkGroundCollision() {
         let groundCheckInterval = setInterval(() => {
@@ -97,9 +97,9 @@ class ThrowableObject extends MovableObject {
 
 
     /**
-     * Wirft die Flasche
-     * Startet Bewegung, Animation und Kollisionsprüfung
- */
+     * Throws the bottle
+     * Starts movement, animation and collision check
+     */
     trow() {
         this.speedY = 30;
         this.applyGravity();
@@ -110,8 +110,8 @@ class ThrowableObject extends MovableObject {
 
 
     /**
-     * Lässt die Flasche zersplittern
-     * Spielt Glas-Bruch-Sound und markiert Flasche zum Entfernen
+     * Makes the bottle shatter
+     * Plays glass break sound and marks bottle for removal
      */
     splash() {
         this.isSplashed = true;
@@ -120,7 +120,7 @@ class ThrowableObject extends MovableObject {
         AudioHub.bottle_break_sound.currentTime = 0;
         AudioHub.bottle_break_sound.volume = 0.3;
         AudioHub.bottle_break_sound.play().catch(e => {
-            console.warn("Flaschen-Bruch-Sound konnte nicht abgespielt werden:", e);
+            console.warn("Bottle break sound could not be played:", e);
         });
 
         setTimeout(() => {

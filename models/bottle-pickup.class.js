@@ -12,9 +12,9 @@ class BottlePickup extends MovableObject {
 
 
     /**
-     * Erstellt eine sammelbare Flasche am Boden
-     * Wählt zufällig eines der Flaschen-Bilder
-     * @param {number} x - X-Position der Flasche
+     * Creates a collectable bottle on the ground
+     * Randomly selects one of the bottle images
+     * @param {number} x - X-position of the bottle
      */
     constructor(x) {
         super(); 

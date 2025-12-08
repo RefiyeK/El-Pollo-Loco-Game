@@ -12,8 +12,8 @@ class BossStatusBar extends DrawableObject {
 
 
     /**
-     * Erstellt eine Gesundheitsanzeige für den Endboss
-     * Zeigt Boss-Energie als Statusbalken an
+     * Creates a health display for the endboss
+     * Shows boss energy as a status bar
      */
     constructor() {
         super();
@@ -27,9 +27,9 @@ class BossStatusBar extends DrawableObject {
 
 
     /**
-     * Setzt den Prozentsatz der Boss-Gesundheit
-     * Aktualisiert das angezeigte Bild entsprechend
-     * @param {number} health - Gesundheit in Prozent (0-100)
+     * Sets the percentage of boss health
+     * Updates the displayed image accordingly
+     * @param {number} health - Health in percent (0-100)
      */
     setPercentage(health) {
         this.percentage = health;
@@ -39,8 +39,8 @@ class BossStatusBar extends DrawableObject {
 
 
     /**
-     * Ermittelt den passenden Bild-Index für die Gesundheit
-     * @returns {number} Index des anzuzeigenden Bildes (0-5)
+     * Determines the appropriate image index for the health
+     * @returns {number} Index of the image to display (0-5)
      */
     resolveImageIndex() {
         if(this.percentage == 100) {

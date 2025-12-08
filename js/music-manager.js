@@ -1,12 +1,12 @@
 /**
- * Ausgewählter Musik-Index (-1 = keine Auswahl)
+ * Selected music index (-1 = no selection)
  * @type {number}
  */
 let selectedMusicIndex = -1;
 
 
 /**
- * Audio-Objekt für Musik-Vorschau
+ * Audio object for music preview
  * @type {Audio|null}
  */
 let previewAudio = null;
@@ -14,8 +14,8 @@ let previewAudio = null;
  
 
 /**
- * Startet eine zufällige Hintergrundmusik
- * Wählt einen zufälligen Index (0-3) und spielt die Musik ab
+ * Starts random background music
+ * Selects a random index (0-3) and plays the music
  */
 function startRandomMusic() {
    let randomMusicIndex = Math.floor(Math.random() * 4);
@@ -27,8 +27,8 @@ function startRandomMusic() {
 
 
 /**
- * Wird aufgerufen wenn Musik im Dropdown geändert wird
- * Aktiviert/Deaktiviert den Preview-Button
+ * Called when music is changed in dropdown
+ * Enables/Disables the preview button
  */
 function onMusicChange() {
     let dropdown = document.getElementById('musicDropdown');
@@ -44,8 +44,8 @@ function onMusicChange() {
 
 
 /**
- * Spielt die ausgewählte Musik als Vorschau ab
- * Stoppt vorherige Vorschau automatisch
+ * Plays the selected music as preview
+ * Stops previous preview automatically
  */
 function previewSelectedMusic() {
     stopPreview();
@@ -61,8 +61,8 @@ function previewSelectedMusic() {
 
 
 /**
- * Stoppt die Musik-Vorschau
- * Setzt das Audio-Objekt zurück
+ * Stops the music preview
+ * Resets the audio object
  */
 function stopPreview() {
     if(previewAudio) {
@@ -74,8 +74,8 @@ function stopPreview() {
 
 
 /**
- * Startet die Hintergrundmusik für das Spiel
- * Verwendet ausgewählte Musik oder startet zufällige Musik
+ * Starts background music for the game
+ * Uses selected music or starts random music
  */
 function startBackgroundMusic() {
     stopPreview();
@@ -89,7 +89,7 @@ function startBackgroundMusic() {
 
 
 /**
- * Stoppt die Hintergrundmusik komplett
+ * Stops background music completely
  */
 function stopBackgroundMusic() {
     AudioHub.stopMusic();
@@ -97,7 +97,7 @@ function stopBackgroundMusic() {
 
 
 /**
- * Pausiert die Hintergrundmusik
+ * Pauses background music
  */
 function pauseBackgroundMusic() {
     AudioHub.pauseMusic();
@@ -105,7 +105,7 @@ function pauseBackgroundMusic() {
 
 
 /**
- * Setzt die Hintergrundmusik fort
+ * Resumes background music
  */
 function resumeBackgroundMusic() {
     AudioHub.resumeMusic();
@@ -113,8 +113,8 @@ function resumeBackgroundMusic() {
 
 
 /**
- * Stellt die Musiklautstärke ein
- * @param {number} volume - Lautstärke (0.0 bis 1.0)
+ * Sets the music volume
+ * @param {number} volume - Volume (0.0 to 1.0)
  */
 function setMusicVolume(volume) {
     volume = Math.max(0.0, Math.min(1.0, volume));

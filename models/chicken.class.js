@@ -18,8 +18,8 @@ class Chicken extends MovableObject {
 
 
     /**
-     * Erstellt ein normales Huhn
-     * Startet an zufälliger Position mit zufälliger Geschwindigkeit
+     * Creates a normal chicken
+     * Starts at random position with random speed
      */
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
@@ -40,8 +40,8 @@ class Chicken extends MovableObject {
    
 
     /**
-     * Startet das Bewegungs-Intervall
-     * Huhn läuft nach links
+     * Starts the movement interval
+     * Chicken walks to the left
      */
     startMovementLoop() {
         setInterval(() => {
@@ -55,8 +55,8 @@ class Chicken extends MovableObject {
 
 
     /**
-     * Startet das Animations-Intervall
-     * Wechselt zwischen Lauf- und Tod-Animation
+     * Starts the animation interval
+     * Switches between walking and death animation
      */
     startAnimationLoop() {
         setInterval(() => {
@@ -71,8 +71,8 @@ class Chicken extends MovableObject {
 
     
     /**
-     * Startet alle Animationen und Bewegungen
-     * Initialisiert Bewegungs- und Animations-Loops
+     * Starts all animations and movements
+     * Initializes movement and animation loops
      */
     animate() {
         this.startMovementLoop();

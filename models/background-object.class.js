@@ -5,10 +5,10 @@ class BackgroundObject extends MovableObject{
     
     
     /**
-     * Erstellt ein Hintergrund-Objekt
-     * Positioniert Hintergrund-Bild am unteren Rand
-     * @param {string} imagePath - Pfad zum Hintergrund-Bild
-     * @param {number} x - X-Position des Hintergrunds
+     * Creates a background object
+     * Positions background image at the bottom edge
+     * @param {string} imagePath - Path to the background image
+     * @param {number} x - X-position of the background
      */
     constructor(imagePath, x) {
     super().loadImage(imagePath);

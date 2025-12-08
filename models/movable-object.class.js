@@ -9,8 +9,8 @@ class MovableObject extends DrawableObject {
     
 
     /**
-     * Wendet Schwerkraft auf das Objekt an
-     * Objekt fällt nach unten wenn in der Luft
+     * Applies gravity to the object
+     * Object falls down when in the air
      */
     applyGravity() { 
         setInterval(() => {
@@ -25,8 +25,8 @@ class MovableObject extends DrawableObject {
 
 
     /**
-     * Prüft ob Objekt über dem Boden ist
-     * @returns {boolean} True wenn über dem Boden
+     * Checks if object is above ground
+     * @returns {boolean} True if above ground
      */
     isAboveGround() {
         if(this instanceof ThrowableObject) {
@@ -40,9 +40,9 @@ class MovableObject extends DrawableObject {
 
     
     /**
-     * Holt die Offset-Werte eines Objekts
-     * @param {Object} obj - Das Objekt
-     * @returns {Object} Offset-Werte (left, right, top, bottom)
+     * Gets the offset values of an object
+     * @param {Object} obj - The object
+     * @returns {Object} Offset values (left, right, top, bottom)
      */
     getOffsets(obj) {
         return {
@@ -55,10 +55,10 @@ class MovableObject extends DrawableObject {
 
 
     /**
-     * Prüft ob dieses Objekt mit einem anderen kollidiert
-     * Berücksichtigt Offset-Werte für präzise Kollision
-     * @param {Object} mo - Das andere Objekt (Movable Object)
-     * @returns {boolean} True bei Kollision
+     * Checks if this object collides with another
+     * Considers offset values for precise collision
+     * @param {Object} mo - The other object (Movable Object)
+     * @returns {boolean} True if collision occurs
      */
     isColliding(mo) {
         let thisOffset = this.getOffsets(this);
@@ -74,8 +74,8 @@ class MovableObject extends DrawableObject {
 
 
     /**
-     * Objekt nimmt Schaden
-     * Reduziert Energie um 5 Punkte
+     * Object takes damage
+     * Reduces energy by 5 points
      */
     hit() {
         this.energy -= 5;
@@ -88,8 +88,8 @@ class MovableObject extends DrawableObject {
 
 
     /**
-     * Prüft ob Objekt gerade verletzt wurde
-     * @returns {boolean} True wenn vor weniger als 1 Sekunde getroffen
+     * Checks if object was just injured
+     * @returns {boolean} True if hit less than 1 second ago
      */
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit;
@@ -99,8 +99,8 @@ class MovableObject extends DrawableObject {
 
 
     /**
-     * Prüft ob Objekt tot ist
-     * @returns {boolean} True wenn Energie 0 ist
+     * Checks if object is dead
+     * @returns {boolean} True if energy is 0
      */
     isDead() {
         return this.energy == 0;  
@@ -108,9 +108,9 @@ class MovableObject extends DrawableObject {
    
 
     /**
-     * Spielt eine Animation ab
-     * Wechselt durch die angegebenen Bilder
-     * @param {Array} images - Array von Bild-Pfaden
+     * Plays an animation
+     * Cycles through the given images
+     * @param {Array} images - Array of image paths
      */
     playAnimation(images) {
         let i = this.currentImage % images.length;
@@ -121,7 +121,7 @@ class MovableObject extends DrawableObject {
 
 
    /**
-     * Bewegt Objekt nach rechts
+     * Moves object to the right
      */
     moveRight() {
         this.x += this.speed;
@@ -129,10 +129,9 @@ class MovableObject extends DrawableObject {
 
     
     /**
-     * Bewegt Objekt nach links
+     * Moves object to the left
      */
     moveLeft() {
         this.x -= this.speed;
     }
 }
-

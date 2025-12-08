@@ -13,8 +13,8 @@ class StatusBar extends DrawableObject {
 
 
     /**
-     * Erstellt eine Gesundheitsanzeige für den Charakter
-     * Zeigt Energie-Level als Statusbalken an
+     * Creates a health display for the character
+     * Shows energy level as a status bar
      */
     constructor() {
         super();
@@ -28,9 +28,9 @@ class StatusBar extends DrawableObject {
 
 
     /**
-     * Setzt den Prozentsatz der Gesundheit
-     * Aktualisiert das angezeigte Bild entsprechend
-     * @param {number} percentage - Gesundheit in Prozent (0-100)
+     * Sets the percentage of health
+     * Updates the displayed image accordingly
+     * @param {number} percentage - Health in percent (0-100)
      */
     setPercentage(percentage) {
         this.percentage = percentage;
@@ -40,8 +40,8 @@ class StatusBar extends DrawableObject {
 
 
     /**
-     * Ermittelt den passenden Bild-Index für die Gesundheit
-     * @returns {number} Index des anzuzeigenden Bildes (0-5)
+     * Determines the appropriate image index for the health
+     * @returns {number} Index of the image to display (0-5)
      */
     resolveImageIndex() {
          if(this.percentage == 100) {

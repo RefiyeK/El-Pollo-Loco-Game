@@ -13,8 +13,8 @@ class BottleStatusBar extends DrawableObject {
 
 
     /**
-     * Erstellt eine Flaschen-Statusanzeige
-     * Zeigt gesammelte Flaschen als Balken an
+     * Creates a bottle status display
+     * Shows collected bottles as a bar
      */
     constructor() {
         super();
@@ -29,9 +29,9 @@ class BottleStatusBar extends DrawableObject {
 
     
     /**
-     * Setzt die Anzahl der Flaschen
-     * Aktualisiert das angezeigte Bild entsprechend
-     * @param {number} bottles - Anzahl der gesammelten Flaschen
+     * Sets the number of bottles
+     * Updates the displayed image accordingly
+     * @param {number} bottles - Number of collected bottles
      */
     setBottles(bottles) {
         this.bottles = bottles;
@@ -43,9 +43,9 @@ class BottleStatusBar extends DrawableObject {
 
     
     /**
-     * Ermittelt den passenden Bild-Index für den Prozentsatz
-     * @param {number} percentage - Prozentsatz der Flaschen (0-100)
-     * @returns {number} Index des anzuzeigenden Bildes (0-5)
+     * Determines the appropriate image index for the percentage
+     * @param {number} percentage - Percentage of bottles (0-100)
+     * @returns {number} Index of the image to display (0-5)
      */
     resolveImageIndex(percentage) {
         if(percentage === 100) return 5;

@@ -1,18 +1,17 @@
-
 /**
- * Erstellt das erste Level des Spiels
- * Beinhaltet alle Gegner, Wolken, Hintergründe, Münzen und Flaschen
+ * Creates the first level of the game
+ * Contains all enemies, clouds, backgrounds, coins and bottles
  * 
- * Level-Aufbau:
- * - 10 normale Hühner
- * - 9 Baby-Hühner
- * - 1 Endboss
- * - 37 Wolken für Atmosphäre
- * - Mehrschichtige Hintergründe (Luft, 3 Ebenen)
- * - 50 Münzen zum Sammeln
- * - 20 Flaschen zum Sammeln
+ * Level structure:
+ * - 10 normal chickens
+ * - 9 baby chickens
+ * - 1 endboss
+ * - 37 clouds for atmosphere
+ * - Multi-layered backgrounds (air, 3 layers)
+ * - 50 coins to collect
+ * - 20 bottles to collect
  * 
- * @returns {Level} Das konfigurierte Level-Objekt
+ * @returns {Level} The configured level object
  */
 function createLevel1() {
     return new Level(
@@ -206,8 +205,6 @@ function createLevel1() {
         new Coin(6550, 400),
         new Coin(6600, 400),
         new Coin(6650, 400),
-
-
     ],
 
     [

@@ -45,8 +45,8 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Erstellt einen Endboss
-     * Lädt alle Animations-Bilder und setzt Start-Position
+     * Creates an endboss
+     * Loads all animation images and sets starting position
      */
     IMAGES_DEAD = [
         'img/4_enemie_boss_chicken/5_dead/G24.png',
@@ -76,7 +76,7 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Wählt die passende Animation basierend auf Boss-Zustand
+     * Selects the appropriate animation based on boss state
      */
     selectAnimation() {
         if(this.isDead) {
@@ -94,8 +94,8 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Spielt die Tod-Animation ab
-     * Stoppt bei letztem Frame
+     * Plays the death animation
+     * Stops at the last frame
      */
     playDeadAnimation() {
         this.playAnimation(this.IMAGES_DEAD);
@@ -112,8 +112,8 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Behandelt Gefahr-Zone (Charakter in Reichweite)
-     * Startet Gefahr-Musik und Alert-Animation
+     * Handles danger zone (character in range)
+     * Starts danger music and alert animation
      */
     handleDangerZone() {
         if(!this.dangerMusicPlaying) {
@@ -125,8 +125,8 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Behandelt normalen Zustand (Charakter weit weg)
-     * Stoppt Gefahr-Musik und spielt Lauf-Animation
+     * Handles normal state (character far away)
+     * Stops danger music and plays walking animation
      */
     handleNormalState() {
         this.playAnimation(this.IMAGES_WALKING);
@@ -139,8 +139,8 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Startet das Animations-Intervall
-     * Aktualisiert Animation alle 200ms
+     * Starts the animation interval
+     * Updates animation every 200ms
      */
     startAnimationLoop() {
         setInterval(() => {
@@ -151,8 +151,8 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Startet das Bewegungs-Intervall
-     * Boss bewegt sich nach links
+     * Starts the movement interval
+     * Boss moves to the left
      */
     startMovementLoop() {
         setInterval(() => {
@@ -165,8 +165,8 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Startet das Hurt-Check-Intervall
-     * Prüft ob Hurt-Status zurückgesetzt werden soll
+     * Starts the hurt check interval
+     * Checks if hurt status should be reset
      */
     startHurtCheckLoop() {
         setInterval(() => {
@@ -177,8 +177,8 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Startet alle Endboss-Animationen und Bewegungen
-     * Initialisiert alle Game-Loop-Intervalle
+     * Starts all endboss animations and movements
+     * Initializes all game loop intervals
      */
     animate() {
         this.startAnimationLoop();
@@ -188,8 +188,8 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Boss nimmt Schaden
-     * @param {number} damage - Schadensmenge
+     * Boss takes damage
+     * @param {number} damage - Amount of damage
      */
     takeDamage(damage) {
         this.health -= damage;
@@ -211,8 +211,8 @@ class Endboss extends MovableObject {
 
     
     /**
-     * Prüft ob Hurt-Animation zurückgesetzt werden soll
-     * Setzt isHurt nach 100ms auf false
+     * Checks if hurt animation should be reset
+     * Sets isHurt to false after 100ms
      */
     checkIfHurt() {
         if(new Date().getTime() - this.lastHit > 100) {
@@ -222,8 +222,8 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Prüft ob Charakter in Reichweite ist
-     * @returns {boolean} True wenn Abstand < 400 Pixel
+     * Checks if character is in range
+     * @returns {boolean} True if distance < 400 pixels
      */
     checkIfCharacterInRange() {
         let distance = Math.abs(this.x - this.world.character.x);
@@ -236,8 +236,8 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Prüft ob Charakter sehr nah ist
-     * @returns {boolean} True wenn Abstand < 200 Pixel
+     * Checks if character is very close
+     * @returns {boolean} True if distance < 200 pixels
      */
     checkIfCharacterVeryClose() {
         let distance = Math.abs(this.x - this.world.character.x);

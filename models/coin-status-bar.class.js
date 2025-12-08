@@ -12,10 +12,10 @@ class CoinStatusBar extends DrawableObject {
 
     
     /**
-     * Erstellt eine Münz-Statusanzeige
-     * Zeigt gesammelte Münzen als Balken an
-     * @param {number} x - X-Position (wird ignoriert, nutzt feste Position)
-     * @param {number} y - Y-Position (wird ignoriert, nutzt feste Position)
+     * Creates a coin status display
+     * Shows collected coins as a bar
+     * @param {number} x - X-position (ignored, uses fixed position)
+     * @param {number} y - Y-position (ignored, uses fixed position)
      */
     constructor(x, y) {
         super();
@@ -29,8 +29,8 @@ class CoinStatusBar extends DrawableObject {
 
 
      /**
-     * Setzt den Prozentsatz der gesammelten Münzen
-     * @param {number} collectedCoins - Anzahl der gesammelten Münzen
+     * Sets the percentage of collected coins
+     * @param {number} collectedCoins - Number of collected coins
      */
     setPercentage(collectedCoins) {
         let percentage = (collectedCoins / 50) * 100; 
@@ -41,9 +41,9 @@ class CoinStatusBar extends DrawableObject {
 
     
     /**
-     * Ermittelt den passenden Bild-Index für den Prozentsatz
-     * @param {number} percentage - Prozentsatz der Münzen (0-100)
-     * @returns {number} Index des anzuzeigenden Bildes (0-5)
+     * Determines the appropriate image index for the percentage
+     * @param {number} percentage - Percentage of coins (0-100)
+     * @returns {number} Index of the image to display (0-5)
      */
     resolveImageIndex(percentage) {
         if(percentage >= 100) return 5;

@@ -11,7 +11,7 @@ class Character extends MovableObject{
     maxBottles = 10;
 
     lastAction = new Date().getTime();
-    idleTime = 2000; //2 saniye
+    idleTime = 2000; //2 seconds
     offset = {
         top: 120,
         bottom: 10,
@@ -73,8 +73,8 @@ class Character extends MovableObject{
  
  
     /**
-     * Erstellt den spielbaren Charakter
-     * Lädt alle Animations-Bilder und startet Schwerkraft
+     * Creates the playable character
+     * Loads all animation images and starts gravity
      */
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
@@ -89,9 +89,9 @@ class Character extends MovableObject{
 
 
     /**
-     * Verarbeitet Bewegungs-Eingaben
-     * Bewegt Charakter basierend auf Tastendruck
-     * @returns {boolean} True wenn Charakter sich bewegt
+     * Processes movement inputs
+     * Moves character based on key press
+     * @returns {boolean} True if character is moving
      */
     handleMovement() {
         let isWalking = false;
@@ -115,8 +115,8 @@ class Character extends MovableObject{
 
 
     /**
-     * Verarbeitet Sprung-Eingaben
-     * Lässt Charakter springen wenn auf Boden
+     * Processes jump inputs
+     * Makes character jump if on ground
      */
     handleJump() {
         if(this.world.keyboard.UP && !this.isAboveGround() || 
@@ -128,9 +128,9 @@ class Character extends MovableObject{
 
 
     /**
-     * Verwaltet den Lauf-Sound
-     * Startet/Stoppt Sound basierend auf Bewegung
-     * @param {boolean} isWalking - Ob Charakter läuft
+     * Manages the walking sound
+     * Starts/Stops sound based on movement
+     * @param {boolean} isWalking - Whether character is walking
      */
     manageWalkingSound(isWalking) {
         if(isWalking) {
@@ -142,8 +142,8 @@ class Character extends MovableObject{
 
 
     /**
-     * Startet das Bewegungs-Intervall
-     * Verarbeitet Tasteneingaben 60x pro Sekunde
+     * Starts the movement interval
+     * Processes key inputs 60 times per second
      */
     startMovementLoop() {
         setInterval(() => {
@@ -157,7 +157,7 @@ class Character extends MovableObject{
 
 
     /**
-     * Wählt die passende Animation basierend auf Charakter-Zustand
+     * Selects the appropriate animation based on character state
      */
     selectAnimation() {
         if(this.isDead()) {
@@ -175,8 +175,8 @@ class Character extends MovableObject{
 
 
     /**
-     * Startet das Animations-Intervall
-     * Aktualisiert Animation alle 50ms
+     * Starts the animation interval
+     * Updates animation every 50ms
      */
     startAnimationLoop() {
         setInterval(() => {
@@ -187,8 +187,8 @@ class Character extends MovableObject{
 
 
     /**
-     * Startet alle Charakter-Animationen und Bewegungen
-     * Initialisiert Bewegungs- und Animations-Loops
+     * Starts all character animations and movements
+     * Initializes movement and animation loops
      */
     animate() {
         this.startMovementLoop();
@@ -197,8 +197,8 @@ class Character extends MovableObject{
     
 
     /**
-     * Lässt den Charakter springen
-     * Setzt vertikale Geschwindigkeit und spielt Sound
+     * Makes the character jump
+     * Sets vertical speed and plays sound
      */
     jump() {
         this.speedY = 25;
@@ -206,14 +206,14 @@ class Character extends MovableObject{
         AudioHub.jump_sound.currentTime = 0;
         AudioHub.jump_sound.volume = 0.2;
         AudioHub.jump_sound.play().catch((e) => {
-            console.warn("Sprung-Sound konnte nicht abgespielt werden:", e);
+            console.warn("Jump sound could not be played:", e);
         });
     }
 
 
     /**
-     * Sammelt eine Münze ein
-     * Erhöht Münz-Zähler bis zum Maximum
+     * Collects a coin
+     * Increases coin counter up to maximum
      */
     collectCoin() {
         if(this.coins < this.maxCoins) {
@@ -223,8 +223,8 @@ class Character extends MovableObject{
 
 
     /**
-     * Sammelt eine Flasche ein
-     * Erhöht Flaschen-Zähler bis zum Maximum
+     * Collects a bottle
+     * Increases bottle counter up to maximum
      */
     collectBottle() {
     if(this.bottles < this.maxBottles) {
@@ -234,8 +234,8 @@ class Character extends MovableObject{
 
 
     /**
-     * Spielt den Lauf-Sound ab
-     * Startet Sound-Loop wenn noch nicht aktiv
+     * Plays the walking sound
+     * Starts sound loop if not already active
      */
     playWalkingSound() {
         if(AudioHub.walking_sound.paused) {
@@ -243,15 +243,15 @@ class Character extends MovableObject{
             AudioHub.walking_sound.volume = 0.4;
             AudioHub.walking_sound.loop = true;
             AudioHub.walking_sound.play().catch(e => {
-                console.warn("Lauf-Sound konnte nicht abgespielt werden:", e);
+                console.warn("Walking sound could not be played:", e);
             });
         }
     }
 
 
     /**
-     * Stoppt den Lauf-Sound
-     * Pausiert Sound und setzt zurück
+     * Stops the walking sound
+     * Pauses sound and resets
      */
     stopWalkingSound() {
         if(!AudioHub.walking_sound.paused) {
@@ -262,8 +262,8 @@ class Character extends MovableObject{
 
 
     /**
-     * Prüft ob Charakter inaktiv ist
-     * @returns {boolean} True wenn länger als 2 Sekunden keine Aktion
+     * Checks if character is idle
+     * @returns {boolean} True if no action for more than 2 seconds
      */
     isIdle() {
         let timePassed = new Date().getTime() - this.lastAction;

@@ -49,7 +49,7 @@
             <button id="previewBtn" onclick="previewSelectedMusic()" disabled>▶️<p>HÖREN</p></button>
             </div>
 
-            <!-- LEVEL SEÇİMİ -->
+           
             <div id="levelSelector">
                 <h3>Level Auswählen</h3>
                 <div id="levelButtons">
@@ -60,14 +60,14 @@
                 </div>
             </div>
 
-            <!-- OYUN KONTROL BUTONLARI -->
+           
             <div id="gameControls">
                 <button id="playBtn" onclick="startGameFromHome()"><span class="btn-icon">▶️</span> SPIELEN</button>
                 <button id="infoBtn" onclick="openInfoDialog()"><span class="btn-icon">ℹ️</span> ANLEITUNG</button>
                 <button id="fullscreenBtn" onclick="toggleFullscreen()"><span class="btn-icon">⛶</span> VOLLBILD</button>
             </div>
 
-            <!-- SES KONTROLÜ -->
+           
             <div id="volumeControl">
                 <span class="volume-icon">🔊</span>
                 <input type="range" oninput="AudioHub.setVolume(this.value)" id="volumeHome" min="0" max="1" step="0.01" value="0.2">
@@ -88,7 +88,7 @@
     <canvas id="canvas" width="720" height="480" style="display: none;"></canvas>
     
     
-    <!-- ANLEITUNG DIALOG -->
+    
     <div id="infoDialog" style="display: none;">
         <div id="infoContent">
             <button id="closeInfoBtn" onclick="closeInfoDialog()">✕</button>
@@ -150,7 +150,7 @@
 
 
 
-    <!--QUERFORMAT_WARNUNG-->
+    
     <div id="rotateWarning" style="display:none;">
         <div id="rotateContent">
             <img src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Gerät drehen">
@@ -158,16 +158,16 @@
         </div>
     </div>
 
-    <!--MOBILE STEUERUNG-->
+    
     <div id="mobilControls" style="display:none;">
     
-        <!--LINKE SEITE: Bewegungs-Buttons-->
+       
         <div id="leftControls">
             <button id="btnLeft" class="control_btn">◄</button>
             <button id="btnRight" class="control_btn">►</button>
         </div>
 
-        <!--RECHTE SEITE: Aktions-Buttons-->
+        
         <div id="rightControls">
             <button id="btnJump" class="control_btn">⏫</button>
             <button id="btnThrow" class="control_btn">💥</button>
@@ -175,6 +175,9 @@
 
     </div>
 
+    <footer id="gameFooter">
+    <p>&copy; 2025 El Pollo Loco | <a href="about.html">About</a></p>
+</footer>
 </body>
 </html>
 

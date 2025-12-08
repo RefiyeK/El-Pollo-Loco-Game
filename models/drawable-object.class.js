@@ -9,8 +9,8 @@ class DrawableObject {
 
     
      /**
-     * Lädt ein einzelnes Bild
-     * @param {string} path - Pfad zum Bild
+     * Loads a single image
+     * @param {string} path - Path to the image
      */
     loadImage(path) {
         this.img = new Image();
@@ -19,8 +19,8 @@ class DrawableObject {
     
 
     /**
-     * Zeichnet das Objekt auf dem Canvas
-     * @param {CanvasRenderingContext2D} ctx - Canvas-Kontext
+     * Draws the object on the canvas
+     * @param {CanvasRenderingContext2D} ctx - Canvas context
      */
     draw(ctx) {
         if(this.img && this.img.complete && this.loadImage.naturalHeight !== 0) {
@@ -30,8 +30,8 @@ class DrawableObject {
 
 
     /**
-     * Ermittelt die Rahmenfarbe basierend auf Objekttyp
-     * @returns {string} Farbe für den Debug-Rahmen
+     * Determines the frame color based on object type
+     * @returns {string} Color for the debug frame
      */
     getFrameColor() {
         if(this instanceof Character) return 'blue';
@@ -43,8 +43,8 @@ class DrawableObject {
 
 
     /**
-     * Berechnet die Rahmen-Koordinaten mit Offset
-     * @returns {Object} Rahmen-Koordinaten {x, y, width, height}
+     * Calculates the frame coordinates with offset
+     * @returns {Object} Frame coordinates {x, y, width, height}
      */
     getFrameCoordinates() {
         if(this.offset) {
@@ -65,9 +65,9 @@ class DrawableObject {
 
 
     /**
-     * Zeichnet einen Debug-Rahmen um das Objekt
-     * Zeigt Kollisions-Grenzen für Entwicklung
-     * @param {CanvasRenderingContext2D} ctx - Canvas-Kontext
+     * Draws a debug frame around the object
+     * Shows collision boundaries for development
+     * @param {CanvasRenderingContext2D} ctx - Canvas context
      */
     drawFrame(ctx) {
         const DEBUG_MODE = false;
@@ -84,8 +84,8 @@ class DrawableObject {
     
     
     /**
-     * Lädt mehrere Bilder und speichert sie im Cache
-     * @param {Array<string>} arr - Array von Bild-Pfaden
+     * Loads multiple images and stores them in cache
+     * @param {Array<string>} arr - Array of image paths
      */
     loadImages(arr) {
         arr.forEach((path) => {

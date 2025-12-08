@@ -12,9 +12,9 @@ class World {
 
 
  /**
- * Erstellt eine neue Spielwelt
- * @param {HTMLCanvasElement} canvas - Das Canvas-Element
- * @param {Keyboard} keyboard - Das Keyboard-Objekt für Steuerung
+ * Creates a new game world
+ * @param {HTMLCanvasElement} canvas - The canvas element
+ * @param {Keyboard} keyboard - The keyboard object for controls
  */
 constructor(canvas, keyboard) {
     this.ctx = canvas.getContext('2d');
@@ -35,8 +35,8 @@ constructor(canvas, keyboard) {
 
 
 /**
- * Verbindet die Welt mit dem Charakter und Feinden
- * Startet Endboss-Animation
+ * Connects the world with the character and enemies
+ * Starts endboss animation
  */
 setWorld() {        
     this.character.world = this;
@@ -50,8 +50,8 @@ setWorld() {
 
 
 /**
- * Startet das Kollisions-Intervall
- * Prüft alle 200ms auf Kollisionen und Spielende
+ * Starts the collision interval
+ * Checks for collisions and game end every 200ms
  */
 startCollisionInterval() {
     const collisionInterval = setInterval(() => {
@@ -76,8 +76,8 @@ startCollisionInterval() {
 
 
 /**
- * Startet das Flaschen-Kollisions-Intervall
- * Prüft 60x pro Sekunde auf Flaschentreffer
+ * Starts the bottle collision interval
+ * Checks for bottle hits 60 times per second
  */
 startBottleInterval() {
     const bottleInterval = setInterval(() => {
@@ -90,8 +90,8 @@ startBottleInterval() {
 
 
 /**
- * Startet die Spiel-Logik
- * Initialisiert alle Game-Loop-Intervalle
+ * Starts the game logic
+ * Initializes all game loop intervals
  */
 run() {
     this.startCollisionInterval();
@@ -100,8 +100,8 @@ run() {
 
 
 /**
- * Prüft ob eine Flasche geworfen werden soll
- * Erstellt neues Wurfobjekt wenn D gedrückt und Flaschen verfügbar
+ * Checks if a bottle should be thrown
+ * Creates new throw object when D is pressed and bottles available
  */
 checkThrowObjects() {
     if(this.keyboard.D && this.character.bottles > 0) {
@@ -124,8 +124,8 @@ checkThrowObjects() {
 
 
 /**
- * Prüft ob Charakter auf Feinde springt
- * Tötet Feinde bei Sprung-Kollision
+ * Checks if character jumps on enemies
+ * Kills enemies on jump collision
  */
 checkEnemyJumpCollision() {
     this.level.enemies.forEach((enemy) => {
@@ -143,8 +143,8 @@ checkEnemyJumpCollision() {
 
 
 /**
- * Behandelt das Töten eines Feindes durch Sprung
- * @param {Object} enemy - Der getötete Feind
+ * Handles killing an enemy by jumping
+ * @param {Object} enemy - The killed enemy
  */
 handleEnemyJumpKill(enemy) {
     enemy.isDead = true;
@@ -168,8 +168,8 @@ handleEnemyJumpKill(enemy) {
 }
 
 /**
- * Prüft Kollision mit Münzen
- * Sammelt Münzen wenn Charakter sie berührt
+ * Checks collision with coins
+ * Collects coins when character touches them
  */
 checkCoinCollision() {
     this.level.coins.forEach((coin) => {
@@ -189,8 +189,8 @@ checkCoinCollision() {
 }
 
 /**
- * Sammelt eine Münze ein
- * @param {Object} coin - Die eingesammelte Münze
+ * Collects a coin
+ * @param {Object} coin - The collected coin
  */
 collectCoin(coin) {
     this.character.collectCoin();
@@ -199,7 +199,7 @@ collectCoin(coin) {
     AudioHub.coin_sound.currentTime = 0;
     AudioHub.coin_sound.volume = 0.2;
     AudioHub.coin_sound.play().catch((e) => {
-        console.warn("Münzen-Sound konnte nicht abgespielt werden:", e);
+        console.warn("Coin sound could not be played:", e);
     });
         
     let index = this.level.coins.indexOf(coin);
@@ -209,7 +209,7 @@ collectCoin(coin) {
 }
 
 /**
- * Prüft Kollision mit Flaschen zum Aufsammeln
+ * Checks collision with bottles for pickup
  */
 checkBottlePickupCollision() {
     for(let i = this.level.bottles.length - 1; i >= 0; i--) {
@@ -227,8 +227,8 @@ checkBottlePickupCollision() {
 }
 
 /**
- * Prüft Kollision mit Feinden (Schaden)
- * Charakter verliert Energie bei Berührung
+ * Checks collision with enemies (damage)
+ * Character loses energy on contact
  */
 checkEnemyDamageCollision() {
     this.level.enemies.forEach((enemy) => {
@@ -239,7 +239,7 @@ checkEnemyDamageCollision() {
             AudioHub.hurt_sound.currentTime = 0;
             AudioHub.hurt_sound.volume = 0.3;
             AudioHub.hurt_sound.play().catch((e) => {
-                console.warn("Schaden-Sound konnte nicht abgespielt werden:", e);
+                console.warn("Hurt sound could not be played:", e);
             });
                 
             if(this.character.isDead()) {
@@ -251,8 +251,8 @@ checkEnemyDamageCollision() {
 
 
 /**
- * Prüft alle Kollisionen im Spiel
- * Koordiniert verschiedene Kollisions-Checks
+ * Checks all collisions in the game
+ * Coordinates different collision checks
  */
 checkCollisions() {
     this.checkEnemyJumpCollision();
@@ -263,7 +263,7 @@ checkCollisions() {
 
 
 /**
- * Berechnet die Kamera-Position basierend auf Charakter
+ * Calculates camera position based on character
  */
 updateCameraPosition() {
     if(this.character.otherDirection) {
@@ -275,8 +275,8 @@ updateCameraPosition() {
 
 
 /**
- * Zeichnet alle beweglichen Spielobjekte
- * Wird mit Kamera-Verschiebung gezeichnet
+ * Draws all movable game objects
+ * Drawn with camera offset
  */
 drawMovableObjects() {
     this.ctx.translate(this.camera_x, 0);
@@ -292,8 +292,8 @@ drawMovableObjects() {
 
 
 /**
- * Zeichnet alle festen UI-Elemente
- * Wird ohne Kamera-Verschiebung gezeichnet
+ * Draws all fixed UI elements
+ * Drawn without camera offset
  */
 drawFixedUI() {
     this.addToMap(this.statusBar);
@@ -304,8 +304,8 @@ drawFixedUI() {
 
 
 /**
- * Zeichnet das gesamte Spiel
- * Wird kontinuierlich aufgerufen (Game Loop)
+ * Draws the entire game
+ * Called continuously (game loop)
  */
 draw() {
     if(gameState && (gameState.paused || gameState.gameOver)) {
@@ -329,8 +329,8 @@ draw() {
 
 
 /**
- * Fügt mehrere Objekte zur Map hinzu
- * @param {Array} objects - Array von Spielobjekten
+ * Adds multiple objects to the map
+ * @param {Array} objects - Array of game objects
  */
 addObjectsToMap(objects) {
     objects.forEach(o => {
@@ -340,9 +340,9 @@ addObjectsToMap(objects) {
 
 
 /**
- * Fügt ein einzelnes Objekt zur Map hinzu
- * Behandelt Spiegelung für gedrehte Objekte
- * @param {Object} mo - Das Spielobjekt (Movable Object)
+ * Adds a single object to the map
+ * Handles mirroring for flipped objects
+ * @param {Object} mo - The game object (Movable Object)
  */
 addToMap(mo) {
     if(mo.otherDirection) {
@@ -358,8 +358,8 @@ addToMap(mo) {
 
 
 /**
- * Spiegelt ein Bild horizontal
- * @param {Object} mo - Das zu spiegelnde Objekt
+ * Mirrors an image horizontally
+ * @param {Object} mo - The object to mirror
  */
 flipImage(mo) {
     this.ctx.save();
@@ -370,8 +370,8 @@ flipImage(mo) {
 
 
  /**
- * Macht die Bild-Spiegelung rückgängig
- * @param {Object} mo - Das Objekt dessen Spiegelung rückgängig gemacht wird
+ * Reverses the image mirroring
+ * @param {Object} mo - The object whose mirroring is reversed
  */
 flipImageBack(mo) {
     mo.x = mo.x * -1;
@@ -380,42 +380,42 @@ flipImageBack(mo) {
 
 
 /**
- * Zeigt den Verloren-Bildschirm an
- * Spielt Verloren-Sound ab
+ * Shows the lose screen
+ * Plays lose sound
  */
 showLoseScreen() {
     document.getElementById('gameOverImage').src = 'img/You%20won%2C%20you%20lost/You%20lost%20b.png';
-    document.getElementById('gameOverText').textContent = 'DU HAST VERLOREN!';
+    document.getElementById('gameOverText').textContent = 'YOU LOST!';
         
     stopBackgroundMusic();
     AudioHub.lost_sound.currentTime = 0;
     AudioHub.lost_sound.volume = 0.4;
     AudioHub.lost_sound.play().catch((e) => {
-        console.warn("Verloren-Sound konnte nicht abgespielt werden:", e);
+        console.warn("Lost sound could not be played:", e);
     });
 }
 
 
 /**
- * Zeigt den Gewonnen-Bildschirm an
- * Spielt Gewinn-Sound ab
+ * Shows the win screen
+ * Plays win sound
  */
 showWinScreen() {
     document.getElementById('gameOverImage').src = 'img/You%20won%2C%20you%20lost/You%20Win%20A.png';
-    document.getElementById('gameOverText').textContent = 'DU HAST GEWONNEN!';
+    document.getElementById('gameOverText').textContent = 'YOU WON!';
         
     stopBackgroundMusic();
     AudioHub.win_sound.currentTime = 0;
     AudioHub.win_sound.volume = 0.4;
     AudioHub.win_sound.play().catch((e) => {
-        console.warn("Gewinn-Sound konnte nicht abgespielt werden:", e);
+        console.warn("Win sound could not be played:", e);
     });
 }
 
     
 /**
- * Zeigt Game-Over oder Gewinn-Bildschirm an
- * Entscheidet basierend auf Spielstatus
+ * Shows game over or win screen
+ * Decides based on game status
  */
 showGameOver() {
     document.getElementById('gameOverPanel').style.display = 'block';
@@ -431,8 +431,8 @@ showGameOver() {
         
 
 /**
- * Behandelt Flaschen-Treffer auf Endboss
- * @param {Object} enemy - Der getroffene Endboss
+ * Handles bottle hit on endboss
+ * @param {Object} enemy - The hit endboss
  */
 handleEndbossHit(enemy) {
     enemy.takeDamage(20);
@@ -441,8 +441,8 @@ handleEndbossHit(enemy) {
 
 
 /**
- * Behandelt Flaschen-Treffer auf normale Feinde
- * @param {Object} enemy - Der getroffene Feind
+ * Handles bottle hit on normal enemies
+ * @param {Object} enemy - The hit enemy
  */
 handleNormalEnemyHit(enemy) {
     enemy.isDead = true;
@@ -469,9 +469,9 @@ handleNormalEnemyHit(enemy) {
 
 
 /**
- * Verarbeitet Kollision zwischen Flasche und Feind
- * @param {Object} bottle - Die geworfene Flasche
- * @param {Object} enemy - Der getroffene Feind
+ * Processes collision between bottle and enemy
+ * @param {Object} bottle - The thrown bottle
+ * @param {Object} enemy - The hit enemy
  */
 processBottleEnemyCollision(bottle, enemy) {
     if(!bottle.isColliding(enemy) || bottle.isSplashed) {
@@ -496,16 +496,16 @@ processBottleEnemyCollision(bottle, enemy) {
 
 
 /**
-     * Prüft Kollision zwischen geworfenen Flaschen und Feinden
-     * Verarbeitet Treffer und entfernt getroffene Objekte
-     */
-    checkBottleCollision() {
-        this.throwableObjects.forEach((bottle) => {
-            this.level.enemies.forEach((enemy) => {
-                this.processBottleEnemyCollision(bottle, enemy);
-            });
+ * Checks collision between thrown bottles and enemies
+ * Processes hits and removes hit objects
+ */
+checkBottleCollision() {
+    this.throwableObjects.forEach((bottle) => {
+        this.level.enemies.forEach((enemy) => {
+            this.processBottleEnemyCollision(bottle, enemy);
         });
-    }
+    });
+}
 
 
 removeFinishedBottles() {
@@ -513,4 +513,4 @@ removeFinishedBottles() {
         return !bottle.canBeRemoved;
         });
     }
-}   
+}

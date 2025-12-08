@@ -19,8 +19,8 @@ IMAGES_DEAD = [
 
 
     /**
-     * Erstellt ein Baby-Huhn
-     * Startet an zufälliger Position mit zufälliger Geschwindigkeit
+     * Creates a baby chicken
+     * Starts at random position with random speed
      */
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
@@ -41,8 +41,8 @@ IMAGES_DEAD = [
 
 
     /**
-     * Startet das Bewegungs-Intervall
-     * Baby-Huhn läuft nach links
+     * Starts the movement interval
+     * Baby chicken walks to the left
      */
     startMovementLoop() {
         setInterval(() => {
@@ -56,8 +56,8 @@ IMAGES_DEAD = [
 
 
     /**
-     * Startet das Animations-Intervall
-     * Wechselt zwischen Lauf- und Tod-Animation
+     * Starts the animation interval
+     * Switches between walking and death animation
      */
     startAnimationLoop() {
         setInterval(() => {
@@ -72,8 +72,8 @@ IMAGES_DEAD = [
 
     
     /**
-     * Startet alle Animationen und Bewegungen
-     * Initialisiert Bewegungs- und Animations-Loops
+     * Starts all animations and movements
+     * Initializes movement and animation loops
      */
     animate() {
         this.startMovementLoop();

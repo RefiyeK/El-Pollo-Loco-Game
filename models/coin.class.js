@@ -13,9 +13,9 @@ class Coin extends MovableObject {
 
 
     /**
-     * Erstellt eine sammelbare Münze
-     * @param {number} x - X-Position der Münze
-     * @param {number} y - Y-Position der Münze (Standard: 150)
+     * Creates a collectable coin
+     * @param {number} x - X-position of the coin
+     * @param {number} y - Y-position of the coin (default: 150)
      */
     constructor(x, y = 150) {
         super().loadImage(this.IMAGES[0]);
@@ -24,7 +24,7 @@ class Coin extends MovableObject {
         this.x = x;
         this.y = y;
 
-        //Carpisma kutusu ayarlari
+        //Collision box settings
         this.offset = {
         top: 25,
         bottom: 25,
@@ -36,8 +36,8 @@ class Coin extends MovableObject {
 
 
     /**
-     * Startet die Münz-Animation
-     * Wechselt zwischen zwei Bildern für Glitzer-Effekt
+     * Starts the coin animation
+     * Switches between two images for sparkle effect
      */
     animate() {
         setInterval(() => {
