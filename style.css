@@ -131,92 +131,6 @@ h2 {
 }
 
 
-/* ============================================
-   LEVEL SELEKTOR
-   ============================================ */
-
-/**
- * Überschrift für die Level-Auswahl
- * Gold-Farbe mit Schatten
- */
-#levelSelector h3 {
-    font-family: 'merriweather', Arial, sans-serif;
-    color: #FFD700;
-    font-size: 20px;
-    margin-bottom: 15px;
-    text-align: center;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    margin-top: 0;
-}
-
-/**
- * Container für Level-Buttons
- * Horizontale Anordnung mit Abstand
- */
-#levelButtons {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-bottom: 30px;
-}
-
-/**
- * Basis-Styling für Level-Buttons
- * Standard-Zustand (deaktiviert)
- */
-.level-btn {
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
-    font-weight: bold;
-    border-radius: 10px;
-    border: 3px solid rgba(255, 107, 0, 0.5);
-    background: rgba(255, 107, 0, 0.3);
-    color: white;
-    cursor: not-allowed;
-    transition: all 0.3s;
-    margin: 0;
-    padding: 0;
-    box-shadow: none;
-}
-
-/**
- * Aktiver Level-Button
- * Orange Gradient mit Gold-Rand
- */
-.level-btn.active {
-    background: linear-gradient(135deg, #ff6b00, #ff8c42);
-    border-color: #FFD700;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(255, 107, 0, 0.6);
-}
-
-/**
- * Hover-Effekt für aktive Level-Buttons
- * Vergrößerung und stärkerer Schatten
- */
-.level-btn.active:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.8);
-}
-
-/**
- * Deaktivierter Level-Button
- * Grau und halbtransparent
- */
-.level-btn.disabled {
-    background: rgba(100, 100, 100, 0.4);
-    border-color: rgba(150, 150, 150, 0.4);
-    color: rgba(200, 200, 200, 0.5);
-}
-
-/**
- * Hover-Effekt für deaktivierte Buttons
- * Shake-Animation als Feedback
- */
-.level-btn.disabled:hover {
-    animation: shake 0.3s;
-}
 
 /**
  * Versteckt Text in Buttons (nur Icons sichtbar)
@@ -286,7 +200,7 @@ button p {
  * Icon-Größe in Buttons
  */
 .btn-icon {
-    font-size: 24px;
+    font-size: 16px;
 }
 
 
@@ -315,7 +229,7 @@ button p {
 #volumeControlGame {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 3px;
 }
 
 /**
@@ -502,7 +416,7 @@ button:active {
  * Gewinn-Grafik
  */
 #winPanel img {
-    width: 300px;
+    width: 200px;
     margin-bottom: 20px;
 }
 
@@ -749,7 +663,6 @@ button:active {
     font-size: 18px;
     padding: 10px 15px;
     border-radius: 8px;
-    border: 2px solid #4CAF50;
     background: white;
     cursor: pointer;
     min-width: 250px;
@@ -806,7 +719,7 @@ button:active {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.95);
+    background-color: black;
     z-index: 9999;
     display: flex;
     justify-content: center;
@@ -873,8 +786,8 @@ button:active {
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
-    z-index: 100;
-    pointer-events: none;
+    z-index: 3;
+    pointer-events: auto;
 }
 
 /**
@@ -891,6 +804,7 @@ button:active {
     margin: 0;
     padding: 0;
     transition: all 0.15s ease;
+    pointer-events: auto;
 }
 
 
@@ -993,13 +907,15 @@ button:active {
      */
     #controlPanel {
         position: fixed;
-        top: 15px;
-        right: 26px;
-        z-index: 200;
+        top: 10%;
+        right: 2%;
+        width: auto;
+        z-index: 2;
         margin: 0;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        align-items: center;
+        justify-content: center;
         background: rgba(0, 0, 0, 0.85);
         padding: 8px;
         border-radius: 6px;
@@ -1011,13 +927,15 @@ button:active {
      * Kleinere Schrift und Padding
      */
     #controlPanel button {
-        padding: 5px 10px;
+        padding: 5px 5px;
         font-size: 10px;
         margin: 0;
         background: linear-gradient(135deg, #ff6b00, #ff8c42);
         border-radius: 4px;
         white-space: nowrap;
         min-width: 80px;
+        display: flex;
+        align-items: center;
     }
 
     /**
@@ -1038,20 +956,23 @@ button:active {
         background: rgba(255, 107, 0, 0.15);
         padding: 4px 6px;
         border-radius: 4px;
+        width: 80;
+        height: 20;
+        
     }
 
     /**
      * Lautstärke-Icon im Spiel (kleiner)
      */
-    #volumeControlGame .volume-icon {
-        font-size: 14px;
+    .volume-icon {
+        font-size: 16px;
     }
 
     /**
      * Lautstärke-Slider im Spiel (schmaler)
      */
     #volumeGame {
-        width: 90px;
+        width: 40px;
         height: 3px;
     }
 
@@ -1079,7 +1000,6 @@ button:active {
         display: flex;
         width: 100%;
         height: 100%;
-        z-index: 2000;
     }
     
     /**
@@ -1088,22 +1008,23 @@ button:active {
      */
     #homeScreenButtons {
         max-width: 400px !important;
-        padding: 25px 30px !important;
+        padding: 15px 20px !important;
         max-width: 180px !important;
-        max-height: 300px;
+        max-height: 200px;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
+        gap: 5px;
     }
 
     /**
      * Button-Größe im Querformat
      * Kleinere Dimensionen
      */
-    button {
-        width: 135px;
-        height: 35px;
+    #controlPanel button {
+        width: 50px;
+        height: 20px;
     }
 
     /**
@@ -1150,7 +1071,7 @@ button:active {
      * Game Controls Buttons (kleiner)
      */
     #gameControls button {
-        padding: 12px 20px !important;
+        padding: 4px 5px !important;
         font-size: 16px !important;
         gap: 6px;
     }
@@ -1167,9 +1088,9 @@ button:active {
      */
     #volumeControl {
         padding: 0 !important;
-        width: 150px;
-        height: 40px;
-        gap: 6px;
+        width: 135px;
+        height: 29px;
+        gap: 0px;
     }
 
     /**
@@ -1183,13 +1104,12 @@ button:active {
      * Musik Selector im Querformat (kompakter)
      */
     #musicSelector {
-        width: 150px;
-        height: 14px;
+        width: 115px;
+        height: 5px;
         background-color:rgba(255, 107, 0, 0.9);
-        padding: 17px 30px;
-        border-radius: 15px;
-        z-index: 10;
-        margin-bottom: 20px;
+        padding: 15px 25px;
+        border-radius: 10px;
+        margin-bottom: 5px;
         margin-top: 0px;
     }
 
@@ -1209,9 +1129,9 @@ button:active {
     #musicDropdown {
         font-family: 'merriweather', Arial, sans-serif;
         font-size: 9px;
-        padding: 5px 10px;
+        padding: 4px 10px;
         border-radius: 8px;
-        border: 2px solid #4CAF50;
+        border: 2px solid #ffffff;
         background: white;
         cursor: pointer;
         min-width: 118px;
@@ -1236,8 +1156,11 @@ button:active {
         background: #2196f3;
         color: white;
         transition: all 0.3s;
-        width: 30px;
-        height: 30px;  
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;  
     }
 
     /**
@@ -1262,17 +1185,10 @@ button:active {
      */
     #mobilControls {
         position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
         height: 100px !important;
         background: linear-gradient(to bottom, 
                     rgba(255, 107, 0, 0.85), 
                     rgba(255, 140, 0, 0.9)) !important;
-        z-index: 100 !important;
-        display: flex;
-        align-items: center;
-        padding: 0 30px !important;
         box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
     }
 
@@ -1305,6 +1221,35 @@ button:active {
         box-shadow: 
             0 2px 6px rgba(0, 0, 0, 0.3),
             inset 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+
+    #gameFooter {
+        bottom: 25%;
+        left: 5%;
+        width: calc((100vw - 720px) / 2);
+        font-size: 9px;
+        z-index: 10;
+        text-align: center;
+        display: flex;
+        background-color: transparent;
+    }
+
+    /**
+    * Links im Footer
+    * Orange Farbe mit Unterstreichen bei Hover
+    */
+    #gameFooter a {
+        color: #f4a300;
+        text-decoration: none;
+        margin-left: 5px;
+    }
+
+    /**
+    * Hover-Effekt für Footer-Links
+    */
+    #gameFooter a:hover {
+    text-decoration: underline;
     }
 
     /**
@@ -1368,10 +1313,13 @@ button:active {
 @media (max-width: 1024px) {
     #gameOverPanel {
         top: 150px;
-        padding: 10px !important;
+        padding: 25px !important;
         display: flex;
+        align-items: center;
+        justify-content: center;
         flex-direction: column;
     }
+    
     
     /**
      * Game Over Überschrift (kleiner)
@@ -1385,8 +1333,8 @@ button:active {
      * Game Over Bild (kleiner)
      */
     #gameOverImage {
-        width: 150px !important;
-        margin-bottom: 10px !important;
+        width: 200px !important;
+        margin: 0;
     }
     
     /**

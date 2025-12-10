@@ -9,14 +9,15 @@ class Character extends MovableObject{
     bottles = 0;
     maxCoins = 50;
     maxBottles = 10;
-
+    lastThrow = 0;
     lastAction = new Date().getTime();
-    idleTime = 2000; //2 seconds
+    SHORT_IDLE_TIME = 2000;
+    LONG_IDLE_TIME = 10000;
     offset = {
         top: 120,
         bottom: 10,
-        left: 30,
-        right: 30,
+        left: 40,
+        right: 50,
     }
 
     IMAGES_WALKING = [
@@ -56,7 +57,20 @@ class Character extends MovableObject{
         'img/2_character_pepe/4_hurt/H-43.png'
     ];
 
-    IMAGES_IDLE = [
+    IMAGES_STAND_IDLE = [
+    'img/2_character_pepe/1_idle/idle/I-1.png',
+    'img/2_character_pepe/1_idle/idle/I-2.png',
+    'img/2_character_pepe/1_idle/idle/I-3.png',
+    'img/2_character_pepe/1_idle/idle/I-4.png',
+    'img/2_character_pepe/1_idle/idle/I-5.png',
+    'img/2_character_pepe/1_idle/idle/I-6.png',
+    'img/2_character_pepe/1_idle/idle/I-7.png',
+    'img/2_character_pepe/1_idle/idle/I-8.png',
+    'img/2_character_pepe/1_idle/idle/I-9.png',
+    'img/2_character_pepe/1_idle/idle/I-10.png'
+    ];
+
+    IMAGES_LONG_IDLE = [
         'img/2_character_pepe/1_idle/long_idle/I-11.png',
         'img/2_character_pepe/1_idle/long_idle/I-12.png',
         'img/2_character_pepe/1_idle/long_idle/I-13.png',
@@ -82,7 +96,8 @@ class Character extends MovableObject{
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_HURT);
-        this.loadImages(this.IMAGES_IDLE);
+        this.loadImages(this.IMAGES_LONG_IDLE);
+        this.loadImages(this.IMAGES_STAND_IDLE);
         this.applyGravity();
         this.animate();
     }
@@ -94,6 +109,11 @@ class Character extends MovableObject{
      * @returns {boolean} True if character is moving
      */
     handleMovement() {
+
+        if(this.isDead()) {
+            return false;
+        }
+
         let isWalking = false;
 
         if(this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
@@ -110,6 +130,10 @@ class Character extends MovableObject{
             this.lastAction = new Date().getTime();
         }
 
+        if(this.world.keyboard.D) {
+            this.lastAction = new Date().getTime();
+        }
+
         return isWalking;
     }
 
@@ -119,6 +143,10 @@ class Character extends MovableObject{
      * Makes character jump if on ground
      */
     handleJump() {
+
+        if(this.isDead()) {
+            return false;
+        }
         if(this.world.keyboard.UP && !this.isAboveGround() || 
            this.world.keyboard.SPACE && !this.isAboveGround()) {
             this.jump();
@@ -166,12 +194,16 @@ class Character extends MovableObject{
             this.playAnimation(this.IMAGES_HURT);
         } else if(this.isAboveGround()) {
             this.playAnimation(this.IMAGES_JUMPING);
-        } else if(this.isIdle()) {
-            this.playAnimation(this.IMAGES_IDLE);
         } else if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
             this.playAnimation(this.IMAGES_WALKING);
-        }
+        } else if(this.isLongIdle()) {
+            this.playAnimation(this.IMAGES_LONG_IDLE);
+        } else if(this.isStandIdle()) {
+            this.playAnimation(this.IMAGES_STAND_IDLE);
+        } else {
+             this.playAnimation(this.IMAGES_STAND_IDLE);
     }
+}
 
 
     /**
@@ -201,13 +233,8 @@ class Character extends MovableObject{
      * Sets vertical speed and plays sound
      */
     jump() {
-        this.speedY = 25;
-
-        AudioHub.jump_sound.currentTime = 0;
-        AudioHub.jump_sound.volume = 0.2;
-        AudioHub.jump_sound.play().catch((e) => {
-            console.warn("Jump sound could not be played:", e);
-        });
+         this.speedY = 25;
+        AudioHub.playSound(AudioHub.jump_sound, 0.2);
     }
 
 
@@ -238,15 +265,17 @@ class Character extends MovableObject{
      * Starts sound loop if not already active
      */
     playWalkingSound() {
+        if(AudioHub.isMuted) return;
+    
         if(AudioHub.walking_sound.paused) {
             AudioHub.walking_sound.currentTime = 0;
             AudioHub.walking_sound.volume = 0.4;
             AudioHub.walking_sound.loop = true;
             AudioHub.walking_sound.play().catch(e => {
-                console.warn("Walking sound could not be played:", e);
-            });
-        }
+            console.warn("Walking sound could not be played:", e);
+        });
     }
+}
 
 
     /**
@@ -262,12 +291,54 @@ class Character extends MovableObject{
 
 
     /**
+     * Karakterin ayakta durma animasyonunu oynaması için gereken sürenin geçip geçmediğini kontrol eder.
+     * @returns {boolean} True if no action for more than SHORT_IDLE_TIME
+     */
+    isStandIdle() {
+        let timePassed = new Date().getTime() - this.lastAction;
+        return timePassed > this.SHORT_IDLE_TIME;
+    }
+
+
+    /**
+     * Karakterin uykuya dalma (Long Idle) animasyonunu oynaması için gereken sürenin geçip geçmediğini kontrol eder.
+     * @returns {boolean} True if no action for more than LONG_IDLE_TIME
+     */
+    isLongIdle() {
+        let timePassed = new Date().getTime() - this.lastAction;
+        return timePassed > this.LONG_IDLE_TIME;
+    }
+
+
+    /**
      * Checks if character is idle
      * @returns {boolean} True if no action for more than 2 seconds
      */
     isIdle() {
         let timePassed = new Date().getTime() - this.lastAction;
         return timePassed > this.idleTime;
+    }
 
+
+    /**
+    * Returns the appropriate collision offset based on character state
+    * @returns {Object} Offset values for collision detection
+    */
+    getCollisionOffset() {
+        if(this.isAboveGround()) {
+            return {
+                top: 120,
+                bottom: 40,
+                left: 30,
+                right: 30,
+            };
+        }
+    
+        return {
+            top: 120,
+            bottom: 5,
+            left: 20,
+            right: 20,
+        };
     }
 }

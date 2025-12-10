@@ -36,8 +36,10 @@ function onMusicChange() {
     
     if(selectedMusicIndex >= 0) {
         document.getElementById('previewBtn').disabled = false;
+        localStorage.setItem('selectedMusic', selectedMusicIndex);
     } else {
         document.getElementById('previewBtn').disabled = true;
+        localStorage.removeItem('selectedMusic');
     }
     stopPreview();
 }

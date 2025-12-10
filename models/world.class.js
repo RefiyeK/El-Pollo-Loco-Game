@@ -25,6 +25,7 @@ constructor(canvas, keyboard) {
     this.statusBar = new StatusBar();
     this.coinStatusBar = new CoinStatusBar();
     this.bossStatusBar = new BossStatusBar();
+    this.bossStatusBar.visible = false;
     this.bottleStatusBar = new BottleStatusBar();
     this.camera_target = 0;
     this.smoothCamera = 0;
@@ -104,7 +105,8 @@ run() {
  * Creates new throw object when D is pressed and bottles available
  */
 checkThrowObjects() {
-    if(this.keyboard.D && this.character.bottles > 0) {
+    const COOLDOWN_TIME = 500;
+    if(this.keyboard.D && this.character.bottles > 0 && (new Date().getTime() - this.character.lastThrow) > COOLDOWN_TIME) {
         let direction = this.character.otherDirection ? -1 : 1;
 
         let bottleX;
@@ -119,6 +121,7 @@ checkThrowObjects() {
 
         this.character.bottles -= 1;
         this.bottleStatusBar.setBottles(this.character.bottles);
+        this.character.lastThrow = new Date().getTime();
     }
 }
 
@@ -129,13 +132,25 @@ checkThrowObjects() {
  */
 checkEnemyJumpCollision() {
     this.level.enemies.forEach((enemy) => {
-        if(enemy instanceof Endboss || enemy.isDead) {
+
+        if(enemy instanceof Endboss || enemy.isDead()) {
             return;
         }
-            
+        
+        let charOffset = this.character.getCollisionOffset();
+        let enemyOffset = enemy.offset || {top: 0, bottom: 0, left: 0, right: 0};
+        
+        let isColliding = this.character.isColliding(enemy);
+        
+        let charBottom = this.character.y + this.character.height - charOffset.bottom;
+        let enemyTop = enemy.y + enemyOffset.top;
+       
         if(this.character.isAboveGround() && 
-           this.character.speedY < 0 && 
-           this.character.isColliding(enemy)) {
+           this.character.speedY < 0 &&
+           isColliding &&
+           charBottom > enemyTop
+        ){
+            console.log("✅ KILLING ENEMY!");
             this.handleEnemyJumpKill(enemy);
         }
     });
@@ -147,24 +162,22 @@ checkEnemyJumpCollision() {
  * @param {Object} enemy - The killed enemy
  */
 handleEnemyJumpKill(enemy) {
-    enemy.isDead = true;
+    enemy.energy = 0;
         
     if(enemy instanceof Chicken) {
-        AudioHub.chicken_sound.currentTime = 0;
-        AudioHub.chicken_sound.volume = 0.2;
-        AudioHub.chicken_sound.play();
+        AudioHub.playSound(AudioHub.chicken_sound, 0.2);
     }
         
     if(enemy instanceof ChickenBaby) {
-        AudioHub.chicken_baby_sound.currentTime = 0;
-        AudioHub.chicken_baby_sound.play();
+        AudioHub.playSound(AudioHub.chicken_baby_sound, 0.2);
     }
-        
+    this.character.speedY = 15;
+    setTimeout(() => {
     let index = this.level.enemies.indexOf(enemy);
     if(index > -1) {
         this.level.enemies.splice(index, 1);
     }
-    this.character.speedY = 15;
+    }, 500);
 }
 
 /**
@@ -173,18 +186,9 @@ handleEnemyJumpKill(enemy) {
  */
 checkCoinCollision() {
     this.level.coins.forEach((coin) => {
-        if(!this.character.isColliding(coin)) {
-            return;
-        }
-            
-        let coinIsHigh = coin.y < 350;
-        let characterIsJumping = this.character.isAboveGround();
-            
-        if(coinIsHigh && !characterIsJumping) {
-            return;
-        }
-            
+        if(this.character.isColliding(coin)) {
         this.collectCoin(coin);
+        }
     });
 }
 
@@ -196,11 +200,7 @@ collectCoin(coin) {
     this.character.collectCoin();
     this.coinStatusBar.setPercentage(this.character.coins);
         
-    AudioHub.coin_sound.currentTime = 0;
-    AudioHub.coin_sound.volume = 0.2;
-    AudioHub.coin_sound.play().catch((e) => {
-        console.warn("Coin sound could not be played:", e);
-    });
+    AudioHub.playSound(AudioHub.coin_sound, 0.2);
         
     let index = this.level.coins.indexOf(coin);
     if(index > -1) {
@@ -236,11 +236,7 @@ checkEnemyDamageCollision() {
             this.character.hit();
             this.statusBar.setPercentage(this.character.energy);
             
-            AudioHub.hurt_sound.currentTime = 0;
-            AudioHub.hurt_sound.volume = 0.3;
-            AudioHub.hurt_sound.play().catch((e) => {
-                console.warn("Hurt sound could not be played:", e);
-            });
+            AudioHub.playSound(AudioHub.hurt_sound, 0.3);
                 
             if(this.character.isDead()) {
                 gameState.gameOver = true;
@@ -259,6 +255,26 @@ checkCollisions() {
     this.checkCoinCollision();
     this.checkBottlePickupCollision();
     this.checkEnemyDamageCollision();
+    this.checkBossProximity();
+}
+
+
+/**
+ * Checks if character is near the endboss
+ * Shows boss health bar when close
+ */
+checkBossProximity() {
+    this.level.enemies.forEach((enemy) => {
+        if(enemy instanceof Endboss) {
+            let distance = Math.abs(this.character.x - enemy.x);
+            
+            if(distance < 500) {
+                this.bossStatusBar.visible = true;
+            } else {
+                this.bossStatusBar.visible = false;
+            }
+        }
+    });
 }
 
 
@@ -298,8 +314,10 @@ drawMovableObjects() {
 drawFixedUI() {
     this.addToMap(this.statusBar);
     this.addToMap(this.coinStatusBar);
-    this.addToMap(this.bossStatusBar);
     this.addToMap(this.bottleStatusBar);
+    if(this.bossStatusBar.visible) {
+        this.addToMap(this.bossStatusBar);
+    }
 }
 
 
@@ -388,11 +406,7 @@ showLoseScreen() {
     document.getElementById('gameOverText').textContent = 'YOU LOST!';
         
     stopBackgroundMusic();
-    AudioHub.lost_sound.currentTime = 0;
-    AudioHub.lost_sound.volume = 0.4;
-    AudioHub.lost_sound.play().catch((e) => {
-        console.warn("Lost sound could not be played:", e);
-    });
+    AudioHub.playSound(AudioHub.lost_sound, 0.4);
 }
 
 
@@ -405,11 +419,7 @@ showWinScreen() {
     document.getElementById('gameOverText').textContent = 'YOU WON!';
         
     stopBackgroundMusic();
-    AudioHub.win_sound.currentTime = 0;
-    AudioHub.win_sound.volume = 0.4;
-    AudioHub.win_sound.play().catch((e) => {
-        console.warn("Win sound could not be played:", e);
-    });
+    AudioHub.playSound(AudioHub.win_sound, 0.4);
 }
 
     
@@ -445,18 +455,14 @@ handleEndbossHit(enemy) {
  * @param {Object} enemy - The hit enemy
  */
 handleNormalEnemyHit(enemy) {
-    enemy.isDead = true;
-        
+    enemy.energy = 0;
+    
     if(enemy instanceof Chicken) {
-        AudioHub.chicken_sound.currentTime = 0;
-        AudioHub.chicken_sound.volume = 0.2;
-        AudioHub.chicken_sound.play();
+        AudioHub.playSound(AudioHub.chicken_sound, 0.2);
     }
         
     if(enemy instanceof ChickenBaby) {
-       AudioHub.chicken_baby_sound.currentTime = 0;
-        AudioHub.chicken_baby_sound.volume = 0.2;
-        AudioHub.chicken_baby_sound.play();
+        AudioHub.playSound(AudioHub.chicken_baby_sound, 0.2);
     }
         
     setTimeout(() => {

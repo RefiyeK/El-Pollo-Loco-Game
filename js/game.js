@@ -28,9 +28,13 @@ function isGameActive() {
  */
 function init() {
     canvas = document.getElementById('canvas');
+    loadAudioSettings();
 }
 
 window.addEventListener("keydown", (e) => {
+    
+    if(e.keyCode == 32) {
+        e.preventDefault(); }
     
     if(gameState.paused || gameState.gameOver) {
         return; 
@@ -227,40 +231,66 @@ function resumeGame() {
 
 /**
  * Toggles music on/off
- * Changes button text and plays/pauses music
+ * Changes button text and mutes/unmutes ALL sounds
  */
 function toggleMusic() {
     isMusicOn = !isMusicOn;
     gameState.musicOn = isMusicOn;
     
+    AudioHub.toggleMute();
+    
+    const musicBtn = document.getElementById('musicBtn');
     if(isMusicOn) {
-        resumeBackgroundMusic();
-        document.getElementById('musicBtn').textContent = '🎵 MUSIK AN';
+        musicBtn.innerHTML = '<span class="btn-icon">🎵MUSIK AN</span>';
     } else {
-        pauseBackgroundMusic();
-        document.getElementById('musicBtn').textContent = '🔇 MUSIK AUS';
+        musicBtn.innerHTML = '<span class="btn-icon">🔇MUSIK AUS</span>';
     }
+    
+    AudioHub.saveSettings();
 }
 
 
 /**
  * Restarts the game
- * All resources are reset
+ * All resources are reset but audio settings are preserved
  * @returns {void}
  */
 function restartGame() {
+    let savedVolume = AudioHub.currentVolume;
+    let savedMuted = AudioHub.isMuted;
+    let savedMusicIndex = selectedMusicIndex;
+
     if(world) {
         clearAllIntervals();
         world = null;
     }
-    
+
     hideEndPanels();
     showGameCanvas();
     resetKeyboard();
-    resetGameState();
-    world = new World(canvas, keyboard);
+    
+    gameState = {
+        started: true,
+        paused: false,
+        gameOver: false,
+        won: false,
+        musicOn: !savedMuted
+    };
+    AudioHub.currentVolume = savedVolume;
+    AudioHub.isMuted = savedMuted;
+    selectedMusicIndex = savedMusicIndex;
+    
+    // Müziği durdur
     stopBackgroundMusic();
-    startBackgroundMusic();
+    
+    canvas = document.getElementById('canvas');
+    world = new World(canvas, keyboard);
+    
+    updateAudioUI();
+    
+    if(!savedMuted) {
+        startBackgroundMusic();
+    }
 }
 
 
@@ -574,3 +604,68 @@ document.addEventListener('click', (event) => {
         closeAboutDialog();
     }
 });
+
+    /**
+ * Loads audio settings from LocalStorage
+ * Restores volume, mute state, and selected music
+ */
+function loadAudioSettings() {
+    AudioHub.loadSettings();
+    
+    let volumeHome = document.getElementById('volumeHome');
+    let volumeGame = document.getElementById('volumeGame');
+    
+    if(volumeHome) {
+        volumeHome.value = AudioHub.currentVolume;
+    }
+    if(volumeGame) {
+        volumeGame.value = AudioHub.currentVolume;
+    }
+
+    let savedMusic = localStorage.getItem('selectedMusic');
+    if(savedMusic !== null) {
+        selectedMusicIndex = parseInt(savedMusic);
+        let dropdown = document.getElementById('musicDropdown');
+        if(dropdown) {
+            dropdown.value = selectedMusicIndex;
+            document.getElementById('previewBtn').disabled = false;
+        }
+    }
+    
+    if(AudioHub.isMuted) {
+        isMusicOn = false;
+        gameState.musicOn = false;
+        let musicBtn = document.getElementById('musicBtn');
+        if(musicBtn) {
+            musicBtn.textContent = '🔇 MUSIK AUS';
+        }
+    }
+
+/**
+ * Updates audio UI elements to match current settings
+ * Syncs sliders and buttons with AudioHub state
+ */
+function updateAudioUI() {
+    let volumeHome = document.getElementById('volumeHome');
+    let volumeGame = document.getElementById('volumeGame');
+    
+    if(volumeHome) {
+        volumeHome.value = AudioHub.currentVolume;
+    }
+    if(volumeGame) {
+        volumeGame.value = AudioHub.currentVolume;
+    }
+    
+    let musicBtn = document.getElementById('musicBtn');
+    if(musicBtn) {
+        if(AudioHub.isMuted) {
+            musicBtn.innerHTML = '<span class="btn-icon">🔇</span><span class="btn-text">MUSIK AUS</span>';
+        } else {
+            musicBtn.innerHTML = '<span class="btn-icon">🎵</span><span class="btn-text">MUSIK AN</span>';
+        }
+    }
+    
+    gameState.musicOn = !AudioHub.isMuted;
+    isMusicOn = !AudioHub.isMuted;
+}
+}

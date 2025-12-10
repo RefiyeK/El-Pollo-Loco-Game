@@ -41,10 +41,10 @@ class ThrowableObject extends MovableObject {
         this.throwDirection = direction;
         this.trow();
         this.offset = {
-            top: 10,
+            top: 15,
             bottom: 10,
-            left: 10,
-            right: 10,
+            left: 5,
+            right: 5,
         }
     }
 
@@ -56,7 +56,7 @@ class ThrowableObject extends MovableObject {
     startMovement() {
         let moveInterval = setInterval(() => {
             if(!this.isSplashed) {
-                this.x += 10 * this.throwDirection;
+                this.x += 22 * this.throwDirection;
             }
         }, 25);
         this.intervalIds.push(moveInterval);
@@ -70,7 +70,7 @@ class ThrowableObject extends MovableObject {
     startAnimation() {
         let animationInterval = setInterval(() => {
             if(this.isSplashed) {
-                this.playAnimation(this.IMAGES_SPLASH);
+                this.playSplashAnimation();
             } else {
                 this.playAnimation(this.IMAGES_ROTATION);
             }
@@ -101,7 +101,7 @@ class ThrowableObject extends MovableObject {
      * Starts movement, animation and collision check
      */
     trow() {
-        this.speedY = 30;
+        this.speedY = 22;
         this.applyGravity();
         this.startMovement();
         this.startAnimation();
@@ -116,16 +116,25 @@ class ThrowableObject extends MovableObject {
     splash() {
         this.isSplashed = true;
         this.speedY = 0;
-
-        AudioHub.bottle_break_sound.currentTime = 0;
-        AudioHub.bottle_break_sound.volume = 0.3;
-        AudioHub.bottle_break_sound.play().catch(e => {
-            console.warn("Bottle break sound could not be played:", e);
-        });
+        
+        AudioHub.playSound(AudioHub.bottle_break_sound, 0.3);
 
         setTimeout(() => {
             this.intervalIds.forEach(id => clearInterval(id));
             this.canBeRemoved = true;
         }, 600);
+    }
+
+
+    /**
+     * Plays the splash animation once and stops on the last frame
+     */
+    playSplashAnimation() {
+        let i = this.currentImage % this.IMAGES_SPLASH.length;
+        if (i < this.IMAGES_SPLASH.length - 1) { // Son kareye kadar ilerle
+            let path = this.IMAGES_SPLASH[i];
+            this.img = this.imageCache[path];
+            this.currentImage++;
+        }
     }
 }

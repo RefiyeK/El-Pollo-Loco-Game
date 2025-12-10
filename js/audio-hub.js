@@ -16,6 +16,8 @@ class AudioHub {
     static hurt_sound = new Audio('audio/effects/ouch-sound.mp3');
     static danger_music = new Audio('audio/background/drone-sound.mp3');
     static currentVolume = 0.2;
+    static isMuted = false;
+    static savedVolume = 0.2;
 
     /**
      * Preloads an audio object
@@ -119,6 +121,8 @@ class AudioHub {
 
         AudioHub.setBackgroundMusicVolume(AudioHub.currentVolume);
         AudioHub.setSoundEffectsVolume(AudioHub.currentVolume);
+
+        AudioHub.saveSettings();
     }
 
 
@@ -184,18 +188,20 @@ class AudioHub {
      * Plays the danger music (boss battle)
      */
     static playDangerMusic() {
-        if(AudioHub.currentMusic) {
-            AudioHub.currentMusic.pause();
-            AudioHub.currentMusic.currentTime = 0;
-        }
-
-        AudioHub.currentMusic = AudioHub.danger_music;
-        AudioHub.currentMusic.loop = true;
-        AudioHub.currentMusic.volume = 0.7;
-        AudioHub.currentMusic.play().catch((e) => {
-            console.warn("Danger music could not be played:", e);
-        });
+    if(AudioHub.isMuted) return; // ← Mute kontrolü!
+    
+    if(AudioHub.currentMusic) {
+        AudioHub.currentMusic.pause();
+        AudioHub.currentMusic.currentTime = 0;
     }
+
+    AudioHub.currentMusic = AudioHub.danger_music;
+    AudioHub.currentMusic.loop = true;
+    AudioHub.currentMusic.volume = 0.7;
+    AudioHub.currentMusic.play().catch((e) => {
+        console.warn("Danger music could not be played:", e);
+    });
+}
 
 
     /**
@@ -209,4 +215,104 @@ class AudioHub {
         }
     }
 
+
+    /**
+     * Mutes all sounds (music + effects)
+     */
+    static muteAll() {
+        AudioHub.isMuted = true;
+        AudioHub.savedVolume = AudioHub.currentVolume;
+        
+        AudioHub.allBackgroundMusic.forEach(music => {
+            music.volume = 0;
+        });
+        
+        AudioHub.walking_sound.volume = 0;
+        AudioHub.chicken_sound.volume = 0;
+        AudioHub.chicken_baby_sound.volume = 0;
+        AudioHub.endboss_sound.volume = 0;
+        AudioHub.bottle_break_sound.volume = 0;
+        AudioHub.win_sound.volume = 0;
+        AudioHub.lost_sound.volume = 0;
+        AudioHub.coin_sound.volume = 0;
+        AudioHub.jump_sound.volume = 0;
+        AudioHub.hurt_sound.volume = 0;
+        AudioHub.danger_music.volume = 0;
+    }
+
+
+    /**
+     * Unmutes all sounds
+     */
+    static unmuteAll() {
+        AudioHub.isMuted = false;
+        AudioHub.currentVolume = AudioHub.savedVolume;
+        AudioHub.setBackgroundMusicVolume(AudioHub.currentVolume);
+        AudioHub.setSoundEffectsVolume(AudioHub.currentVolume);
+    }
+
+
+    /**
+     * Toggles mute on/off
+     * @returns {boolean} New mute state
+     */
+    static toggleMute() {
+        if(AudioHub.isMuted) {
+            AudioHub.unmuteAll();
+        } else {
+            AudioHub.muteAll();
+        }
+
+        AudioHub.saveSettings();
+        return AudioHub.isMuted;
+    }
+
+
+    /**
+     * Plays a sound effect only if not muted
+     * @param {Audio} sound - The sound to play
+     * @param {number} volume - Volume level (optional)
+     */
+    static playSound(sound, volume = null) {
+        if(AudioHub.isMuted) {
+            return;
+        }
+        
+        sound.currentTime = 0;
+        if(volume !== null) {
+            sound.volume = volume;
+        }
+        sound.play().catch(e => {
+            console.warn("Sound could not be played:", e);
+        });
+    }
+
+
+    /**
+     * Saves audio settings to LocalStorage
+     */
+    static saveSettings() {
+        localStorage.setItem('audioVolume', AudioHub.currentVolume);
+        localStorage.setItem('audioMuted', AudioHub.isMuted);
+    }
+
+
+    /**
+     * Loads audio settings from LocalStorage
+     */
+    static loadSettings() {
+        // Volume yükle
+        let savedVolume = localStorage.getItem('audioVolume');
+        if(savedVolume !== null) {
+            AudioHub.currentVolume = parseFloat(savedVolume);
+            AudioHub.savedVolume = AudioHub.currentVolume;
+            AudioHub.setVolume(AudioHub.currentVolume);
+        }
+
+        // Mute durumunu yükle
+        let savedMuted = localStorage.getItem('audioMuted');
+        if(savedMuted === 'true') {
+            AudioHub.muteAll();
+        }
+    }
 }

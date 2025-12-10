@@ -3,7 +3,6 @@ class ChickenBaby extends MovableObject {
 width = 30;
 height = 40;
 y= 395;
-isDead = false;
 
 
 IMAGES_WALKING = [
@@ -29,12 +28,13 @@ IMAGES_DEAD = [
 
         this.x = 700 + Math.random() * 7000;
         this.speed = 0.1 + Math.random() * 0.3;
+        this.energy = 1;
 
         this.offset = {
-            top: 5,
-            bottom: 5,
-            left: 5,
-            right: 5,
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
         };
         this.animate();
     }
@@ -47,7 +47,7 @@ IMAGES_DEAD = [
     startMovementLoop() {
         setInterval(() => {
             if(!isGameActive()) return;
-            if(!this.isDead) {
+            if(!this.isDead()) {
                 this.moveLeft();
                 this.otherDirection = false;
             }
@@ -62,7 +62,7 @@ IMAGES_DEAD = [
     startAnimationLoop() {
         setInterval(() => {
             if(!isGameActive()) return;
-            if(this.isDead) {
+            if(this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
             } else {
                 this.playAnimation(this.IMAGES_WALKING);
@@ -78,5 +78,19 @@ IMAGES_DEAD = [
     animate() {
         this.startMovementLoop();
         this.startAnimationLoop();
+    }
+
+
+    hit() {
+        this.energy = 0;
+    }
+
+
+    /**
+     * Civciv ölü mü kontrol eder
+     * @returns {boolean} True if dead
+     */
+    isDead() {
+        return this.energy === 0;
     }
 }

@@ -70,16 +70,23 @@ class DrawableObject {
      * @param {CanvasRenderingContext2D} ctx - Canvas context
      */
     drawFrame(ctx) {
-        const DEBUG_MODE = false;
-        if(!DEBUG_MODE) return;
+        if(this instanceof Character || 
+        this instanceof Chicken || 
+        this instanceof ChickenBaby || 
+        this instanceof ThrowableObject) {
 
         ctx.beginPath();
-        ctx.lineWidth = '3';
-        ctx.strokeStyle = this.getFrameColor();
+        ctx.lineWidth = '2';
+        ctx.strokeStyle = "red";
         
-        let frame = this.getFrameCoordinates();
-        ctx.rect(frame.x, frame.y, frame.width, frame.height);
+        ctx.rect(
+            this.x + this.offset.left,
+            this.y + this.offset.top,
+            this.width - this.offset.left - this.offset.right,
+            this.height - this.offset.top - this.offset.bottom
+        );
         ctx.stroke();
+    }
     }
     
     

@@ -4,7 +4,6 @@ class Chicken extends MovableObject {
     height = 80;
     y = 360;
     x = 520;
-    isDead = false;
 
     IMAGES_WALKING = [
         'img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
@@ -28,12 +27,12 @@ class Chicken extends MovableObject {
 
         this.x = 500 + Math.random() * 8000;
         this.speed = 0.15 + Math.random() * 0.5;
-        
+        this.energy = 1;
         this.offset = {
-            top: 5,
-            bottom: 5,
-            left: 5,
-            right : 5,
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right : 0,
         };
         this.animate();
     }
@@ -46,7 +45,7 @@ class Chicken extends MovableObject {
     startMovementLoop() {
         setInterval(() => {
             if(!isGameActive()) return;
-            if(!this.isDead) {
+            if(!this.isDead()) {
                 this.moveLeft();
                 this.otherDirection = false;
             }
@@ -61,7 +60,7 @@ class Chicken extends MovableObject {
     startAnimationLoop() {
         setInterval(() => {
             if(!isGameActive()) return;
-            if(this.isDead) {
+            if(this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
             } else {
                 this.playAnimation(this.IMAGES_WALKING);
@@ -78,4 +77,22 @@ class Chicken extends MovableObject {
         this.startMovementLoop();
         this.startAnimationLoop();
     }
+
+
+    /**
+     * Executes when the chicken is hit (e.g., stomped on or hit by a bottle)
+     */
+    hit() {
+        this.energy = 0; 
+    }
+
+
+    /**
+     * Tavuk ölü mü kontrol eder
+     * @returns {boolean} True if dead
+     */
+    isDead() {
+        return this.energy === 0;
+    }
+
 }

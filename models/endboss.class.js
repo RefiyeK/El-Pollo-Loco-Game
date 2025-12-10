@@ -62,7 +62,11 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
-        this.x = 7400;
+        this.x = 8400;
+        this.speed = 3;
+        this.canJump = true;
+        this.jumpCooldown = 1500;
+        this.lastJump = 0;
 
         this.offset = {
             top: 100,
@@ -72,6 +76,8 @@ class Endboss extends MovableObject {
         }
 
         this.dangerMusicPlaying = false;
+        this.dangerMusicStartTime = 0;
+        this.applyGravity();
     }
 
 
@@ -119,8 +125,15 @@ class Endboss extends MovableObject {
         if(!this.dangerMusicPlaying) {
             AudioHub.playDangerMusic();
             this.dangerMusicPlaying = true;
+            this.dangerMusicStartTime = new Date().getTime();
         }
-        this.playAnimation(this.IMAGES_ALERT);
+        let timeSinceDanger = new Date().getTime() - this.dangerMusicStartTime;
+
+        if(timeSinceDanger < 3000) {
+            this.playAnimation(this.IMAGES_ALERT);
+        } else {
+            this.playAnimation(this.IMAGES_WALKING);
+        }
     }
 
 
@@ -146,7 +159,7 @@ class Endboss extends MovableObject {
         setInterval(() => {
             if(!isGameActive()) return;
             this.selectAnimation();
-        }, 200);
+        }, 50);
     }
 
 
@@ -157,10 +170,14 @@ class Endboss extends MovableObject {
     startMovementLoop() {
         setInterval(() => {
             if(!isGameActive()) return;
-            if(!this.isDead) {
+            if(!this.isDead && this.checkIfCharacterInRange()) {
                 this.moveLeft();
+                
+                if(this.shouldJump()) {
+                this.jump();
+                }
             }
-        }, 1000 / 60);
+        }, 1000 / 30);
     }
 
 
@@ -200,10 +217,6 @@ class Endboss extends MovableObject {
         this.isHurt = true;
         this.lastHit = new Date().getTime();
 
-        AudioHub.endboss_sound.currentTime = 0;
-        AudioHub.endboss_sound.volume = 0.1;
-        AudioHub.endboss_sound.play();
-
         if(this.health === 0) {
             this.isDead = true;
         }
@@ -223,11 +236,11 @@ class Endboss extends MovableObject {
 
     /**
      * Checks if character is in range
-     * @returns {boolean} True if distance < 400 pixels
+     * @returns {boolean} True if distance < 600 pixels
      */
     checkIfCharacterInRange() {
         let distance = Math.abs(this.x - this.world.character.x);
-        if(distance < 400) {
+        if(distance < 600) {
             return true;
         }else {
             return false;
@@ -247,5 +260,42 @@ class Endboss extends MovableObject {
         } else {
             return false;
         }
+    }
+
+
+    /**
+    * Makes the endboss jump
+    */
+    jump() {
+        if(!this.isAboveGround() && this.canJump) {
+            this.speedY = 30;
+            this.lastJump = new Date().getTime();
+            this.canJump = false;
+        
+            setTimeout(() => {
+                this.canJump = true;
+            }, this.jumpCooldown);
+        }
+    }
+
+
+    /**
+    * Checks if endboss should jump (when character is close)
+    */
+    shouldJump() {
+        let distance = Math.abs(this.x - this.world.character.x);
+        let timeSinceLastJump = new Date().getTime() - this.lastJump;
+    
+        return distance < 400 && timeSinceLastJump > this.jumpCooldown && this.canJump;
+    }
+
+
+    /**
+    * Checks if endboss is above ground
+    * Endboss ground level is at y = 70
+    * @returns {boolean} True if above ground
+    */
+    isAboveGround() {
+        return this.y < 70;
     }
 }
