@@ -503,7 +503,7 @@ processBottleEnemyCollision(bottle, enemy) {
 
 /**
  * Checks collision between thrown bottles and enemies
- * Processes hits and removes hit objects
+ * Processes hits and damage for each collision
  */
 checkBottleCollision() {
     this.throwableObjects.forEach((bottle) => {
@@ -514,9 +514,13 @@ checkBottleCollision() {
 }
 
 
+/**
+ * Removes finished bottles from the game
+ * Filters out bottles marked for removal
+ */
 removeFinishedBottles() {
     this.throwableObjects = this.throwableObjects.filter(bottle => {
         return !bottle.canBeRemoved;
-        });
-    }
+    });
+}
 }

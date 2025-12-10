@@ -24,7 +24,6 @@ class Coin extends MovableObject {
         this.x = x;
         this.y = y;
 
-        //Collision box settings
         this.offset = {
         top: 0,
         bottom: 0,

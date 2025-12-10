@@ -291,9 +291,9 @@ class Character extends MovableObject{
 
 
     /**
-     * Karakterin ayakta durma animasyonunu oynaması için gereken sürenin geçip geçmediğini kontrol eder.
-     * @returns {boolean} True if no action for more than SHORT_IDLE_TIME
-     */
+    * Checks if enough time has passed for the character to play the idle animation.
+    * @returns {boolean} True if no action for more than SHORT_IDLE_TIME
+    */
     isStandIdle() {
         let timePassed = new Date().getTime() - this.lastAction;
         return timePassed > this.SHORT_IDLE_TIME;
@@ -301,9 +301,9 @@ class Character extends MovableObject{
 
 
     /**
-     * Karakterin uykuya dalma (Long Idle) animasyonunu oynaması için gereken sürenin geçip geçmediğini kontrol eder.
-     * @returns {boolean} True if no action for more than LONG_IDLE_TIME
-     */
+    * Checks if enough time has passed for the character to play the sleeping (Long Idle) animation.
+    * @returns {boolean} True if no action for more than LONG_IDLE_TIME
+    */
     isLongIdle() {
         let timePassed = new Date().getTime() - this.lastAction;
         return timePassed > this.LONG_IDLE_TIME;

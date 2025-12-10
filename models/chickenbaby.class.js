@@ -81,15 +81,19 @@ IMAGES_DEAD = [
     }
 
 
+    /**
+    * Handles hit on chick
+    * Sets energy to 0 (instant death)
+    */
     hit() {
         this.energy = 0;
     }
 
 
     /**
-     * Civciv ölü mü kontrol eder
-     * @returns {boolean} True if dead
-     */
+    * Checks if the chick is dead
+    * @returns {boolean} True if dead
+    */
     isDead() {
         return this.energy === 0;
     }

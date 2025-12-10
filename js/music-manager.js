@@ -54,7 +54,7 @@ function previewSelectedMusic() {
 
     if(selectedMusicIndex >= 0 && selectedMusicIndex < AudioHub.allBackgroundMusic.length) {
         previewAudio = AudioHub.allBackgroundMusic[selectedMusicIndex];
-        previewAudio.volume = 0.2;
+        previewAudio.volume = 0.1;
         previewAudio.loop = true;
         previewAudio.currentTime = 0;
         previewAudio.play();

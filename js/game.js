@@ -268,7 +268,6 @@ function restartGame() {
     hideEndPanels();
     showGameCanvas();
     resetKeyboard();
-    
     gameState = {
         started: true,
         paused: false,
@@ -280,9 +279,7 @@ function restartGame() {
     AudioHub.isMuted = savedMuted;
     selectedMusicIndex = savedMusicIndex;
     
-    // Müziği durdur
     stopBackgroundMusic();
-    
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard);
     

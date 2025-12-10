@@ -40,27 +40,9 @@ class StatusBar extends DrawableObject {
 
 
     /**
-     * Determines the appropriate image index for the health
-     * @returns {number} Index of the image to display (0-5)
-     */
-    // resolveImageIndex() {
-    //     if(this.percentage == 100) {
-    //     return 5;
-    //     } else if (this.percentage >= 80) {
-    //     return 4;
-    //     } else if (this.percentage >= 60) {
-    //     return 3;
-    //     } else if (this.percentage >= 40) {
-    //     return 2;
-    //     } 
-    //     else if (this.percentage >= 20) { 
-    //     return 1;
-    //     } 
-    //         else { 
-    //     return 0; 
-    //         }
-    //     }
-
+    * Determines the appropriate image index based on health percentage
+    * @returns {number} Index of the image to display (1-5)
+    */
     resolveImageIndex() {
     if(this.percentage >= 75) {
     return 5;
