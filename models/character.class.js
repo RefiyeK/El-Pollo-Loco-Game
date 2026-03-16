@@ -13,6 +13,10 @@ class Character extends MovableObject{
     lastAction = new Date().getTime();
     SHORT_IDLE_TIME = 2000;
     LONG_IDLE_TIME = 10000;
+    
+    // Animation timing counters
+    lastAnimationUpdate = 0;
+    
     offset = {
         top: 120,
         bottom: 10,
@@ -120,18 +124,21 @@ class Character extends MovableObject{
             this.moveRight();
             this.otherDirection = false;
             isWalking = true;
-            this.lastAction = new Date().getTime();
+            // this.lastAction = new Date().getTime();
+            this.lastAction = Date.now();
         }
 
         if(this.world.keyboard.LEFT && this.x > 0) {
             this.moveLeft();
             this.otherDirection = true;
             isWalking = true;
-            this.lastAction = new Date().getTime();
+            // this.lastAction = new Date().getTime();
+            this.lastAction = Date.now();
         }
 
         if(this.world.keyboard.D) {
-            this.lastAction = new Date().getTime();
+            // this.lastAction = new Date().getTime();
+            this.lastAction = Date.now();
         }
 
         return isWalking;
@@ -150,7 +157,8 @@ class Character extends MovableObject{
         if(this.world.keyboard.UP && !this.isAboveGround() || 
            this.world.keyboard.SPACE && !this.isAboveGround()) {
             this.jump();
-            this.lastAction = new Date().getTime();
+            // this.lastAction = new Date().getTime();
+            this.lastAction = Date.now();
         }
     }
 
@@ -185,9 +193,42 @@ class Character extends MovableObject{
 
 
     /**
+     * Gets the appropriate animation speed based on current state
+     * Different animations have different speeds for natural look
+     * @returns {number} Milliseconds between animation frames
+     */
+    getAnimationSpeed() {
+        if(this.isDead()) {
+            return 100;  // Dead animation: 100ms = 10 FPS (normal speed)
+        } else if(this.isHurt()) {
+            return 150;  // Hurt animation: 150ms = 6.7 FPS (slower)
+        } else if(this.isAboveGround()) {
+            return 80;   // Jump animation: 80ms = 12.5 FPS (smoother)
+        } else if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+            return 120;  // Walking animation: 120ms = 8.3 FPS (much slower!)
+        } else if(this.isLongIdle()) {
+            return 200;  // Long idle: 200ms = 5 FPS (very slow, relaxed)
+        } else {
+            return 200;  // Stand idle: 200ms = 5 FPS (slow, relaxed)
+        }
+    }
+
+
+    /**
      * Selects the appropriate animation based on character state
      */
     selectAnimation() {
+        // let currentTime = new Date().getTime();
+        let currentTime = Date.now();
+        let animationSpeed = this.getAnimationSpeed();
+        
+        // Only update animation if enough time has passed
+        if(currentTime - this.lastAnimationUpdate < animationSpeed) {
+            return;
+        }
+        
+        this.lastAnimationUpdate = currentTime;
+        
         if(this.isDead()) {
             this.playAnimation(this.IMAGES_DEAD);
         } else if(this.isHurt()) {
@@ -198,23 +239,21 @@ class Character extends MovableObject{
             this.playAnimation(this.IMAGES_WALKING);
         } else if(this.isLongIdle()) {
             this.playAnimation(this.IMAGES_LONG_IDLE);
-        } else if(this.isStandIdle()) {
-            this.playAnimation(this.IMAGES_STAND_IDLE);
         } else {
              this.playAnimation(this.IMAGES_STAND_IDLE);
+        }
     }
-}
 
 
     /**
      * Starts the animation interval
-     * Updates animation every 50ms
+     * Checks every 50ms but only updates when needed based on animation speed
      */
     startAnimationLoop() {
         setInterval(() => {
             if(!isGameActive()) return;
             this.selectAnimation();
-        }, 50);
+        }, 50);  // Still checks frequently, but selectAnimation() controls actual update rate
     }
 
 
@@ -295,7 +334,8 @@ class Character extends MovableObject{
     * @returns {boolean} True if no action for more than SHORT_IDLE_TIME
     */
     isStandIdle() {
-        let timePassed = new Date().getTime() - this.lastAction;
+        // let timePassed = new Date().getTime() - this.lastAction;
+        let timePassed = Date.now() - this.lastAction;
         return timePassed > this.SHORT_IDLE_TIME;
     }
 
@@ -305,7 +345,8 @@ class Character extends MovableObject{
     * @returns {boolean} True if no action for more than LONG_IDLE_TIME
     */
     isLongIdle() {
-        let timePassed = new Date().getTime() - this.lastAction;
+        // let timePassed = new Date().getTime() - this.lastAction;
+        let timePassed = Date.now() - this.lastAction;
         return timePassed > this.LONG_IDLE_TIME;
     }
 
@@ -314,10 +355,10 @@ class Character extends MovableObject{
      * Checks if character is idle
      * @returns {boolean} True if no action for more than 2 seconds
      */
-    isIdle() {
-        let timePassed = new Date().getTime() - this.lastAction;
-        return timePassed > this.idleTime;
-    }
+    // isIdle() {
+    //     let timePassed = new Date().getTime() - this.lastAction;
+    //     return timePassed > this.idleTime;
+    // }
 
 
     /**

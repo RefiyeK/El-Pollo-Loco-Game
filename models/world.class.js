@@ -27,8 +27,8 @@ constructor(canvas, keyboard) {
     this.bossStatusBar = new BossStatusBar();
     this.bossStatusBar.visible = false;
     this.bottleStatusBar = new BottleStatusBar();
-    this.camera_target = 0;
-    this.smoothCamera = 0;
+    // this.camera_target = 0;
+    // this.smoothCamera = 0;
     this.setWorld();
     this.draw();
     this.run();
@@ -106,7 +106,7 @@ run() {
  */
 checkThrowObjects() {
     const COOLDOWN_TIME = 500;
-    if(this.keyboard.D && this.character.bottles > 0 && (new Date().getTime() - this.character.lastThrow) > COOLDOWN_TIME) {
+    if(this.keyboard.D && this.character.bottles > 0 && (Date.now() - this.character.lastThrow) > COOLDOWN_TIME) {
         let direction = this.character.otherDirection ? -1 : 1;
 
         let bottleX;
@@ -121,36 +121,51 @@ checkThrowObjects() {
 
         this.character.bottles -= 1;
         this.bottleStatusBar.setBottles(this.character.bottles);
-        this.character.lastThrow = new Date().getTime();
+        this.character.lastThrow = Date.now();
     }
 }
 
 
 /**
  * Checks if character jumps on enemies
- * Kills enemies on jump collision
+ * Kills enemies on jump collision - COMPLETELY REWRITTEN!
  */
 checkEnemyJumpCollision() {
     this.level.enemies.forEach((enemy) => {
-
+        // Skip endboss and already dead enemies
         if(enemy instanceof Endboss || enemy.isDead()) {
             return;
         }
         
+        // Get collision boxes
         let charOffset = this.character.getCollisionOffset();
         let enemyOffset = enemy.offset || {top: 0, bottom: 0, left: 0, right: 0};
         
-        let isColliding = this.character.isColliding(enemy);
+        // Check if they're colliding at all
+        if(!this.character.isColliding(enemy)) {
+            return;
+        }
         
+        // Calculate actual positions with offsets
         let charBottom = this.character.y + this.character.height - charOffset.bottom;
+        let charTop = this.character.y + charOffset.top;
+        let charLeft = this.character.x + charOffset.left;
+        let charRight = this.character.x + this.character.width - charOffset.right;
+        
         let enemyTop = enemy.y + enemyOffset.top;
-       
-        if(this.character.isAboveGround() && 
-           this.character.speedY < 0 &&
-           isColliding &&
-           charBottom > enemyTop
-        ){
-            console.log("✅ KILLING ENEMY!");
+        let enemyBottom = enemy.y + enemy.height - enemyOffset.bottom;
+        let enemyLeft = enemy.x + enemyOffset.left;
+        let enemyRight = enemy.x + enemy.width - enemyOffset.right;
+        
+        // CRITICAL: Check if Pepe is FALLING DOWN (speedY negative means falling in our physics)
+        // AND if Pepe's feet are above enemy's center (jumping from above)
+        let isFalling = this.character.speedY < 0;
+        let isPepeAboveEnemy = charBottom < (enemyTop + enemyBottom) / 2;
+        
+        // Additional check: Pepe's bottom should be in the upper part of the enemy
+        let pepeFeetInUpperHalf = charBottom < enemyTop + (enemyBottom - enemyTop) * 0.6;
+        
+        if(isFalling && isPepeAboveEnemy && pepeFeetInUpperHalf) {
             this.handleEnemyJumpKill(enemy);
         }
     });
@@ -171,12 +186,16 @@ handleEnemyJumpKill(enemy) {
     if(enemy instanceof ChickenBaby) {
         AudioHub.playSound(AudioHub.chicken_baby_sound, 0.2);
     }
+    
+    // Give Pepe a small bounce after killing
     this.character.speedY = 15;
+    
+    // Remove enemy after short delay (for death animation)
     setTimeout(() => {
-    let index = this.level.enemies.indexOf(enemy);
-    if(index > -1) {
-        this.level.enemies.splice(index, 1);
-    }
+        let index = this.level.enemies.indexOf(enemy);
+        if(index > -1) {
+            this.level.enemies.splice(index, 1);
+        }
     }, 500);
 }
 
@@ -185,11 +204,16 @@ handleEnemyJumpKill(enemy) {
  * Collects coins when character touches them
  */
 checkCoinCollision() {
-    this.level.coins.forEach((coin) => {
-        if(this.character.isColliding(coin)) {
-        this.collectCoin(coin);
+    // this.level.coins.forEach((coin) => {
+    //     if(this.character.isColliding(coin)) {
+    //     this.collectCoin(coin);
+    //     }
+    // });
+    for(let i = this.level.coins.length - 1; i >= 0; i--) {
+        if(this.character.isColliding(this.level.coins[i])) {
+            this.collectCoin(this.level.coins[i]);
         }
-    });
+    }
 }
 
 /**
@@ -228,19 +252,43 @@ checkBottlePickupCollision() {
 
 /**
  * Checks collision with enemies (damage)
- * Character loses energy on contact
+ * Character loses energy on contact - IMPROVED with jump protection!
  */
 checkEnemyDamageCollision() {
     this.level.enemies.forEach((enemy) => {
-        if(this.character.isColliding(enemy)) {
-            this.character.hit();
-            this.statusBar.setPercentage(this.character.energy);
-            
-            AudioHub.playSound(AudioHub.hurt_sound, 0.3);
-                
-            if(this.character.isDead()) {
-                gameState.gameOver = true;
-            }
+        if(!this.character.isColliding(enemy)) {
+            return;
+        }
+        
+        // Don't take damage if jumping on enemy from above
+        let charOffset = this.character.getCollisionOffset();
+        let enemyOffset = enemy.offset || {top: 0, bottom: 0, left: 0, right: 0};
+        
+        let charBottom = this.character.y + this.character.height - charOffset.bottom;
+        let enemyTop = enemy.y + enemyOffset.top;
+        let enemyBottom = enemy.y + enemy.height - enemyOffset.bottom;
+        
+        let isFalling = this.character.speedY < 0;
+        let isPepeAboveEnemy = charBottom < (enemyTop + enemyBottom) / 2;
+        let pepeFeetInUpperHalf = charBottom < enemyTop + (enemyBottom - enemyTop) * 0.6;
+        
+        // Skip damage if successfully jumping on enemy
+        if(isFalling && isPepeAboveEnemy && pepeFeetInUpperHalf && !(enemy instanceof Endboss)) {
+            return;
+        }
+        
+        // Otherwise, take damage
+        this.character.hit();
+        
+        // CRITICAL: Update health bar IMMEDIATELY with current energy
+        this.statusBar.setPercentage(this.character.energy);
+        
+        AudioHub.playSound(AudioHub.hurt_sound, 0.3);
+        
+        // Check death AFTER health bar update
+        if(this.character.energy <= 0) {
+            this.statusBar.setPercentage(0);  // Force bar to 0
+            gameState.gameOver = true;
         }
     });
 }
@@ -367,7 +415,7 @@ addToMap(mo) {
         this.flipImage(mo);
     }
     mo.draw(this.ctx);
-    mo.drawFrame(this.ctx);
+    // mo.drawFrame(this.ctx);
 
     if(mo.otherDirection) {
         this.flipImageBack(mo);
@@ -415,8 +463,11 @@ showLoseScreen() {
  * Plays win sound
  */
 showWinScreen() {
-    document.getElementById('gameOverImage').src = 'img/You%20won%2C%20you%20lost/You%20Win%20A.png';
-    document.getElementById('gameOverText').textContent = 'YOU WON!';
+    // document.getElementById('gameOverImage').src = 'img/You%20won%2C%20you%20lost/You%20Win%20A.png';
+    // document.getElementById('gameOverText').textContent = 'YOU WON!';
+
+    document.getElementById('winImage').src = 'img/You%20won%2C%20you%20lost/You%20Win%20A.png';
+    document.getElementById('winText').textContent = 'YOU WON!';
         
     stopBackgroundMusic();
     AudioHub.playSound(AudioHub.win_sound, 0.4);
@@ -428,11 +479,12 @@ showWinScreen() {
  * Decides based on game status
  */
 showGameOver() {
-    document.getElementById('gameOverPanel').style.display = 'block';
     
     if(gameState.gameOver && this.character.isDead()) {
+        document.getElementById('gameOverPanel').style.display = 'block';
         this.showLoseScreen();
     } else if(gameState.won) {
+        document.getElementById('winPanel').style.display = 'block';
         this.showWinScreen();
     }
     

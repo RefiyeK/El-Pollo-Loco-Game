@@ -3,7 +3,7 @@ let world;
 let keyboard = new Keyboard();
 let isMusicOn = true;
 let intervalIds = [];
-let setIntervalIds = [];
+// let setIntervalIds = [];
 let gameState = {
     started : false,
     paused : false,
@@ -32,76 +32,26 @@ function init() {
 }
 
 window.addEventListener("keydown", (e) => {
-    
-    if(e.keyCode == 32) {
-        e.preventDefault(); }
-    
-    if(gameState.paused || gameState.gameOver) {
-        return; 
-    }
+    if(e.key === ' ') { e.preventDefault(); }
+    if(gameState.paused || gameState.gameOver) { return; }
 
-    if(e.keyCode == 39) {
-        keyboard.RIGHT = true;
-        if(!gameState.started && world) {
-            gameState.started = true;
-        }
-    }
-    if(e.keyCode == 37) {
-        keyboard.LEFT = true;
-        if(!gameState.started && world) {
-            gameState.started = true;
-        }
-    }
-    if(e.keyCode == 40) {
-        keyboard.DOWN = true;
-        if(!gameState.started && world) {
-            gameState.started = true;
-        }
-    }
-    if(e.keyCode == 38) {
-        keyboard.UP = true;
-        if(!gameState.started && world) {
-            gameState.started = true;
-        }
-    }
-    if(e.keyCode == 32) {
-        keyboard.SPACE = true;
-        if(!gameState.started && world) {
-            gameState.started = true;
-        }
-    }
-    if(e.keyCode == 68) {
-        keyboard.D = true;
-        if(!gameState.started && world) {
-            gameState.started = true;
-        }
-    }
+    if(e.key === 'ArrowRight') { keyboard.RIGHT = true; }
+    if(e.key === 'ArrowLeft') { keyboard.LEFT = true; }
+    if(e.key === 'ArrowDown') { keyboard.DOWN = true; }
+    if(e.key === 'ArrowUp') { keyboard.UP = true; }
+    if(e.key === ' ') { keyboard.SPACE = true; }
+    if(e.key === 'd' || e.key === 'D') { keyboard.D = true; }
 });
 
 window.addEventListener("keyup", (e) => {
+    if(gameState.paused || gameState.gameOver) { return; }
 
-    if(gameState.paused || gameState.gameOver) {
-        return;
-    }
-
-    if(e.keyCode == 39) {
-        keyboard.RIGHT = false;
-    }
-    if(e.keyCode == 37) {
-        keyboard.LEFT = false;
-    }
-    if(e.keyCode == 40) {
-        keyboard.DOWN = false;
-    }
-    if(e.keyCode == 38) {
-        keyboard.UP = false;
-    }
-    if(e.keyCode == 32) {
-        keyboard.SPACE = false;
-    }
-    if(e.keyCode == 68) {
-        keyboard.D = false;
-    }
+    if(e.key === 'ArrowRight') { keyboard.RIGHT = false; }
+    if(e.key === 'ArrowLeft') { keyboard.LEFT = false; }
+    if(e.key === 'ArrowDown') { keyboard.DOWN = false; }
+    if(e.key === 'ArrowUp') { keyboard.UP = false; }
+    if(e.key === ' ') { keyboard.SPACE = false; }
+    if(e.key === 'd' || e.key === 'D') { keyboard.D = false; }
 });
 
 
@@ -241,9 +191,9 @@ function toggleMusic() {
     
     const musicBtn = document.getElementById('musicBtn');
     if(isMusicOn) {
-        musicBtn.innerHTML = '<span class="btn-icon">🎵MUSIK AN</span>';
+        musicBtn.innerHTML = '<span class="btn-icon">🎵</span><span class="btn-text">MUSIK AN</span>';
     } else {
-        musicBtn.innerHTML = '<span class="btn-icon">🔇MUSIK AUS</span>';
+        musicBtn.innerHTML = '<span class="btn-icon">🔇</span><span class="btn-text">MUSIK AUS</span>';
     }
     
     AudioHub.saveSettings();
@@ -346,9 +296,6 @@ function goToHome() {
     showHomeScreen();
     hideMobilControls();
     
-    setTimeout(() => {
-        location.reload();
-    }, 100);
 }
 
 
@@ -359,31 +306,6 @@ function goToHome() {
 function clearAllIntervals() {
     intervalIds.forEach(id => clearInterval(id));
     intervalIds = [];
-    setIntervalIds.forEach(id => clearInterval(id));
-    setIntervalIds = [];
-    const maxId = 10000;
-    for(let i = 0; i < maxId; i++) {
-        clearInterval(i);
-        clearTimeout(i);
-    }
-}
-
-
-/**
- * Toggles sound on/off
- * Updates button texts and music status
- */
-function toggleSound() {
-    document.getElementById('soundBtn').textContent = gameState.musicOn ? 'TON AN' : 'TON AUS';
-    document.getElementById('musicBtn').textContent = gameState.musicOn ? 'TON AN' : 'TON AUS';
-
-    if(gameState.musicOn) {
-        if(gameState.started && !gameState.paused) {
-            startBackgroundMusic();
-    } else {
-        pauseBackgroundMusic();
-        }
-    }
 }
 
 
@@ -412,7 +334,7 @@ function toggleFullscreen() {
 function setupMobilControls() {
     const btnLeft = document.getElementById('btnLeft');
     const btnRight = document.getElementById('btnRight');
-    const btnjump = document.getElementById('btnJump');
+    const btnJump = document.getElementById('btnJump');
     const btnThrow = document.getElementById('btnThrow');
 
     if(!btnLeft) return;
@@ -424,7 +346,7 @@ function setupMobilControls() {
     btnLeft.addEventListener('touchstart', (e) => {
         e.preventDefault();
         keyboard.LEFT = true;
-    });
+    }, {passive: false});
     
     /**
      * Touch-End Event: Deactivate left movement
@@ -433,7 +355,7 @@ function setupMobilControls() {
     btnLeft.addEventListener('touchend', (e) => {
         e.preventDefault();
         keyboard.LEFT = false;
-    });
+    }, {passive: false});
     
     /**
      * Touch-Start Event: Activate right movement
@@ -442,7 +364,7 @@ function setupMobilControls() {
     btnRight.addEventListener('touchstart', (e) => {
         e.preventDefault();
         keyboard.RIGHT = true;
-    });
+    }, {passive: false});
     
     /**
      * Touch-End Event: Deactivate right movement
@@ -451,7 +373,7 @@ function setupMobilControls() {
     btnRight.addEventListener('touchend', (e) => {
         e.preventDefault();
         keyboard.RIGHT = false;
-    });
+    }, {passive: false});
     
     /**
      * Touch-Start Event: Activate jump
@@ -460,7 +382,7 @@ function setupMobilControls() {
     btnJump.addEventListener('touchstart', (e) => {
         e.preventDefault();
         keyboard.SPACE = true;
-    });
+    }, {passive: false});
     
     /**
      * Touch-End Event: Deactivate jump
@@ -469,7 +391,7 @@ function setupMobilControls() {
     btnJump.addEventListener('touchend', (e) => {
         e.preventDefault();
         keyboard.SPACE = false;
-    });
+    }, {passive: false});
     
     /**
      * Touch-Start Event: Activate throw
@@ -478,7 +400,7 @@ function setupMobilControls() {
     btnThrow.addEventListener('touchstart', (e) => {
         e.preventDefault();
         keyboard.D = true;
-    });
+    }, {passive: false});
     
     /**
      * Touch-End Event: Deactivate throw
@@ -487,21 +409,21 @@ function setupMobilControls() {
     btnThrow.addEventListener('touchend', (e) => {
         e.preventDefault();
         keyboard.D = false; 
-    });
+    }, {passive: false});
 }
 
 /**
  * Shows mobile controls
  * Called when the game starts
- * Shows touch buttons only on mobile devices (screen width <= 1024px)
+ * Shows touch buttons only on mobile devices (screen width <= 1400px)
  * 
  * @function showMobilControls
  * @returns {void}
  */
 function showMobilControls() {
     const mobilControls = document.getElementById('mobilControls');
-        if (mobilControls && window.innerWidth <= 1024) {
-            mobilControls.style.display = 'flex';
+        if (mobilControls && window.innerWidth <= 1400) {
+            mobilControls.classList.add('show');
         }
 }
 
@@ -515,7 +437,7 @@ function showMobilControls() {
 function hideMobilControls() {
     const mobilControls = document.getElementById('mobilControls');
         if (mobilControls) {
-            mobilControls.style.display = 'none';
+            mobilControls.classList.remove('show');
         }
 }
 
@@ -528,21 +450,6 @@ function hideMobilControls() {
 window.addEventListener('load', () => {
     setupMobilControls();
 });
-
-
-/**
- * Level selection function
- * @param {number} levelNumber - The selected level number
- */
-function selectLevel(levelNumber) {
-    if (levelNumber === 1) {
-        document.querySelectorAll('.level-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
-        console.log('Level ' + levelNumber + ' selected');
-    }
-}
 
 
 /**
@@ -577,32 +484,6 @@ document.addEventListener('click', (event) => {
 
 
 /**
- * Opens the About dialog
- * Shows project information in game-themed popup
- */
-function openAboutDialog() {
-    document.getElementById('aboutDialog').style.display = 'flex';
-}
-
-/**
- * Closes the About dialog
- */
-function closeAboutDialog() {
-    document.getElementById('aboutDialog').style.display = 'none';
-}
-
-/**
- * Closes About dialog when clicking outside
- */
-document.addEventListener('click', (event) => {
-    const aboutDialog = document.getElementById('aboutDialog');
-    
-    if (aboutDialog && event.target === aboutDialog) {
-        closeAboutDialog();
-    }
-});
-
-    /**
  * Loads audio settings from LocalStorage
  * Restores volume, mute state, and selected music
  */
@@ -637,6 +518,7 @@ function loadAudioSettings() {
             musicBtn.textContent = '🔇 MUSIK AUS';
         }
     }
+}
 
 /**
  * Updates audio UI elements to match current settings
@@ -664,5 +546,4 @@ function updateAudioUI() {
     
     gameState.musicOn = !AudioHub.isMuted;
     isMusicOn = !AudioHub.isMuted;
-}
 }

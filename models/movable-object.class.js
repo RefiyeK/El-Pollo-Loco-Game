@@ -29,13 +29,17 @@ class MovableObject extends DrawableObject {
      * @returns {boolean} True if above ground
      */
     isAboveGround() {
-        if(this instanceof ThrowableObject) {
-            return this.y < 360;
-        } 
-        if(this instanceof Coin) {
-        return this.y < 150
-         }
-         return this.y < 150
+        // if(this instanceof ThrowableObject) {
+        //     return this.y < 360;
+        // } 
+        // if(this instanceof Coin) {
+        // return this.y < 150
+        //  }
+        //  return this.y < 150
+    if(this instanceof ThrowableObject) {
+        return this.y < 360;
+    }
+    return this.y < 150;
     }
 
     
@@ -82,7 +86,7 @@ class MovableObject extends DrawableObject {
         if (this.energy < 0) {
             this.energy = 0;
         } else {
-            this.lastHit = new Date().getTime();
+            this.lastHit = Date.now();
         }
     }
 
@@ -92,7 +96,7 @@ class MovableObject extends DrawableObject {
      * @returns {boolean} True if hit less than 1 second ago
      */
     isHurt() {
-        let timepassed = new Date().getTime() - this.lastHit;
+        let timepassed = Date.now() - this.lastHit;
         timepassed = timepassed / 1000;
         return timepassed < 1;
     }

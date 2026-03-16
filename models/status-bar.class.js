@@ -41,19 +41,22 @@ class StatusBar extends DrawableObject {
 
     /**
     * Determines the appropriate image index based on health percentage
-    * @returns {number} Index of the image to display (1-5)
+    * Returns the correct image for each health level including 0%
+    * @returns {number} Index of the image to display (0-5)
     */
     resolveImageIndex() {
-    if(this.percentage >= 75) {
-    return 5;
-    } else if (this.percentage >= 50) {
-    return 4;
-    } else if (this.percentage >= 25) {
-    return 3;
-    } else if (this.percentage >= 10) {
-    return 2;
-    } else { 
-    return 1; 
+        if(this.percentage == 100) {
+            return 5;  // 100% health - full bar
+        } else if(this.percentage >= 80) {
+            return 4;  // 80% health
+        } else if(this.percentage >= 60) {
+            return 3;  // 60% health
+        } else if(this.percentage >= 40) {
+            return 2;  // 40% health
+        } else if(this.percentage >= 20) {
+            return 1;  // 20% health
+        } else {
+            return 0;  // 0% health - EMPTY BAR! ✅
         }
     }
 }

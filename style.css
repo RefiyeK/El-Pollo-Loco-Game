@@ -17,15 +17,6 @@ body {
     background-position: center;
 }
 
-/**
- * Canvas-Element für das Spiel
- * Schwarzer Hintergrund, als Block dargestellt
- */
-canvas {
-    background-color: black;
-    display: block;
-}
-
 
 /* ============================================
    SCHRIFTARTEN (FONT-FACES)
@@ -61,6 +52,7 @@ canvas {
 /**
  * Haupt-Überschrift (H1)
  * Große Bangers-Schrift mit Schatten
+ * Versteckt auf mobilen Geräten um Platz zu sparen
  */
 h1 {
     font-family: 'BangersFont', Arial, Helvetica, sans-serif;
@@ -68,6 +60,7 @@ h1 {
     color: #ffffff;
     text-shadow: 3px 3px 0px #6B2D2D;
     letter-spacing: 6px;
+    margin: 10px 0;
 }
 
 /**
@@ -139,16 +132,6 @@ button p {
     display: none;
 }
 
-/**
- * Shake-Animation für gesperrte Level
- * Horizontale Wackelbewegung
- */
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
 
 /* ============================================
    SPIEL-KONTROLL BUTTONS
@@ -200,7 +183,7 @@ button p {
  * Icon-Größe in Buttons
  */
 .btn-icon {
-    font-size: 16px;
+    font-size: 12px;
 }
 
 
@@ -503,7 +486,7 @@ button:active {
     height: 40px;
     font-size: 24px;
     background: rgba(255, 107, 0, 0.8);
-    color: white;
+    color: rgb(249, 249, 249);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -781,13 +764,17 @@ button:active {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 150px;
-    display: flex;
+    height: 110px;
+    display: none;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
     z-index: 3;
     pointer-events: auto;
+}
+
+#mobilControls.show {
+    display: flex !important;
 }
 
 /**
@@ -860,11 +847,32 @@ button:active {
 
 /**
  * Mobile Controls für Tablets und kleine Bildschirme
- * Zeigt Touch-Buttons unter 1024px Breite
+ * Zeigt Touch-Buttons unter 1400px Breite
  */
-@media (max-width: 1024px) {
+@media (max-width: 1400px) {
     #mobilControls {
         display: flex !important;
+    }
+    
+    /* H1 verstecken auf Tablets um Platz zu sparen */
+    h1 {
+        font-size: 48px;
+        margin: 5px 0;
+    }
+
+    /**
+    * Canvas-Element für das Spiel
+    * Schwarzer Hintergrund, als Block dargestellt
+    */
+    canvas {
+    background-color: black;
+    display: block;
+    }
+
+    /* Body schwarz */
+    body {
+        background-image: none !important;
+        background-color: rgba(0, 0, 0, 0.85) !important;
     }
 }
 
@@ -883,11 +891,24 @@ button:active {
    MEDIA QUERIES - LANDSCAPE MOBILE (QUERFORMAT)
    ============================================ */
 
+
+   /* Landscape mobile'da: */
+/* body {
+    background-image: none !important;
+    background-color: black !important;
+} */
+
 /**
  * Optimierungen für Querformat auf mobilen Geräten
  * Anpassungen für Canvas, Controls und UI-Elemente
  */
-@media (orientation: landscape) and (max-width: 1024px) {
+@media (orientation: landscape) and (max-width: 1400px) {
+
+    /* H1 komplett verstecken im Landscape Mode */
+    h1 {
+        display: none !important;
+    }
+    
 
     /**
      * Canvas im Querformat
@@ -903,12 +924,12 @@ button:active {
 
     /**
      * Control Panel im Querformat
-     * Kompakte Version oben rechts
+     * Kompakte Version mit PIXEL-basierter Position (nicht Prozent!)
      */
     #controlPanel {
         position: fixed;
-        top: 10%;
-        right: 2%;
+        top: 15px !important;  /* ← FESTE PIXEL-POSITION statt 10%! */
+        right: 15px !important;  /* ← FESTE PIXEL-POSITION! */
         width: auto;
         z-index: 2;
         margin: 0;
@@ -924,7 +945,7 @@ button:active {
 
     /**
      * Control Panel Buttons im Querformat
-     * Kleinere Schrift und Padding
+     * Kleinere Schrift und Padding mit OVERFLOW PROTECTION
      */
     #controlPanel button {
         padding: 5px 5px;
@@ -932,10 +953,14 @@ button:active {
         margin: 0;
         background: linear-gradient(135deg, #ff6b00, #ff8c42);
         border-radius: 4px;
-        white-space: nowrap;
+        white-space: nowrap;  /* ← VERHINDERT TEXT WRAPPING! */
+        overflow: hidden;  /* ← VERSTECKT ÜBERFLUSS! */
+        text-overflow: ellipsis;  /* ← ZEIGT ... BEI OVERFLOW! */
         min-width: 80px;
+        max-width: 100px;  /* ← MAXIMUM WIDTH! */
         display: flex;
         align-items: center;
+        justify-content: center;
     }
 
     /**
@@ -1027,37 +1052,7 @@ button:active {
         height: 20px;
     }
 
-    /**
-     * Level Selector Überschrift (kleiner)
-     */
-    #levelSelector h3 {
-        font-size: 16px !important;
-        margin-bottom: 10px !important;
-    }
-
-    /**
-     * Level Buttons Container (kompakter)
-     */
-    #levelButtons {
-        gap: 10px !important;
-        margin-bottom: 20px !important;
-    }
-
-    /**
-     * Einzelne Level Buttons (kleiner)
-     */
-    .level-btn {
-        width: 35px !important;
-        height: 38px !important;
-        font-size: 22px !important;
-    }
-
-    /**
-     * Versteckt Text in Level Buttons
-     */
-    .level-btn p {
-        display: none;
-    }
+ 
 
     /**
      * Game Controls im Querformat (kompakter)
@@ -1184,12 +1179,20 @@ button:active {
      * Orange Gradient-Hintergrund am unteren Rand
      */
     #mobilControls {
-        position: fixed;
-        height: 100px !important;
-        background: linear-gradient(to bottom, 
-                    rgba(255, 107, 0, 0.85), 
-                    rgba(255, 140, 0, 0.9)) !important;
-        box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+       position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 107px !important;
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 1000;
+    background: linear-gradient(to bottom, 
+                rgba(255, 107, 0, 0.85), 
+                rgba(255, 140, 0, 0.9)) !important;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
     }
 
     /**
@@ -1256,8 +1259,8 @@ button:active {
      * Links/Rechts Buttons (blauer Gradient)
      */
     #btnLeft, #btnRight {
-        background: linear-gradient(145deg, #4a90e2, #357abd);
-        color: white;
+        background: linear-gradient(145deg, #4a90e2, #357abd) !important;
+        color: white !important;
         border: 3px solid rgba(74, 144, 226, 0.5);
     }
 
@@ -1268,11 +1271,11 @@ button:active {
         background: linear-gradient(145deg, #357abd, #2a5f8f);
     }
 
-    /**
+    /* *
      * Sprung-Button (grüner Gradient)
      */
     #btnJump {
-        background: linear-gradient(145deg, #5cb85c, #449d44);
+        background: linear-gradient(145deg, #5cb85c, #449d44) !important;
         color: white;
         border: 3px solid rgba(92, 184, 92, 0.5);
     }
@@ -1288,7 +1291,7 @@ button:active {
      * Wurf-Button (roter Gradient)
      */
     #btnThrow {
-        background: linear-gradient(145deg, #ff6b6b, #ff5252);
+        background: linear-gradient(145deg, #ff6b6b, #ff5252) !important;
         color: white;
         border: 3px solid rgba(255, 107, 107, 0.5);
     }
@@ -1303,6 +1306,128 @@ button:active {
 
 
 /* ============================================
+   MEDIA QUERIES - iPAD MINI SPECIFIC FIX
+   ============================================ */
+
+/**
+ * iPad Mini specific fixes (768x1400)
+ * Versteckt H1 komplett um Platz zu schaffen
+ */
+@media (orientation: landscape) and (max-width: 1400px) and (max-height: 768px) {
+    h1 {
+        display: none !important;
+    }
+    
+    /* Control Panel noch höher positionieren */
+    #controlPanel {
+        top: 10px !important;
+        right: 10px !important;
+    }
+    
+    /* Canvas maximieren */
+    canvas {
+        height: calc(100vh - 110px) !important;
+    }
+}
+
+
+/* ============================================
+   MEDIA QUERIES - ASUS ZENBOOK FOLD FIX
+   ============================================ */
+
+/**
+ * Asus Zenbook Fold specific fixes (1280x853)
+ * Kleine Height - Mobil Controls müssen sichtbar sein!
+ */
+@media (orientation: landscape) and (min-width: 1100px) and (max-width: 1400px) and (max-height: 900px) {
+    
+    /* Mobil Controls ZWINGEND anzeigen! */
+    #mobilControls {
+        display: flex !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 110px !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 0 20px !important;
+        z-index: 1000 !important;
+        background: linear-gradient(to bottom, 
+                    rgba(255, 107, 0, 0.85), 
+                    rgba(255, 140, 0, 0.9)) !important;
+        box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* Left Controls Group */
+    #leftControls {
+        display: flex !important;
+        gap: 15px !important;
+    }
+    
+    /* Right Controls Group */
+    #rightControls {
+        display: flex !important;
+        gap: 15px !important;
+        padding-right: 20px !important;
+    }
+    
+    /* Control Buttons */
+    .control_btn {
+        width: 75px !important; 
+        height: 75px !important;
+        font-size: 28px !important;
+        background: linear-gradient(145deg, #ffffff, #e6e6e6) !important;
+        color: #ff6b00 !important;
+        border: 3px solid rgba(255, 107, 0, 0.3) !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        box-shadow: 
+            0 6px 12px rgba(0, 0, 0, 0.3),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.1),
+            inset 0 2px 4px rgba(255, 255, 255, 0.8) !important;
+    }
+    
+    /* Canvas Anpassung */
+    canvas {
+        height: calc(100vh - 110px) !important;
+    }
+    
+    /* H1 verstecken */
+    h1 {
+        display: none !important;
+    }
+}
+
+
+/* ============================================
+   MEDIA QUERIES - iPHONE SE SPECIFIC FIX
+   ============================================ */
+
+/**
+ * iPhone SE specific fixes (375px width)
+ * Text overflow protection
+ */
+@media (orientation: landscape) and (max-width: 667px) {
+    #controlPanel button {
+        font-size: 8px !important;
+        padding: 4px 4px !important;
+        min-width: 60px !important;
+        max-width: 70px !important;
+    }
+    
+    /* Noch kleinere Buttons für SE */
+    .control_btn {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 24px !important;
+    }
+}
+
+
+/* ============================================
    MEDIA QUERIES - GAME OVER PANEL MOBILE
    ============================================ */
 
@@ -1310,7 +1435,7 @@ button:active {
  * Game Over Panel für mobile Geräte
  * Kompakte Darstellung mit kleineren Elementen
  */
-@media (max-width: 1024px) {
+@media (max-width: 1400px) {
     #gameOverPanel {
         top: 150px;
         padding: 25px !important;
@@ -1356,7 +1481,7 @@ button:active {
  * Win Panel für mobile Geräte
  * Kompakte Darstellung ähnlich Game Over Panel
  */
-@media (max-width: 1024px) {
+@media (max-width: 1400px) {
     #winPanel {
         padding: 20px !important;
     }

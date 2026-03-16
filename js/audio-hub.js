@@ -122,7 +122,27 @@ class AudioHub {
         AudioHub.setBackgroundMusicVolume(AudioHub.currentVolume);
         AudioHub.setSoundEffectsVolume(AudioHub.currentVolume);
 
+        // İki slider'ı da senkronize et
+        AudioHub.syncSliders();
+        
+        // localStorage'a kaydet
         AudioHub.saveSettings();
+    }
+
+    /**
+     * Syncs both volume sliders (home and game)
+     * Ensures both sliders show the same value
+     */
+    static syncSliders() {
+        let volumeHome = document.getElementById('volumeHome');
+        let volumeGame = document.getElementById('volumeGame');
+        
+        if(volumeHome) {
+            volumeHome.value = AudioHub.currentVolume;
+        }
+        if(volumeGame) {
+            volumeGame.value = AudioHub.currentVolume;
+        }
     }
 
 
@@ -142,11 +162,13 @@ class AudioHub {
 
         AudioHub.currentMusic = AudioHub.allBackgroundMusic[index];
         AudioHub.currentMusic.loop = true;
-        AudioHub.currentMusic.volume = 0.1;
+        AudioHub.currentMusic.volume = AudioHub.currentVolume;
         
-        AudioHub.currentMusic.play().catch(e => {
-            console.warn("Music could not be played automatically:", e);
-        });
+        if(!AudioHub.isMuted) {
+            AudioHub.currentMusic.play().catch(e => {
+                console.warn("Music could not be played automatically:", e);
+            });
+        }
     }
 
 
@@ -164,7 +186,7 @@ class AudioHub {
      * Resumes the music
      */
     static resumeMusic(){
-        if(AudioHub.currentMusic) {
+        if(AudioHub.currentMusic && !AudioHub.isMuted) {
             AudioHub.currentMusic.play().catch(e => {
                 console.warn("Music could not be resumed:", e);
             });
@@ -188,20 +210,20 @@ class AudioHub {
      * Plays the danger music (boss battle)
      */
     static playDangerMusic() {
-    if(AudioHub.isMuted) return; // ← Mute kontrolü!
-    
-    if(AudioHub.currentMusic) {
-        AudioHub.currentMusic.pause();
-        AudioHub.currentMusic.currentTime = 0;
-    }
+        if(AudioHub.isMuted) return;
+        
+        if(AudioHub.currentMusic) {
+            AudioHub.currentMusic.pause();
+            AudioHub.currentMusic.currentTime = 0;
+        }
 
-    AudioHub.currentMusic = AudioHub.danger_music;
-    AudioHub.currentMusic.loop = true;
-    AudioHub.currentMusic.volume = 0.7;
-    AudioHub.currentMusic.play().catch((e) => {
-        console.warn("Danger music could not be played:", e);
-    });
-}
+        AudioHub.currentMusic = AudioHub.danger_music;
+        AudioHub.currentMusic.loop = true;
+        AudioHub.currentMusic.volume = AudioHub.currentVolume;
+        AudioHub.currentMusic.play().catch((e) => {
+            console.warn("Danger music could not be played:", e);
+        });
+    }
 
 
     /**
@@ -223,6 +245,12 @@ class AudioHub {
         AudioHub.isMuted = true;
         AudioHub.savedVolume = AudioHub.currentVolume;
         
+        // Müziği durdur
+        if(AudioHub.currentMusic && !AudioHub.currentMusic.paused) {
+            AudioHub.currentMusic.pause();
+        }
+        
+        // Tüm volume'leri 0 yap
         AudioHub.allBackgroundMusic.forEach(music => {
             music.volume = 0;
         });
@@ -247,8 +275,17 @@ class AudioHub {
     static unmuteAll() {
         AudioHub.isMuted = false;
         AudioHub.currentVolume = AudioHub.savedVolume;
+        
+        // Volume'leri geri yükle
         AudioHub.setBackgroundMusicVolume(AudioHub.currentVolume);
         AudioHub.setSoundEffectsVolume(AudioHub.currentVolume);
+        
+        // Müziği tekrar başlat
+        if(AudioHub.currentMusic) {
+            AudioHub.currentMusic.play().catch(e => {
+                console.warn("Music could not be resumed after unmute:", e);
+            });
+        }
     }
 
 
@@ -281,6 +318,8 @@ class AudioHub {
         sound.currentTime = 0;
         if(volume !== null) {
             sound.volume = volume;
+        } else {
+            sound.volume = AudioHub.currentVolume;
         }
         sound.play().catch(e => {
             console.warn("Sound could not be played:", e);
@@ -290,15 +329,17 @@ class AudioHub {
 
     /**
      * Saves audio settings to LocalStorage
+     * Saves: volume, mute state
      */
     static saveSettings() {
-        localStorage.setItem('audioVolume', AudioHub.currentVolume);
-        localStorage.setItem('audioMuted', AudioHub.isMuted);
+        localStorage.setItem('audioVolume', AudioHub.currentVolume.toString());
+        localStorage.setItem('audioMuted', AudioHub.isMuted.toString());
     }
 
 
     /**
      * Loads audio settings from LocalStorage
+     * Loads: volume, mute state
      */
     static loadSettings() {
         // Volume yükle
@@ -306,13 +347,20 @@ class AudioHub {
         if(savedVolume !== null) {
             AudioHub.currentVolume = parseFloat(savedVolume);
             AudioHub.savedVolume = AudioHub.currentVolume;
-            AudioHub.setVolume(AudioHub.currentVolume);
+            AudioHub.setBackgroundMusicVolume(AudioHub.currentVolume);
+            AudioHub.setSoundEffectsVolume(AudioHub.currentVolume);
         }
 
         // Mute durumunu yükle
         let savedMuted = localStorage.getItem('audioMuted');
         if(savedMuted === 'true') {
+            AudioHub.isMuted = true;
             AudioHub.muteAll();
+        } else {
+            AudioHub.isMuted = false;
         }
+        
+        // Slider'ları güncelle
+        AudioHub.syncSliders();
     }
 }

@@ -7,6 +7,9 @@ class Endboss extends MovableObject {
     isDead = false;
     isHurt = false;
     lastHit = 0;
+    
+    // Animation timing
+    lastAnimationUpdate = 0;
 
     IMAGES_WALKING = [
         'img/4_enemie_boss_chicken/1_walk/G1.png',
@@ -63,9 +66,9 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
         this.x = 8400;
-        this.speed = 3;
+        this.speed = 10;
         this.canJump = true;
-        this.jumpCooldown = 1500;
+        this.jumpCooldown = 1000;
         this.lastJump = 0;
 
         this.offset = {
@@ -82,9 +85,43 @@ class Endboss extends MovableObject {
 
 
     /**
+     * Gets the appropriate animation speed based on boss state
+     * Different animations have different speeds for natural look
+     * @returns {number} Milliseconds between animation frames
+     */
+    getAnimationSpeed() {
+        if(this.isDead) {
+            return 150;
+        } else if(this.isHurt) {
+            return 100;
+        } else if(this.checkIfCharacterVeryClose()) {
+            return 120;
+        } else if(this.checkIfCharacterInRange()) {
+            let timeSinceDanger = new Date().getTime() - this.dangerMusicStartTime;
+            if(timeSinceDanger < 3000) {
+                return 150;
+            } else {
+                return 150;
+            }
+        } else {
+            return 150;
+        }
+    }
+
+
+    /**
     * Selects the appropriate animation based on boss state
     */
     selectAnimation() {
+        let currentTime = Date.now();
+        let animationSpeed = this.getAnimationSpeed();
+        
+        if(currentTime - this.lastAnimationUpdate < animationSpeed) {
+            return;
+        }
+        
+        this.lastAnimationUpdate = currentTime;
+        
         if(this.isDead) {
             this.playDeadAnimation();
         } else if(this.isHurt) {
@@ -125,9 +162,9 @@ class Endboss extends MovableObject {
         if(!this.dangerMusicPlaying) {
             AudioHub.playDangerMusic();
             this.dangerMusicPlaying = true;
-            this.dangerMusicStartTime = new Date().getTime();
+            this.dangerMusicStartTime = Date.now();
         }
-        let timeSinceDanger = new Date().getTime() - this.dangerMusicStartTime;
+        let timeSinceDanger = Date.now() - this.dangerMusicStartTime;
 
         if(timeSinceDanger < 3000) {
             this.playAnimation(this.IMAGES_ALERT);
@@ -153,7 +190,7 @@ class Endboss extends MovableObject {
 
     /**
     * Starts the animation interval
-    * Updates animation every 200ms
+    * Checks every 50ms but only updates when needed based on animation speed
     */
     startAnimationLoop() {
         setInterval(() => {
@@ -174,7 +211,7 @@ class Endboss extends MovableObject {
                 this.moveLeft();
                 
                 if(this.shouldJump()) {
-                this.jump();
+                    this.jump();
                 }
             }
         }, 1000 / 30);
@@ -215,7 +252,7 @@ class Endboss extends MovableObject {
         }
 
         this.isHurt = true;
-        this.lastHit = new Date().getTime();
+        this.lastHit = Date.now();
 
         if(this.health === 0) {
             this.isDead = true;
@@ -250,12 +287,12 @@ class Endboss extends MovableObject {
 
     /**
     * Checks if character is very close
-    * @returns {boolean} True if distance < 200 pixels
+    * @returns {boolean} True if distance < 250 pixels (INCREASED FROM 200!)
     */
     checkIfCharacterVeryClose() {
         let distance = Math.abs(this.x - this.world.character.x);
 
-        if(distance < 200) {
+        if(distance < 250) {
             return true;
         } else {
             return false;
@@ -268,7 +305,7 @@ class Endboss extends MovableObject {
     */
     jump() {
         if(!this.isAboveGround() && this.canJump) {
-            this.speedY = 30;
+            this.speedY = 35;
             this.lastJump = new Date().getTime();
             this.canJump = false;
         
@@ -286,7 +323,7 @@ class Endboss extends MovableObject {
         let distance = Math.abs(this.x - this.world.character.x);
         let timeSinceLastJump = new Date().getTime() - this.lastJump;
     
-        return distance < 400 && timeSinceLastJump > this.jumpCooldown && this.canJump;
+        return distance < 500 && timeSinceLastJump > this.jumpCooldown && this.canJump;
     }
 
 

@@ -18,11 +18,23 @@ let previewAudio = null;
  * Selects a random index (0-3) and plays the music
  */
 function startRandomMusic() {
-   let randomMusicIndex = Math.floor(Math.random() * 4);
+    let randomMusicIndex = Math.floor(Math.random() * 4);
     AudioHub.playMusic(randomMusicIndex);
-    document.getElementById('musicDropdown').value = randomMusicIndex.toString();
-    document.getElementById('previewBtn').disabled = false;
+    
+    let dropdown = document.getElementById('musicDropdown');
+    if(dropdown) {
+        dropdown.value = randomMusicIndex.toString();
+    }
+    
+    let previewBtn = document.getElementById('previewBtn');
+    if(previewBtn) {
+        previewBtn.disabled = false;
+    }
+    
     selectedMusicIndex = randomMusicIndex;
+    
+    // localStorage'a kaydet
+    localStorage.setItem('selectedMusic', selectedMusicIndex.toString());
 }
 
 
@@ -36,9 +48,11 @@ function onMusicChange() {
     
     if(selectedMusicIndex >= 0) {
         document.getElementById('previewBtn').disabled = false;
-        localStorage.setItem('selectedMusic', selectedMusicIndex);
+        // localStorage'a kaydet
+        localStorage.setItem('selectedMusic', selectedMusicIndex.toString());
     } else {
         document.getElementById('previewBtn').disabled = true;
+        // localStorage'dan sil
         localStorage.removeItem('selectedMusic');
     }
     stopPreview();
@@ -54,10 +68,15 @@ function previewSelectedMusic() {
 
     if(selectedMusicIndex >= 0 && selectedMusicIndex < AudioHub.allBackgroundMusic.length) {
         previewAudio = AudioHub.allBackgroundMusic[selectedMusicIndex];
-        previewAudio.volume = 0.1;
+        previewAudio.volume = AudioHub.currentVolume;
         previewAudio.loop = true;
         previewAudio.currentTime = 0;
-        previewAudio.play();
+        
+        if(!AudioHub.isMuted) {
+            previewAudio.play().catch(e => {
+                console.warn("Preview could not be played:", e);
+            });
+        }
     }
 }
 
@@ -81,12 +100,23 @@ function stopPreview() {
  */
 function startBackgroundMusic() {
     stopPreview();
-        
+    
+    // Muted ise müzik başlatma
+    if(AudioHub.isMuted) {
+        return;
+    }
+    
+    // localStorage'dan kayıtlı müziği yükle
+    let savedMusic = localStorage.getItem('selectedMusic');
+    if(savedMusic !== null) {
+        selectedMusicIndex = parseInt(savedMusic);
+    }
+    
     if(selectedMusicIndex >= 0) {
-         AudioHub.playMusic(selectedMusicIndex);
-        } else {
-            startRandomMusic();
-        }
+        AudioHub.playMusic(selectedMusicIndex);
+    } else {
+        startRandomMusic();
+    }
 }
 
 
@@ -123,5 +153,5 @@ function setMusicVolume(volume) {
 
     if(AudioHub && AudioHub.currentMusic) {
         AudioHub.currentMusic.volume = volume;
-        }
+    }
 }

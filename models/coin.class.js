@@ -1,6 +1,6 @@
 class Coin extends MovableObject {
-    width = 80;
-    height = 80;
+    // width = 80;
+    // height = 80;
     initialY;
     maxHeight =350;
     isMovingUp = true;
