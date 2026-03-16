@@ -204,11 +204,6 @@ handleEnemyJumpKill(enemy) {
  * Collects coins when character touches them
  */
 checkCoinCollision() {
-    // this.level.coins.forEach((coin) => {
-    //     if(this.character.isColliding(coin)) {
-    //     this.collectCoin(coin);
-    //     }
-    // });
     for(let i = this.level.coins.length - 1; i >= 0; i--) {
         if(this.character.isColliding(this.level.coins[i])) {
             this.collectCoin(this.level.coins[i]);
@@ -463,9 +458,6 @@ showLoseScreen() {
  * Plays win sound
  */
 showWinScreen() {
-    // document.getElementById('gameOverImage').src = 'img/You%20won%2C%20you%20lost/You%20Win%20A.png';
-    // document.getElementById('gameOverText').textContent = 'YOU WON!';
-
     document.getElementById('winImage').src = 'img/You%20won%2C%20you%20lost/You%20Win%20A.png';
     document.getElementById('winText').textContent = 'YOU WON!';
         

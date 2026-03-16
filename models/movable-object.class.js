@@ -29,13 +29,6 @@ class MovableObject extends DrawableObject {
      * @returns {boolean} True if above ground
      */
     isAboveGround() {
-        // if(this instanceof ThrowableObject) {
-        //     return this.y < 360;
-        // } 
-        // if(this instanceof Coin) {
-        // return this.y < 150
-        //  }
-        //  return this.y < 150
     if(this instanceof ThrowableObject) {
         return this.y < 360;
     }
