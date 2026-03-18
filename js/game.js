@@ -3,7 +3,6 @@ let world;
 let keyboard = new Keyboard();
 let isMusicOn = true;
 let intervalIds = [];
-// let setIntervalIds = [];
 let gameState = {
     started : false,
     paused : false,
@@ -58,7 +57,6 @@ window.addEventListener("keyup", (e) => {
 /**
  * Resets the game state
  * All game states are set to initial values
- * @returns {void}
  */
 function resetGameState() {
     gameState.started = true;
@@ -71,7 +69,6 @@ function resetGameState() {
 
 /**
  * Resets all keyboard inputs
- * @returns {void}
  */
 function resetKeyboard() {
     keyboard.RIGHT = false;
@@ -85,7 +82,6 @@ function resetKeyboard() {
 
 /**
  * Hides game-over and win panels
- * @returns {void}
  */
 function hideEndPanels() {
     document.getElementById('gameOverPanel').style.display = 'none';
@@ -94,8 +90,7 @@ function hideEndPanels() {
 
 
 /**
- * Shows the game canvas
- * @returns {void}
+ * Shows the game canvas and control panel
  */
 function showGameCanvas() {
     document.getElementById('canvas').style.display = 'block';
@@ -103,33 +98,18 @@ function showGameCanvas() {
     document.getElementById('pauseBtn').textContent = 'PAUSE';
 }
 
+
 /**
  * Starts the game from the main menu
- * 
- * This function:
- * - Hides the main menu
- * - Shows the game canvas
- * - Initializes the game world
- * - Starts background music
- * - Shows mobile controls (if mobile device)
- * 
- * @returns {void}
+ * Reuses existing helper functions to avoid duplication
  */
 function startGameFromHome() {
-   
-    document.getElementById('homeScreen').style.display = 'none'; 
-    document.getElementById('canvas').style.display = 'block';
-    document.getElementById('controlPanel').style.display = 'flex';
-    document.getElementById('gameOverPanel').style.display = 'none';
-    document.getElementById('winPanel').style.display = 'none';
-    
-    gameState.started = true;
-    gameState.gameOver = false;
-    gameState.won = false;
-    gameState.paused = false;
+    document.getElementById('homeScreen').style.display = 'none';
+    showGameCanvas();
+    hideEndPanels();
+    resetGameState();
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard);
-
     startBackgroundMusic();
     showMobilControls();
 }
@@ -138,7 +118,6 @@ function startGameFromHome() {
 /**
  * Pauses or resumes the game
  * Toggles between pause and continue
- * @returns {void}
  */
 function pauseGame() {
     if(gameState.started && !gameState.gameOver && !gameState.won) {
@@ -162,7 +141,6 @@ function pauseGame() {
 /**
  * Resumes the game
  * Starts the game or ends the pause
- * @returns {void}
  */
 function resumeGame() {
     if(!gameState.started) {
@@ -203,7 +181,6 @@ function toggleMusic() {
 /**
  * Restarts the game
  * All resources are reset but audio settings are preserved
- * @returns {void}
  */
 function restartGame() {
     let savedVolume = AudioHub.currentVolume;
@@ -211,6 +188,7 @@ function restartGame() {
     let savedMusicIndex = selectedMusicIndex;
 
     if(world) {
+        world.stop();
         clearAllIntervals();
         world = null;
     }
@@ -243,7 +221,6 @@ function restartGame() {
 
 /**
  * Hides all game panels
- * @returns {void}
  */
 function hideAllGamePanels() {
     document.getElementById('gameOverPanel').style.display = 'none';
@@ -255,7 +232,6 @@ function hideAllGamePanels() {
 
 /**
  * Shows the main menu
- * @returns {void}
  */
 function showHomeScreen() {
     document.getElementById('homeScreen').style.display = 'flex';
@@ -265,7 +241,6 @@ function showHomeScreen() {
 
 /**
  * Resets the game state for main menu
- * @returns {void}
  */
 function resetGameStateForHome() {
     gameState = {
@@ -281,10 +256,10 @@ function resetGameStateForHome() {
 /**
  * Returns to the main menu
  * Stops the game and cleans up all resources
- * @returns {void}
  */
 function goToHome() {
     if(world) {
+        world.stop();
         clearAllIntervals();
         world = null;
     }
@@ -295,13 +270,11 @@ function goToHome() {
     hideAllGamePanels();
     showHomeScreen();
     hideMobilControls();
-    
 }
 
 
 /**
  * Clears all running intervals and timeouts
- * Cleans up resources when game ends or restarts
  */
 function clearAllIntervals() {
     intervalIds.forEach(id => clearInterval(id));
@@ -311,141 +284,77 @@ function clearAllIntervals() {
 
 /**
  * Toggles fullscreen mode on/off
- * Switches between normal and fullscreen mode
  */
 function toggleFullscreen() {
     if(!document.fullscreenElement) {
         document.documentElement.requestFullscreen();
     } else {
         document.exitFullscreen();
-        }
+    }
 }
+
 
 /**
  * Sets up mobile touch controls
  * Connects touch events with keyboard controls
- * 
- * This function gets all button elements and connects them with
- * the corresponding keyboard events (LEFT, RIGHT, SPACE, D)
- * 
- * @function setupMobilControls
- * @returns {void}
  */
 function setupMobilControls() {
-    const btnLeft = document.getElementById('btnLeft');
+    const btnLeft  = document.getElementById('btnLeft');
     const btnRight = document.getElementById('btnRight');
-    const btnJump = document.getElementById('btnJump');
+    const btnJump  = document.getElementById('btnJump');
     const btnThrow = document.getElementById('btnThrow');
 
     if(!btnLeft) return;
 
-    /**
-     * Touch-Start Event: Activate left movement
-     * @param {TouchEvent} e - The touch event object
-     */
-    btnLeft.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        keyboard.LEFT = true;
-    }, {passive: false});
-    
-    /**
-     * Touch-End Event: Deactivate left movement
-     * @param {TouchEvent} e - The touch event object
-     */
-    btnLeft.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        keyboard.LEFT = false;
-    }, {passive: false});
-    
-    /**
-     * Touch-Start Event: Activate right movement
-     * @param {TouchEvent} e - The touch event object
-     */
-    btnRight.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        keyboard.RIGHT = true;
-    }, {passive: false});
-    
-    /**
-     * Touch-End Event: Deactivate right movement
-     * @param {TouchEvent} e - The touch event object
-     */
-    btnRight.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        keyboard.RIGHT = false;
-    }, {passive: false});
-    
-    /**
-     * Touch-Start Event: Activate jump
-     * @param {TouchEvent} e - The touch event object
-     */
-    btnJump.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        keyboard.SPACE = true;
-    }, {passive: false});
-    
-    /**
-     * Touch-End Event: Deactivate jump
-     * @param {TouchEvent} e - The touch event object
-     */
-    btnJump.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        keyboard.SPACE = false;
-    }, {passive: false});
-    
-    /**
-     * Touch-Start Event: Activate throw
-     * @param {TouchEvent} e - The touch event object
-     */
-    btnThrow.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        keyboard.D = true;
-    }, {passive: false});
-    
-    /**
-     * Touch-End Event: Deactivate throw
-     * @param {TouchEvent} e - The touch event object
-     */
-    btnThrow.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        keyboard.D = false; 
-    }, {passive: false});
+    bindTouchButton(btnLeft,  'LEFT');
+    bindTouchButton(btnRight, 'RIGHT');
+    bindTouchButton(btnJump,  'SPACE');
+    bindTouchButton(btnThrow, 'D');
 }
 
+
 /**
- * Shows mobile controls
- * Called when the game starts
- * Shows touch buttons only on mobile devices (screen width <= 1400px)
- * 
- * @function showMobilControls
- * @returns {void}
+ * Binds touchstart/touchend events to a keyboard key
+ * @param {HTMLElement} btn - The button element
+ * @param {string} key - The keyboard key name to toggle
+ */
+function bindTouchButton(btn, key) {
+    btn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard[key] = true;
+    }, { passive: false });
+
+    btn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard[key] = false;
+    }, { passive: false });
+}
+
+
+/**
+ * Shows mobile controls on tablet/phone screens
  */
 function showMobilControls() {
     const mobilControls = document.getElementById('mobilControls');
-        if (mobilControls && window.innerWidth <= 1400) {
-            mobilControls.classList.add('show');
-        }
+    if (mobilControls && window.innerWidth <= 1400) {
+        mobilControls.classList.add('show');
+    }
 }
+
 
 /**
  * Hides mobile controls
- * Called when game ends, pauses, or returns to main menu
- * 
- * @function hideMobilControls
- * @returns {void}
  */
 function hideMobilControls() {
     const mobilControls = document.getElementById('mobilControls');
-        if (mobilControls) {
-            mobilControls.classList.remove('show');
-        }
+    if (mobilControls) {
+        mobilControls.classList.remove('show');
+    }
 }
 
 
 /**
  * Initializes mobile controls on page load
- * This event listener ensures touch controls
- * are ready as soon as the page is fully loaded
  */
 window.addEventListener('load', () => {
     setupMobilControls();
@@ -454,7 +363,6 @@ window.addEventListener('load', () => {
 
 /**
  * Opens the instructions dialog
- * Shows game controls and tips
  */
 function openInfoDialog() {
     document.getElementById('infoDialog').style.display = 'flex';
@@ -463,7 +371,6 @@ function openInfoDialog() {
 
 /**
  * Closes the instructions dialog
- * Called when clicking X or outside the dialog
  */
 function closeInfoDialog() {
     document.getElementById('infoDialog').style.display = 'none';
@@ -471,15 +378,13 @@ function closeInfoDialog() {
 
 
 /**
- * Closes info dialog when clicking outside
- * Event listener for clicks outside dialog content
+ * Closes info dialog when clicking outside the content box
  */
 document.addEventListener('click', (event) => {
     const infoDialog = document.getElementById('infoDialog');
-    const infoContent = document.getElementById('infoContent');
-        if (infoDialog && event.target === infoDialog) {
-            closeInfoDialog();
-        }
+    if (infoDialog && event.target === infoDialog) {
+        closeInfoDialog();
+    }
 });
 
 
@@ -493,12 +398,8 @@ function loadAudioSettings() {
     let volumeHome = document.getElementById('volumeHome');
     let volumeGame = document.getElementById('volumeGame');
     
-    if(volumeHome) {
-        volumeHome.value = AudioHub.currentVolume;
-    }
-    if(volumeGame) {
-        volumeGame.value = AudioHub.currentVolume;
-    }
+    if(volumeHome) volumeHome.value = AudioHub.currentVolume;
+    if(volumeGame) volumeGame.value = AudioHub.currentVolume;
 
     let savedMusic = localStorage.getItem('selectedMusic');
     if(savedMusic !== null) {
@@ -514,26 +415,20 @@ function loadAudioSettings() {
         isMusicOn = false;
         gameState.musicOn = false;
         let musicBtn = document.getElementById('musicBtn');
-        if(musicBtn) {
-            musicBtn.textContent = '🔇 MUSIK AUS';
-        }
+        if(musicBtn) musicBtn.textContent = '🔇 MUSIK AUS';
     }
 }
 
+
 /**
  * Updates audio UI elements to match current settings
- * Syncs sliders and buttons with AudioHub state
  */
 function updateAudioUI() {
     let volumeHome = document.getElementById('volumeHome');
     let volumeGame = document.getElementById('volumeGame');
     
-    if(volumeHome) {
-        volumeHome.value = AudioHub.currentVolume;
-    }
-    if(volumeGame) {
-        volumeGame.value = AudioHub.currentVolume;
-    }
+    if(volumeHome) volumeHome.value = AudioHub.currentVolume;
+    if(volumeGame) volumeGame.value = AudioHub.currentVolume;
     
     let musicBtn = document.getElementById('musicBtn');
     if(musicBtn) {

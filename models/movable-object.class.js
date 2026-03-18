@@ -6,21 +6,29 @@ class MovableObject extends DrawableObject {
     acceleration = 2.5;
     energy = 100;
     lastHit = 0;
-    
+    hasGravity = false;
+
 
     /**
-     * Applies gravity to the object
-     * Object falls down when in the air
+     * Marks the object to receive gravity updates
+     * Called in constructor — actual physics in updateGravity()
      */
-    applyGravity() { 
-        setInterval(() => {
-            if(!isGameActive()) return;
+    applyGravity() {
+        this.hasGravity = true;
+    }
 
-           if(this.isAboveGround() || this.speedY > 0) {
-            this.y -= this.speedY;
-            this.speedY -= this.acceleration;
-           }
-        }, 1000 / 60);
+
+    /**
+     * Updates gravity physics for one frame
+     * Called by World game loop each frame
+     * @param {number} deltaTime - Milliseconds since last frame
+     */
+    updateGravity(deltaTime) {
+        const factor = deltaTime / (1000 / 60);
+        if (this.isAboveGround() || this.speedY > 0) {
+            this.y -= this.speedY * factor;
+            this.speedY -= this.acceleration * factor;
+        }
     }
 
 
@@ -29,10 +37,10 @@ class MovableObject extends DrawableObject {
      * @returns {boolean} True if above ground
      */
     isAboveGround() {
-    if(this instanceof ThrowableObject) {
-        return this.y < 360;
-    }
-    return this.y < 150;
+        if (this instanceof ThrowableObject) {
+            return this.y < 360;
+        }
+        return this.y < 150;
     }
 
     
@@ -53,8 +61,7 @@ class MovableObject extends DrawableObject {
 
     /**
      * Checks if this object collides with another
-     * Considers offset values for precise collision
-     * @param {Object} mo - The other object (Movable Object)
+     * @param {Object} mo - The other object
      * @returns {boolean} True if collision occurs
      */
     isColliding(mo) {
@@ -71,11 +78,10 @@ class MovableObject extends DrawableObject {
 
 
     /**
-     * Object takes damage
-     * Reduces energy by 5 points
+     * Object takes damage — reduces energy by 2
      */
     hit() {
-        this.energy -= 5;
+        this.energy -= 2;
         if (this.energy < 0) {
             this.energy = 0;
         } else {
@@ -85,12 +91,11 @@ class MovableObject extends DrawableObject {
 
 
     /**
-     * Checks if object was just injured
+     * Checks if object was recently hurt
      * @returns {boolean} True if hit less than 1 second ago
      */
     isHurt() {
-        let timepassed = Date.now() - this.lastHit;
-        timepassed = timepassed / 1000;
+        let timepassed = (Date.now() - this.lastHit) / 1000;
         return timepassed < 1;
     }
 
@@ -100,31 +105,29 @@ class MovableObject extends DrawableObject {
      * @returns {boolean} True if energy is 0
      */
     isDead() {
-        return this.energy == 0;  
+        return this.energy == 0;
     }
-   
+
 
     /**
-     * Plays an animation
-     * Cycles through the given images
+     * Plays an animation — cycles through given images
      * @param {Array} images - Array of image paths
      */
     playAnimation(images) {
         let i = this.currentImage % images.length;
-        let path = images[i];
-        this.img = this.imageCache[path];
+        this.img = this.imageCache[images[i]];
         this.currentImage++;
     }
 
 
-   /**
+    /**
      * Moves object to the right
      */
     moveRight() {
         this.x += this.speed;
     }
 
-    
+
     /**
      * Moves object to the left
      */

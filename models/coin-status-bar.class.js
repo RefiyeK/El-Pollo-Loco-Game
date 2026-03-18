@@ -12,12 +12,10 @@ class CoinStatusBar extends DrawableObject {
 
     
     /**
-     * Creates a coin status display
-     * Shows collected coins as a bar
-     * @param {number} x - X-position (ignored, uses fixed position)
-     * @param {number} y - Y-position (ignored, uses fixed position)
-     */
-    constructor(x, y) {
+    * Creates a coin status display
+    * Fixed position at x=180, y=0
+    */
+    constructor() {
         super();
         this.loadImages(this.IMAGES);
         this.x = 180;

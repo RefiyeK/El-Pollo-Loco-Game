@@ -1,9 +1,8 @@
-class Chicken extends MovableObject { 
+class Chicken extends BaseChicken {
 
     width = 50;
     height = 80;
     y = 360;
-    x = 520;
 
     IMAGES_WALKING = [
         'img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
@@ -17,82 +16,15 @@ class Chicken extends MovableObject {
 
 
     /**
-     * Creates a normal chicken
-     * Starts at random position with random speed
+     * Creates a normal chicken at a random position
      */
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
-        this.loadImage(this.IMAGES_DEAD);
-
+        this.loadImages(this.IMAGES_DEAD);
         this.x = 500 + Math.random() * 8000;
         this.speed = 0.15 + Math.random() * 0.5;
         this.energy = 1;
-        this.offset = {
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right : 0,
-        };
-        this.animate();
+        this.offset = { top: 0, bottom: 0, left: 0, right: 0 };
     }
-   
-
-    /**
-     * Starts the movement interval
-     * Chicken walks to the left
-     */
-    startMovementLoop() {
-        setInterval(() => {
-            if(!isGameActive()) return;
-            if(!this.isDead()) {
-                this.moveLeft();
-                this.otherDirection = false;
-            }
-        }, 1000 / 60);
-    }
-
-
-    /**
-     * Starts the animation interval
-     * Switches between walking and death animation
-     */
-    startAnimationLoop() {
-        setInterval(() => {
-            if(!isGameActive()) return;
-            if(this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
-            } else {
-                this.playAnimation(this.IMAGES_WALKING);
-            }
-        }, 200);
-    }
-
-    
-    /**
-     * Starts all animations and movements
-     * Initializes movement and animation loops
-     */
-    animate() {
-        this.startMovementLoop();
-        this.startAnimationLoop();
-    }
-
-
-    /**
-     * Executes when the chicken is hit (e.g., stomped on or hit by a bottle)
-     */
-    hit() {
-        this.energy = 0; 
-    }
-
-
-    /**
-     * Tavuk ölü mü kontrol eder
-     * @returns {boolean} True if dead
-     */
-    isDead() {
-        return this.energy === 0;
-    }
-
 }

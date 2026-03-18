@@ -2,9 +2,12 @@ class ThrowableObject extends MovableObject {
 
     isSplashed = false;
     hasHitGround = false;
-    intervalIds = [];
     canBeRemoved = false;
     throwDirection = 1;
+    animationTimer = 0;
+    ANIMATION_INTERVAL = 100;
+    MOVE_SPEED = 22;
+    MOVE_INTERVAL = 25;
 
     IMAGES_ROTATION = [
         'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
@@ -24,116 +27,98 @@ class ThrowableObject extends MovableObject {
 
 
     /**
-     * Creates a throwable object (bottle)
-     * @param {number} x - X-position of the bottle
-     * @param {number} y - Y-position of the bottle
+     * Creates a throwable bottle
+     * @param {number} x - X position
+     * @param {number} y - Y position
      * @param {number} direction - Throw direction (1=right, -1=left)
      */
-    constructor(x, y, direction=1){
+    constructor(x, y, direction = 1) {
         super().loadImage(this.IMAGES_ROTATION[0]);
         this.loadImages(this.IMAGES_ROTATION);
         this.loadImages(this.IMAGES_SPLASH);
-
         this.x = x;
         this.y = y;
         this.height = 60;
         this.width = 40;
         this.throwDirection = direction;
-        this.trow();
-        this.offset = {
-            top: 15,
-            bottom: 10,
-            left: 5,
-            right: 5,
-        }
-    }
-
-
-    /**
-     * Starts the bottle movement
-     * Bottle flies horizontally in throw direction
-     */
-    startMovement() {
-        let moveInterval = setInterval(() => {
-            if(!this.isSplashed) {
-                this.x += 22 * this.throwDirection;
-            }
-        }, 25);
-        this.intervalIds.push(moveInterval);
-    }
-
-
-    /**
-     * Starts the rotation animation
-     * Switches between rotation and splash images
-     */
-    startAnimation() {
-        let animationInterval = setInterval(() => {
-            if(this.isSplashed) {
-                this.playSplashAnimation();
-            } else {
-                this.playAnimation(this.IMAGES_ROTATION);
-            }
-        }, 100);
-        this.intervalIds.push(animationInterval);
-    }
-
-
-    /**
-     * Checks if bottle touches the ground
-     * Triggers splash animation on ground contact
-     */
-    checkGroundCollision() {
-        let groundCheckInterval = setInterval(() => {
-            let bottleBottom = this.y + this.height;
-
-            if(bottleBottom >= 430 && !this.hasHitGround && !this.isSplashed) {
-                this.hasHitGround = true;
-                this.splash();
-            }
-        }, 1000 / 60);
-        this.intervalIds.push(groundCheckInterval);
-    }
-
-
-    /**
-     * Throws the bottle
-     * Starts movement, animation and collision check
-     */
-    trow() {
+        this.offset = { top: 15, bottom: 10, left: 5, right: 5 };
         this.speedY = 22;
         this.applyGravity();
-        this.startMovement();
-        this.startAnimation();
+    }
+
+
+    /**
+     * Updates bottle position and animation for one frame
+     * Called by World game loop each frame
+     * @param {number} deltaTime - Milliseconds since last frame
+     */
+    update(deltaTime) {
+        if (this.canBeRemoved) return;
+        this.updateMovement(deltaTime);
+        this.updateAnimation(deltaTime);
         this.checkGroundCollision();
     }
 
 
     /**
-     * Makes the bottle shatter
-     * Plays glass break sound and marks bottle for removal
+     * Moves bottle horizontally based on elapsed time
+     * Preserves original speed of 22px per 25ms
+     * @param {number} deltaTime - Milliseconds since last frame
      */
-    splash() {
-        this.isSplashed = true;
-        this.speedY = 0;
-        
-        AudioHub.playSound(AudioHub.bottle_break_sound, 0.3);
-
-        setTimeout(() => {
-            this.intervalIds.forEach(id => clearInterval(id));
-            this.canBeRemoved = true;
-        }, 600);
+    updateMovement(deltaTime) {
+        if (this.isSplashed) return;
+        const factor = deltaTime / this.MOVE_INTERVAL;
+        this.x += this.MOVE_SPEED * this.throwDirection * factor;
     }
 
 
     /**
-     * Plays the splash animation once and stops on the last frame
+     * Advances rotation or splash animation based on elapsed time
+     * @param {number} deltaTime - Milliseconds since last frame
+     */
+    updateAnimation(deltaTime) {
+        this.animationTimer += deltaTime;
+        if (this.animationTimer < this.ANIMATION_INTERVAL) return;
+        this.animationTimer = 0;
+
+        if (this.isSplashed) {
+            this.playSplashAnimation();
+        } else {
+            this.playAnimation(this.IMAGES_ROTATION);
+        }
+    }
+
+
+    /**
+     * Checks if bottle has hit the ground and triggers splash
+     */
+    checkGroundCollision() {
+        if (this.hasHitGround || this.isSplashed) return;
+        if (this.y + this.height >= 430) {
+            this.hasHitGround = true;
+            this.splash();
+        }
+    }
+
+
+    /**
+     * Shatters the bottle — plays sound and schedules removal
+     */
+    splash() {
+        this.isSplashed = true;
+        this.speedY = 0;
+        AudioHub.playSound(AudioHub.bottle_break_sound, 0.3);
+        setTimeout(() => { this.canBeRemoved = true; }, 600);
+    }
+
+
+    /**
+     * Plays splash animation once — stops on last frame
      */
     playSplashAnimation() {
-        let i = this.currentImage % this.IMAGES_SPLASH.length;
-        if (i < this.IMAGES_SPLASH.length - 1) { // Son kareye kadar ilerle
-            let path = this.IMAGES_SPLASH[i];
-            this.img = this.imageCache[path];
+        const i = this.currentImage % this.IMAGES_SPLASH.length;
+        if (i < this.IMAGES_SPLASH.length - 1) {
+            this.img = this.imageCache[this.IMAGES_SPLASH[i]];
             this.currentImage++;
         }
     }
