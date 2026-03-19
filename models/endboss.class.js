@@ -83,22 +83,69 @@ class Endboss extends MovableObject {
     update(deltaTime) {
         this.checkIfHurt();
         this.updateMovement(deltaTime);
+        this.updateDangerMusic();
         this.selectAnimation();
     }
 
 
     /**
-     * Throttles movement to ~30fps for consistent boss speed
-     * @param {number} deltaTime - Milliseconds since last frame
-     */
+    * Manages danger music independently from animation state
+    * Triggers when character is in range, stops when out of range or dead
+    */
+    updateDangerMusic() {
+        if (this.dead) {
+            if (this.dangerMusicPlaying) {
+                AudioHub.stopDangerMusic();
+                this.dangerMusicPlaying = false;
+            }
+            return;
+        }
+        const inRange = this.checkIfCharacterInRange();
+        if (inRange && !this.dangerMusicPlaying) {
+            AudioHub.playDangerMusic();
+            this.dangerMusicPlaying = true;
+            this.dangerMusicStartTime = Date.now();
+        } else if (!inRange && this.dangerMusicPlaying) {
+            AudioHub.stopDangerMusic();
+            this.dangerMusicPlaying = false;
+        }
+    }
+
+    /**
+    * Throttles movement to ~30fps for consistent boss speed
+    * Follows character — moves left or right based on character position
+    * @param {number} deltaTime - Milliseconds since last frame
+    */
     updateMovement(deltaTime) {
         this.movementTimer += deltaTime;
         if (this.movementTimer < 1000 / 30) return;
         this.movementTimer = 0;
 
         if (this.dead || !this.checkIfCharacterInRange()) return;
-        this.moveLeft();
+        this.followCharacter();
         if (this.shouldJump()) this.jump();
+    }
+
+
+    /**
+    * Moves endboss toward the character and flips sprite accordingly
+    * Only turns around when character has fully passed the boss
+    */
+    followCharacter() {
+        const char = this.world.character;
+        const characterFullyPastRight = char.x > this.x + this.width;
+        const characterFullyPastLeft  = char.x + char.width < this.x;
+
+        if (characterFullyPastRight) {
+            this.moveRight();
+            this.otherDirection = true;
+        } else if (characterFullyPastLeft) {
+            this.moveLeft();
+            this.otherDirection = false;
+        } else {
+            this.moveLeft();
+            this.otherDirection = false;
+        }
     }
 
 
@@ -138,10 +185,6 @@ class Endboss extends MovableObject {
         if (this.currentImage >= this.IMAGES_DEAD.length) {
             this.currentImage = this.IMAGES_DEAD.length - 1;
         }
-        if (this.dangerMusicPlaying) {
-            AudioHub.stopDangerMusic();
-            this.dangerMusicPlaying = false;
-        }
     }
 
 
@@ -149,11 +192,6 @@ class Endboss extends MovableObject {
      * Handles danger zone — starts music and plays alert animation
      */
     handleDangerZone() {
-        if (!this.dangerMusicPlaying) {
-            AudioHub.playDangerMusic();
-            this.dangerMusicPlaying = true;
-            this.dangerMusicStartTime = Date.now();
-        }
         const timeSinceDanger = Date.now() - this.dangerMusicStartTime;
         this.playAnimation(timeSinceDanger < 3000 ? this.IMAGES_ALERT : this.IMAGES_WALKING);
     }
@@ -164,10 +202,6 @@ class Endboss extends MovableObject {
      */
     handleNormalState() {
         this.playAnimation(this.IMAGES_WALKING);
-        if (this.dangerMusicPlaying) {
-            AudioHub.stopDangerMusic();
-            this.dangerMusicPlaying = false;
-        }
     }
 
 

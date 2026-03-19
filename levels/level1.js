@@ -137,7 +137,16 @@ function createLevel1() {
         new BackgroundObject('img/5_background/layers/air.png',719*13),
         new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719*13),
         new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719*13),
-        new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719*13)
+        new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719*13),
+
+        new BackgroundObject('img/5_background/layers/air.png', 719*14),
+        new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 719*14),
+        new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 719*14),
+        new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719*14),
+        new BackgroundObject('img/5_background/layers/air.png', 719*15),
+        new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719*15),
+        new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719*15),
+        new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719*15),
     ],
     [
         new Coin(460, 350),
@@ -221,6 +230,11 @@ function createLevel1() {
         new BottlePickup(6700),
         new BottlePickup(7000),
         new BottlePickup(7300),
+        new BottlePickup(8800),
+        new BottlePickup(9200),
+        new BottlePickup(10500),
+        new BottlePickup(10800),
+        new BottlePickup(11100),
     ]
     );
 }

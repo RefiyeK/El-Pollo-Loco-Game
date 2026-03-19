@@ -88,17 +88,14 @@ class ThrowableObject extends MovableObject {
         }
     }
 
-
-    /**
-     * Checks if bottle has hit the ground and triggers splash
-     */
     checkGroundCollision() {
-        if (this.hasHitGround || this.isSplashed) return;
-        if (this.y + this.height >= 430) {
-            this.hasHitGround = true;
-            this.splash();
-        }
+    if (this.hasHitGround || this.isSplashed) return;
+    if (this.y >= 380) {
+        this.y = 380;
+        this.hasHitGround = true;
+        this.splash();
     }
+}
 
 
     /**

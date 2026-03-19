@@ -33,7 +33,6 @@ function startRandomMusic() {
     
     selectedMusicIndex = randomMusicIndex;
     
-    // localStorage'a kaydet
     localStorage.setItem('selectedMusic', selectedMusicIndex.toString());
 }
 
@@ -48,11 +47,9 @@ function onMusicChange() {
     
     if(selectedMusicIndex >= 0) {
         document.getElementById('previewBtn').disabled = false;
-        // localStorage'a kaydet
         localStorage.setItem('selectedMusic', selectedMusicIndex.toString());
     } else {
         document.getElementById('previewBtn').disabled = true;
-        // localStorage'dan sil
         localStorage.removeItem('selectedMusic');
     }
     stopPreview();
@@ -101,12 +98,8 @@ function stopPreview() {
 function startBackgroundMusic() {
     stopPreview();
     
-    // Muted ise müzik başlatma
-    if(AudioHub.isMuted) {
-        return;
-    }
-    
-    // localStorage'dan kayıtlı müziği yükle
+    if(AudioHub.isMuted) return;
+
     let savedMusic = localStorage.getItem('selectedMusic');
     if(savedMusic !== null) {
         selectedMusicIndex = parseInt(savedMusic);
@@ -114,9 +107,22 @@ function startBackgroundMusic() {
     
     if(selectedMusicIndex >= 0) {
         AudioHub.playMusic(selectedMusicIndex);
+        syncMusicDropdown(selectedMusicIndex);
     } else {
         startRandomMusic();
     }
+}
+
+
+/**
+ * Syncs music dropdown UI to the given index
+ * @param {number} index - Music index to show in dropdown
+ */
+function syncMusicDropdown(index) {
+    const dropdown = document.getElementById('musicDropdown');
+    const previewBtn = document.getElementById('previewBtn');
+    if (dropdown) dropdown.value = index.toString();
+    if (previewBtn) previewBtn.disabled = false;
 }
 
 

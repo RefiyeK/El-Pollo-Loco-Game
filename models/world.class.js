@@ -252,14 +252,15 @@ class World {
      * Applies one hit of damage to the character and updates UI
      * Sets gameOver when energy reaches zero
      */
-    applyDamageToCharacter() {
-        this.character.hit();
-        this.statusBar.setPercentage(this.character.energy);
-        AudioHub.playSound(AudioHub.hurt_sound, 0.3);
-        if (this.character.energy <= 0) {
-            this.statusBar.setPercentage(0);
-            gameState.gameOver = true;
-        }
+    applyDamageToCharacter(enemy) {
+        const damage = enemy instanceof ChickenBaby ? 10
+                 : enemy instanceof Endboss     ? 25
+                 : 20;
+    this.character.energy = Math.max(0, this.character.energy - damage);
+    this.character.lastHit = Date.now();
+    this.statusBar.setPercentage(this.character.energy);
+    AudioHub.playSound(AudioHub.hurt_sound, 0.3);
+    if (this.character.energy <= 0) gameState.gameOver = true;
     }
 
 
@@ -268,7 +269,7 @@ class World {
      * 100ms lastHit guard prevents rapid-fire damage within one collision
      */
     checkEnemyDamageCollision() {
-        if (Date.now() - this.character.lastHit < 100) return;
+        if (Date.now() - this.character.lastHit < 1000) return;
 
         for (const enemy of this.level.enemies) {
             if (enemy.isDead()) continue;
@@ -277,7 +278,7 @@ class World {
             const geo = this.getEnemyCollisionGeometry(enemy);
             if (this.isLandingOnTop(geo) && !(enemy instanceof Endboss)) continue;
 
-            this.applyDamageToCharacter();
+            this.applyDamageToCharacter(enemy);
             break;
         }
     }

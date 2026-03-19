@@ -127,12 +127,12 @@ function pauseGame() {
             if(gameState.musicOn) {
                 pauseBackgroundMusic();
             }
-            document.getElementById('pauseBtn').textContent = '▶️ WEITER';
+            document.getElementById('pauseBtn').textContent = ' WEITER';
         } else {
             if(gameState.musicOn) {
             resumeBackgroundMusic();
             }
-            document.getElementById('pauseBtn').textContent = '⏸️ PAUSE';
+            document.getElementById('pauseBtn').textContent = ' PAUSE';
         }
     }
 }
@@ -152,7 +152,7 @@ function resumeGame() {
          if(gameState.musicOn) {
             resumeBackgroundMusic();
          }
-        document.getElementById('pauseBtn').textContent = '⏸️ PAUSE';
+        document.getElementById('pauseBtn').textContent = ' PAUSE';
     }
 }
 
@@ -169,9 +169,9 @@ function toggleMusic() {
     
     const musicBtn = document.getElementById('musicBtn');
     if(isMusicOn) {
-        musicBtn.innerHTML = '<span class="btn-icon">🎵</span><span class="btn-text">MUSIK AN</span>';
+        musicBtn.innerHTML = '<span class="btn-icon"></span><span class="btn-text">MUSIK AN</span>';
     } else {
-        musicBtn.innerHTML = '<span class="btn-icon">🔇</span><span class="btn-text">MUSIK AUS</span>';
+        musicBtn.innerHTML = '<span class="btn-icon"></span><span class="btn-text">MUSIK AUS</span>';
     }
     
     AudioHub.saveSettings();
@@ -332,28 +332,6 @@ function bindTouchButton(btn, key) {
 
 
 /**
- * Shows mobile controls on tablet/phone screens
- */
-function showMobilControls() {
-    const mobilControls = document.getElementById('mobilControls');
-    if (mobilControls && window.innerWidth <= 1400) {
-        mobilControls.classList.add('show');
-    }
-}
-
-
-/**
- * Hides mobile controls
- */
-function hideMobilControls() {
-    const mobilControls = document.getElementById('mobilControls');
-    if (mobilControls) {
-        mobilControls.classList.remove('show');
-    }
-}
-
-
-/**
  * Initializes mobile controls on page load
  */
 window.addEventListener('load', () => {
@@ -415,7 +393,7 @@ function loadAudioSettings() {
         isMusicOn = false;
         gameState.musicOn = false;
         let musicBtn = document.getElementById('musicBtn');
-        if(musicBtn) musicBtn.textContent = '🔇 MUSIK AUS';
+        if(musicBtn) musicBtn.textContent = ' MUSIK AUS';
     }
 }
 
@@ -433,12 +411,23 @@ function updateAudioUI() {
     let musicBtn = document.getElementById('musicBtn');
     if(musicBtn) {
         if(AudioHub.isMuted) {
-            musicBtn.innerHTML = '<span class="btn-icon">🔇</span><span class="btn-text">MUSIK AUS</span>';
+            musicBtn.innerHTML = '<span class="btn-icon"></span><span class="btn-text">MUSIK AUS</span>';
         } else {
-            musicBtn.innerHTML = '<span class="btn-icon">🎵</span><span class="btn-text">MUSIK AN</span>';
+            musicBtn.innerHTML = '<span class="btn-icon"></span><span class="btn-text">MUSIK AN</span>';
         }
     }
     
     gameState.musicOn = !AudioHub.isMuted;
     isMusicOn = !AudioHub.isMuted;
 }
+
+/**
+ * Shows mobile controls — handled by CSS
+ */
+function showMobilControls() {}
+
+
+/**
+ * Hides mobile controls — handled by CSS
+ */
+function hideMobilControls() {}

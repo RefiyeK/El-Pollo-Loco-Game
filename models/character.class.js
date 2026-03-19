@@ -202,10 +202,11 @@ class Character extends MovableObject {
 
 
     /**
-     * Makes the character jump
-     */
+     * Makes the character jump and resets jump animation to first frame
+    */
     jump() {
         this.speedY = 25;
+        this.currentImage = 0;
         AudioHub.playSound(AudioHub.jump_sound, 0.2);
     }
 

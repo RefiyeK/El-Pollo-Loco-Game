@@ -122,10 +122,8 @@ class AudioHub {
         AudioHub.setBackgroundMusicVolume(AudioHub.currentVolume);
         AudioHub.setSoundEffectsVolume(AudioHub.currentVolume);
 
-        // İki slider'ı da senkronize et
         AudioHub.syncSliders();
         
-        // localStorage'a kaydet
         AudioHub.saveSettings();
     }
 
@@ -245,12 +243,10 @@ class AudioHub {
         AudioHub.isMuted = true;
         AudioHub.savedVolume = AudioHub.currentVolume;
         
-        // Müziği durdur
         if(AudioHub.currentMusic && !AudioHub.currentMusic.paused) {
             AudioHub.currentMusic.pause();
         }
         
-        // Tüm volume'leri 0 yap
         AudioHub.allBackgroundMusic.forEach(music => {
             music.volume = 0;
         });
@@ -276,11 +272,9 @@ class AudioHub {
         AudioHub.isMuted = false;
         AudioHub.currentVolume = AudioHub.savedVolume;
         
-        // Volume'leri geri yükle
         AudioHub.setBackgroundMusicVolume(AudioHub.currentVolume);
         AudioHub.setSoundEffectsVolume(AudioHub.currentVolume);
         
-        // Müziği tekrar başlat
         if(AudioHub.currentMusic) {
             AudioHub.currentMusic.play().catch(e => {
                 console.warn("Music could not be resumed after unmute:", e);
@@ -342,7 +336,6 @@ class AudioHub {
      * Loads: volume, mute state
      */
     static loadSettings() {
-        // Volume yükle
         let savedVolume = localStorage.getItem('audioVolume');
         if(savedVolume !== null) {
             AudioHub.currentVolume = parseFloat(savedVolume);
@@ -351,7 +344,6 @@ class AudioHub {
             AudioHub.setSoundEffectsVolume(AudioHub.currentVolume);
         }
 
-        // Mute durumunu yükle
         let savedMuted = localStorage.getItem('audioMuted');
         if(savedMuted === 'true') {
             AudioHub.isMuted = true;
@@ -360,7 +352,6 @@ class AudioHub {
             AudioHub.isMuted = false;
         }
         
-        // Slider'ları güncelle
         AudioHub.syncSliders();
     }
 }
