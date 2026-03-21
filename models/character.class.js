@@ -10,8 +10,7 @@ class Character extends MovableObject {
     maxBottles = 10;
     lastThrow = 0;
     lastAction = Date.now();
-    SHORT_IDLE_TIME = 2000;
-    LONG_IDLE_TIME = 10000;
+    LONG_IDLE_TIME = 5000;
     lastAnimationUpdate = 0;
 
     offset = { top: 120, bottom: 10, left: 40, right: 50 };
@@ -252,15 +251,6 @@ class Character extends MovableObject {
         if (AudioHub.walking_sound.paused) return;
         AudioHub.walking_sound.pause();
         AudioHub.walking_sound.currentTime = 0;
-    }
-
-
-    /**
-     * Checks if character has been idle for short period
-     * @returns {boolean} True if idle > SHORT_IDLE_TIME
-     */
-    isStandIdle() {
-        return Date.now() - this.lastAction > this.SHORT_IDLE_TIME;
     }
 
 

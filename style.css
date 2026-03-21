@@ -67,6 +67,7 @@ body {
 canvas {
     background-color: black;
     display: block;
+    image-rendering: auto;
 }
 
 h1 {
@@ -173,7 +174,6 @@ button p {
 }
 
 #gameControls button:hover .btn-icon {
-    background: rgba(139, 105, 20, 0.4);
     transform: scale(1.02);
 }
 
@@ -479,8 +479,8 @@ button p {
 
 #musicDropdown:focus {
     outline: none;
-    border-color: #45a049;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    border-color: #c9a84c;
+    box-shadow: 0 0 10px #c9a84c;
 }
 
 #previewBtn {
@@ -1018,4 +1018,30 @@ button p {
     body   { min-height: 0; padding: 0; }
     canvas { height: 100vh; }
     h1, h2 { display: none; }
+}
+
+/* ============================================
+   MEDIA QUERY — iPAD & SURFACE LANDSCAPE (1024–1400px)
+   ============================================ */
+
+@media (orientation: landscape) and (min-width: 1024px) and (max-width: 1400px) {
+    #controlPanel {
+        padding: 8px;
+        gap: 6px;
+    }
+
+    #controlPanel button {
+        font-size: 13px;
+        width: 100px;
+        height: 28px;
+    }
+
+    #volumeControlGame {
+        width: 110px;
+        height: 28px;
+    }
+
+    #volumeGame {
+        width: 60px;
+    }
 }
