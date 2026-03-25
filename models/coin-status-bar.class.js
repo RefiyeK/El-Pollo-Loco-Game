@@ -33,8 +33,10 @@ class CoinStatusBar extends DrawableObject {
     setPercentage(collectedCoins) {
         let percentage = (collectedCoins / 50) * 100; 
         this.collectedCoins = percentage;
-        let path = this.IMAGES[this.resolveImageIndex(percentage)];
-        this.img = this.imageCache[path];
+        const index = collectedCoins > 0
+            ? Math.max(1, this.resolveImageIndex(percentage))
+            : 0;
+        this.img = this.imageCache[this.IMAGES[index]];
     }
 
     
@@ -45,11 +47,11 @@ class CoinStatusBar extends DrawableObject {
      */
     resolveImageIndex(percentage) {
         if(percentage >= 100) return 5;
-        else if (percentage >= 80) return 4;
-        else if (percentage >= 60) return 3;
-        else if (percentage >= 40) return 2;
-        else if (percentage >= 20) return 1;
-        else return 0;
+        if (percentage >= 80) return 4;
+        if (percentage >= 60) return 3;
+        if (percentage >= 40) return 2;
+        if (percentage >= 20) return 1;
+        return 0;
     }
 
 }

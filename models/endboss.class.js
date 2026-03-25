@@ -133,15 +133,12 @@ class Endboss extends MovableObject {
     */
     followCharacter() {
         const char = this.world.character;
-        const characterFullyPastRight = char.x > this.x + this.width;
-        const characterFullyPastLeft  = char.x + char.width < this.x;
+        const charCenter = char.x + char.width;
+        const bossCenter = this.x + this.width;
 
-        if (characterFullyPastRight) {
+        if (charCenter > bossCenter) {
             this.moveRight();
             this.otherDirection = true;
-        } else if (characterFullyPastLeft) {
-            this.moveLeft();
-            this.otherDirection = false;
         } else {
             this.moveLeft();
             this.otherDirection = false;
@@ -234,7 +231,7 @@ class Endboss extends MovableObject {
      * @returns {boolean} True if distance < 600px
      */
     checkIfCharacterInRange() {
-        return Math.abs(this.x - this.world.character.x) < 600;
+        return Math.abs(this.x - this.world.character.x) < 800;
     }
 
 

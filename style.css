@@ -265,19 +265,21 @@ button p {
 
 #gameOverPanel,
 #winPanel {
-    position: fixed;
-    top: 40%;
+    position: absolute;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: var(--color-dark-bg);
-    padding: 40px;
+    padding: 30px;
     border-radius: var(--radius-lg);
     text-align: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     z-index: 1000;
     display: none;
-    max-width: 90vw;
-    max-height: 90vh;
-    overflow-y: auto;
+    max-width: 680px;
+    min-height: 390px;
 }
 
 /* Game Over Panel */
@@ -288,14 +290,21 @@ button p {
 }
 
 #gameOverPanel button {
-    padding: 15px 30px;
-    font-size: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
     background-color: var(--color-primary);
     border-radius: var(--radius-sm);
+    margin: 4px;
+    white-space: nowrap;
 }
 
 #gameOverPanel button:hover {
     background-color: #d45a00;
+}
+
+#gameOverPanel #restartBtn,
+#gameOverPanel #homeBtn {
+    display: inline-block;
 }
 
 #gameOverImage {
@@ -316,16 +325,23 @@ button p {
 }
 
 #winPanel button {
-    padding: 15px 30px;
-    font-size: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
     background-color: var(--color-gold);
     color: black;
     border-radius: var(--radius-sm);
-    margin: 10px;
+    margin: 5px;
+    display: inline-block;
+    white-space: nowrap;
 }
 
 #winPanel button:hover {
     background-color: var(--color-gold-dark);
+}
+
+#winPanel #winRestartBtn,
+#winPanel #winHomeBtn {
+    display: inline-block;
 }
 
 
@@ -542,6 +558,20 @@ button p {
     color: var(--color-gold);
 }
 
+
+#gameWrapper {
+    position: relative;
+    width: 720px;
+    height: 480px;
+}
+
+.panel-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 5px;
+    margin-top: auto;
+}
 
 /* ============================================
    MOBILE CONTROLS

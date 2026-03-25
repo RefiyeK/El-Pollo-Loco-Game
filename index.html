@@ -27,7 +27,9 @@
     <script src="./models/bottle-status-bar.class.js"></script>
     <script src="./models/throwable-object.class.js"></script>
     <script src="./levels/level1.js"></script>
-    <script src="./models/world.class.js"></script> 
+    <script src="./models/world.class.js"></script>
+    <script src="./models/world-collision.class.js"></script>
+    <script src="./models/world-ui.class.js"></script>
     <script src="./js/game.js"></script>
      
 </head>
@@ -75,11 +77,10 @@
     </div>
 
 
-    <canvas id="canvas" width="720" height="480" style="display: none;"></canvas>
+    <div id="gameWrapper">
+        <canvas id="canvas" width="720" height="480" style="display: none;"></canvas>
     
-    
-    
-    <div id="infoDialog" style="display: none;">
+        <div id="infoDialog" style="display: none;">
         <div id="infoContent">
             <button id="closeInfoBtn" onclick="closeInfoDialog()">✕</button>
             <h2>Spielanleitung</h2>
@@ -120,24 +121,27 @@
                 </ul>
             </div>
         </div>
-    </div>
+        </div>
 
 
 
-    <div id="gameOverPanel" style="display: none;">
-        <img id="gameOverImage" src="" alt="Game Over">
+        <div id="gameOverPanel" style="display: none;">
+            <img id="gameOverImage" src="" alt="Game Over">
             <h2 id="gameOverText"></h2>
-        <button id="restartBtn" onclick="restartGame()" onkeydown="return false;">NOCHMAL SPIELEN</button>
-        <button id="homeBtn" onclick="goToHome()" onkeydown="return false;">HAUPTSEITE</button>
-    </div>
+            <div class="panel-buttons">
+                <button id="restartBtn" onclick="restartGame()" onkeydown="return false;">NOCHMAL SPIELEN</button>
+                <button id="homeBtn" onclick="goToHome()" onkeydown="return false;">HAUPTSEITE</button>
+            </div>
+        </div>
 
-    <div id="winPanel" style="display: none;">
-        <img id="winImage" src="" alt="Win Screen">
-        <h2 id="winText"></h2>
-        <button id="winRestartBtn" onclick="restartGame()" onkeydown="return false;">NOCHMAL SPIELEN</button>
-        <button id="winHomeBtn" onclick="goToHome()" onkeydown="return false;">HAUPTSEITE</button>
-    </div>
-
+        <div id="winPanel" style="display: none;">
+            <img id="winImage" src="" alt="Win Screen">
+            <h2 id="winText"></h2>
+            <div class="panel-buttons">
+                <button id="winRestartBtn" onclick="restartGame()" onkeydown="return false;">NOCHMAL SPIELEN</button>
+                <button id="winHomeBtn" onclick="goToHome()" onkeydown="return false;">HAUPTSEITE</button>
+            </div>
+        </div>
 
 
     

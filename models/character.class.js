@@ -103,7 +103,7 @@ class Character extends MovableObject {
      * @param {number} deltaTime - Milliseconds since last frame
      */
     update(deltaTime) {
-        const isWalking = this.handleMovement();
+        const isWalking = this.handleMovement(deltaTime);
         this.manageWalkingSound(isWalking);
         this.handleJump();
         this.selectAnimation();
@@ -114,20 +114,21 @@ class Character extends MovableObject {
      * Processes movement inputs
      * @returns {boolean} True if character is moving
      */
-    handleMovement() {
+    handleMovement(deltaTime) {
         if (this.isDead()) return false;
 
         let isWalking = false;
+        const factor = deltaTime / (1000 / 60);
 
-        if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-            this.moveRight();
+        if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x - this.width) {
+            this.x += this.speed * factor;
             this.otherDirection = false;
             isWalking = true;
             this.lastAction = Date.now();
         }
 
         if (this.world.keyboard.LEFT && this.x > 0) {
-            this.moveLeft();
+            this.x -= this.speed * factor;
             this.otherDirection = true;
             isWalking = true;
             this.lastAction = Date.now();
@@ -176,7 +177,7 @@ class Character extends MovableObject {
     getAnimationSpeed() {
         if (this.isDead())    return 100;
         if (this.isHurt())    return 150;
-        if (this.isAboveGround()) return 80;
+        if (this.isAboveGround()) return 35;
         if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) return 120;
         return 200;
     }

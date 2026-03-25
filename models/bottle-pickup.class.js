@@ -19,8 +19,8 @@ class BottlePickup extends MovableObject {
     constructor(x) {
         super(); 
         let randomIndex = Math.floor(Math.random() * this.IMAGES.length);         
-        
         this.loadImage(this.IMAGES[randomIndex]);
         this.x = x;
+        this.offset = { top: 5, bottom: 5, left: 10, right: 10 };
     }
 }
